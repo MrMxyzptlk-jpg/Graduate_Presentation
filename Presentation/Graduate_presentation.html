@@ -1,0 +1,2609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espectros de Absorción Óptica y de Rayos X</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+
+    <style>
+        :root {
+
+            /* UI Elements */
+                --bg-color: #000;
+                --border-color: rgba(255, 255, 255, 0.1);
+                --shadow-color: rgba(222, 255, 154, 0.05);
+                --axes-color: #cbd5f5;
+                --text-color: #ffffff;
+
+                --highlight1-color: #E26EE5;
+                --highlight2-color: #A3D8FF;
+
+                --curve1-color: #00F5FF
+                ;
+                --curve2-color: #FFF024;
+                --curve3-color: #16FF00;
+                --curve4-color: #FF6363;
+
+                --arrow-color: #A5158C;
+
+            /* Particles & Physics (For CSS use) */
+                --particle-photon: #ffffaa;
+                --particle-electron: #4d4dff;
+                --particle-ion: #ff4d4d;
+
+            }
+
+        /* --- CORE STYLES --- */
+        * { box-sizing: border-box; }
+        body {
+            background-color: var(--bg-color); margin: 0; padding: 0;
+            height: 100vh; width: 100vw; overflow: hidden;
+            font-family: 'Urbanist', sans-serif; color: var(--text-color);
+        }
+
+        #presentation-container { position: relative; width: 100%; height: 100%; }
+
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; visibility: hidden; transition: opacity 0.5s ease-in-out;
+            display: flex; justify-content: center; align-items: center; z-index: 1;
+        }
+
+        .slide.active { opacity: 1; visibility: visible; z-index: 2; }
+
+        .slide-content {
+            background-color: var(--bg-color); width: 90%; max-width: 1400px; height: 85%;
+            border-radius: 12px; padding: 50px 70px; position: relative;
+            box-shadow: 0 0 50px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            display: flex; flex-direction: column;
+        }
+
+        /* TEXT HIGHLIGHTING LOGIC */
+        .step-text {
+            color: var(--text-color);
+            opacity: 1.0;
+            transition: all 0.5s ease;
+        }
+
+        .step-text.active {
+            color: var(--highlight1-color); /* Green */
+            opacity: 1;
+            text-shadow: 0 0 15px var(--shadow-color);
+        }
+
+        /* OVERLAY SYSTEM */
+        .slide-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 50px 70px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            opacity: 1;
+            transform: scale(1);
+            background-color: var(--bg-color);
+            z-index: 10;
+        }
+
+        .slide-layer.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95);
+            z-index: 0;
+        }
+
+        /* PLOT STYLES */
+        .plot-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        /* container that holds the grid (wrap your grid with this or keep the wrapper you already added) */
+        .plot-grid-wrapper {
+            width: 80%;           /* you already used this in HTML wrapper; keep or tweak */
+            max-width: 1300px;    /* safety cap so plots don't get absurdly wide on huge screens */
+            margin: 0 auto;
+        }
+
+        .plot-grid-custom4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+
+            width: fit-content;    /* shrink to content width */
+            margin: 0 auto;        /* center the grid horizontally */
+            justify-content: center;
+        }
+
+        .plot-grid-custom4 img {
+            width: 100%;
+            height: auto;
+            max-height: 200px;  /* adjust to taste */
+            object-fit: contain;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: #000;
+            padding: 4px;
+        }
+
+        .plot-grid-custom2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+
+            width: fit-content;    /* shrink to content width */
+            margin: 0 auto;        /* center the grid horizontally */
+            justify-content: center;
+        }
+
+        .plot-grid-custom2 img {
+            width: 100%;
+            height: auto;
+            max-height: 200px;  /* adjust to taste */
+            object-fit: contain;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: #000;
+            padding: 4px;
+        }
+
+        .plot-grid-2x2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            width: fit-content;      /* shrink to fit content */
+            margin: 0 auto;          /* center horizontally */
+        }
+
+        .two-row-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .row-with-captions {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 0rem;
+        }
+
+        .caption {
+            margin-right: 0.2rem;  /* tiny breathing room */
+            margin-left: 0.2rem;
+            font-size: 1.1em;
+            font-weight: 600;
+            width: 20px;             /* adjust to taste */
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        /* Plot boxes: force them to occupy full column width, keep aspect ratio */
+        .plot-box {
+            width: 100%;
+            min-width: 220px;            /* avoids collapsing to a few pixels */
+            max-width: 100%;
+            max-height: 45vh;   /* adapts to screen */
+            aspect-ratio: 16 / 9;        /* preserve your visual format */
+            background: #111;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: block;
+        }
+
+        .plot-label {
+            position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
+            color: var(--text-color); font-size: 1.4rem; white-space: nowrap; font-weight: bold;
+        }
+
+        .plot-hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        .plot-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* TYPOGRAPHY & LAYOUTS */
+        h1 { font-size: 3.5rem; margin: 0 0 20px 0; color: var(--text-color); line-height: 1.1; }
+        h2 { font-size: 2.5rem; margin: 0 0 30px 0; color: var(--highlight1-color); font-weight: 400; }
+        h3 { font-size: 1.8rem; margin: 0 0 15px 0; color: var(--highlight2-color); }
+        p, li { font-size: 1.4rem; color: var(--text-color); line-height: 1.6; }
+        span.highlight { color: var(--highlight1-color); }
+
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; height: 100%; align-items: center; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 30px; }
+        .tile { background: var(--bg-color); padding: 30px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .tile i { font-size: 2rem; color: var(--highlight1-color); margin-bottom: 15px; }
+        .math-block { background: var(--bg-color); padding: 0px; border-radius: 8px; margin: 0px 0; text-align: center; font-size: 1.3rem; }
+
+        .media-container {
+            width: 100%; height: 100%; min-height: 200px;
+            background: var(--bg-color); border-radius: 12px; overflow: hidden;
+            display: flex; justify-content: center; align-items: center; border: 1px solid var(--border-color);
+        }
+        .media-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .plot-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5000;
+        }
+
+        .plot-modal.hidden { display: none; }
+
+        .plot-modal-content {
+            width: 80vw;
+            height: 80vh;
+            background: #111;
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .plot-grid-custom3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            width: 100%;
+            max-width: 1100px;  /* keeps all slides consistent */
+            margin: 0 auto;     /* center block */
+        }
+
+        .plot-grid-custom3 > div {
+            width: 100%;
+            height: 260px;      /* uniform plot size */
+        }
+
+        /* Center items 4 and 5 in the second row */
+        .plot-grid-custom3 > :nth-child(4) {
+            grid-column: 2;     /* middle column */
+        }
+
+        .plot-grid-custom3 > :nth-child(5) {
+            grid-column: 3;     /* right column */
+        }
+
+        /* CANVAS */
+        .anim-wrapper { position: relative; width: 100%; height: 100%; background: radial-gradient(circle, #222 0%, #000 100%); }
+        canvas { display: block; width: 100%; height: 100%; }
+
+        /* CONTROLS */
+        .controls-overlay { position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; gap: 10px; opacity: 0.3; transition: opacity 0.3s; }
+        .controls-overlay:hover { opacity: 1; }
+        .nav-btn { background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 15px; border-radius: 6px; cursor: pointer; }
+        .progress-bar { position: fixed; bottom: 0; left: 0; height: 4px; background: var(--border-color); width: 0%; transition: width 0.3s; z-index: 101; }
+
+        .slide-footer { position: absolute; bottom: 20px; left: 70px; right: 70px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; display: flex; justify-content: space-between; opacity: 0.5; font-size: 0.9rem; }
+
+        /* Fix flex → grid collapse */
+.slide-content { min-width: 0; }
+
+/* Stabilize Plotly container sizes */
+.plot-box {
+    width: 100%;
+    min-width: 220px;
+    height: 260px;
+    background: #111;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    display: block;
+}
+
+/* Ensure grid doesn't inherit width: fit-content from other grids */
+.plot-grid-custom3 {
+    width: 100% !important;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+    </style>
+</head>
+<body>
+
+<div id="presentation-container">
+
+    <!-- SLIDE 1: THE COMPLEX TITLE SCENE -->
+    <div class="slide active" id="slide1">
+        <div class="slide-content">
+
+            <!-- LAYER A: The Title -->
+            <div class="slide-layer" id="layer-title">
+                <div style="text-align: center;">
+                    <h1 style="font-size: 3rem; line-height: 1.4;">
+                        <span class="step-text" id="step-0">Determinación</span> de los<br>
+                        <span class="step-text" id="step-1">espectros de absorción óptica y de rayos X</span><br>
+                        en <span class="step-text" id="step-5">semiconductores y aislantes</span><br>
+                        mediante un tratamiento <span class="step-text" id="step-7">ab initio</span><br>
+                        <span class="step-text" id="step-8">all-electron incluyendo efectos de muchos cuerpos</span>
+                    </h1>
+
+                    <div style="margin-top: 60px; border-top: 2px solid #41B3FF; padding-top: 30px; display: inline-block;">
+                        <p style="font-size: 1.8rem; color: #fff; margin: 0;">Jerónimo Noé Acito Pino</p>
+                        <p style="opacity: 0.7; margin: 10px 0 0 0;">Universidad Nacional de Córdoba | FAMAF</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAYER B: The Plot Workflow -->
+            <div class="slide-layer hidden" id="layer-workflow">
+                <!-- EXPERIMENTAL CANVAS -->
+                <div style="width: 100%; height: 200px; margin-bottom: 30px; position: relative; border-bottom: 1px solid var(--border-dim);">
+                    <canvas id="experimentCanvas"></canvas>
+                </div>
+
+                <!-- PLOTS ROW -->
+                <div class="plot-container">
+                    <div id="plot-group-1" class="plot-hidden" style="position: relative;">
+                        <div class="plot-label">Incidencia</div>
+                        <div id="plot-1" style="width: 300px; height: 220px;"></div>
+
+                        <script>
+                        fetch("incident.dat")
+                        .then(r => r.text())
+                        .then(text => {
+
+                            const rows = text
+                            .split("\n")
+                            .filter(r => r.trim() && !r.trim().startsWith("#"));
+
+                            const k = [];
+                            const v1 = [];
+                            const y_eps = Number(0.2);
+
+                            rows.forEach(r => {
+                            const cols = r.trim().split(/\s+/);
+                            const x  = Number(cols[0]);
+                            const y1 = Number(cols[1]);
+
+                            if (!isNaN(x) && !isNaN(y1)) {
+                                k.push(x);
+                                v1.push(y1);
+                            }
+                            });
+
+                            const traces = [{
+                            x: k,
+                            y: v1,
+                            mode: "lines",
+                            name: "Incidente",
+                            line: { width: 2, color: PALETTE.curve1 }
+                            }];
+
+                            const layout = {
+                            width: 300,
+                            height: 220,
+                            margin: { l: 40, r: 20, t: 10, b: 40 },
+
+                            paper_bgcolor: "#111",
+                            plot_bgcolor: "#111",
+                            font: { color: PALETTE.text },
+
+                            xaxis: {
+                                title: "Energía",
+                                showgrid: false,
+                                zeroline: false,
+                                showticklabels: false,
+                                range: [-0.05, Math.max(...k)]   // ✅ only positive x
+                            },
+
+                            yaxis: {
+                                title: "Intensidad",
+                                showgrid: false,
+                                zeroline: false,
+                                showticklabels: false,
+                                range: [-0.05, Math.max(...v1) + y_eps]  // ✅ only positive y
+                            },
+
+                            // ✅ MANUAL AXES WITH ARROWS
+                            shapes: [
+                                // X-axis with arrow
+                                {
+                                type: "line",
+                                x0: 0, y0: 0,
+                                x1: Math.max(...k), y1: 0,
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: Math.max(...k), y0: 0,
+                                x1: Math.max(...k) - 0.05*Math.max(...k), y1: 0.02*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: Math.max(...k), y0: 0,
+                                x1: Math.max(...k) - 0.05*Math.max(...k), y1: -0.02*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                },
+
+                                // Y-axis with arrow
+                                {
+                                type: "line",
+                                x0: 0, y0: 0,
+                                x1: 0, y1: Math.max(...v1) + y_eps,
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: 0, y0: Math.max(...v1) + y_eps,
+                                x1: 0.02*Math.max(...k), y1: Math.max(...v1) + y_eps - 0.05*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: 0, y0: Math.max(...v1) + y_eps,
+                                x1: -0.02*Math.max(...k), y1: Math.max(...v1) + y_eps - 0.05*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                }
+                            ]
+                            };
+
+
+                            const config = {
+                            displayModeBar: false,   // ✅ Removes toolbar
+                            responsive: false
+                            };
+
+                            Plotly.newPlot("plot-1", traces, layout, config);
+                        });
+                        </script>
+
+                    </div>
+                    <i id="arrow-1" class="fa-solid fa-arrow-right plot-hidden" style="font-size: 2rem; color: var(--arrow-color);"></i>
+                    <div id="plot-group-2" class="plot-hidden" style="position: relative;">
+                        <div class="plot-label">Transmisión</div>
+                        <div id="plot-2" style="width: 300px; height: 220px;"></div>
+
+                        <script>
+                        fetch("transmited.dat")
+                        .then(r => r.text())
+                        .then(text => {
+
+                            const rows = text
+                            .split("\n")
+                            .filter(r => r.trim() && !r.trim().startsWith("#"));
+
+                            const k = [];
+                            const v1 = [];
+                            const y_eps = Number(0.2);
+
+                            rows.forEach(r => {
+                            const cols = r.trim().split(/\s+/);
+                            const x  = Number(cols[0]);
+                            const y1 = Number(cols[1]);
+
+                            if (!isNaN(x) && !isNaN(y1)) {
+                                k.push(x);
+                                v1.push(y1);
+                            }
+                            });
+
+                            const traces = [{
+                            x: k,
+                            y: v1,
+                            mode: "lines",
+                            name: "Transmisión",
+                            line: { width: 2, color: PALETTE.curve1 }
+                            }];
+
+                            const layout = {
+                            width: 300,
+                            height: 220,
+                            margin: { l: 40, r: 20, t: 10, b: 40 },
+
+                            paper_bgcolor: "#111",
+                            plot_bgcolor: "#111",
+                            font: { color: PALETTE.text },
+
+                            xaxis: {
+                                title: "Energía",
+                                showgrid: false,
+                                zeroline: false,
+                                showticklabels: false,
+                                range: [-0.05, Math.max(...k)]   // ✅ only positive x
+                            },
+
+                            yaxis: {
+                                title: "Intensidad",
+                                showgrid: false,
+                                zeroline: false,
+                                showticklabels: false,
+                                range: [-0.05, Math.max(...v1) + y_eps]  // ✅ only positive y
+                            },
+
+                            // ✅ MANUAL AXES WITH ARROWS
+                            shapes: [
+                                // X-axis with arrow
+                                {
+                                type: "line",
+                                x0: 0, y0: 0,
+                                x1: Math.max(...k), y1: 0,
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: Math.max(...k), y0: 0,
+                                x1: Math.max(...k) - 0.05*Math.max(...k), y1: 0.02*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: Math.max(...k), y0: 0,
+                                x1: Math.max(...k) - 0.05*Math.max(...k), y1: -0.02*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                },
+
+                                // Y-axis with arrow
+                                {
+                                type: "line",
+                                x0: 0, y0: 0,
+                                x1: 0, y1: Math.max(...v1) + y_eps,
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: 0, y0: Math.max(...v1) + y_eps,
+                                x1: 0.02*Math.max(...k), y1: Math.max(...v1) + y_eps - 0.05*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: 0, y0: Math.max(...v1) + y_eps,
+                                x1: -0.02*Math.max(...k), y1: Math.max(...v1) + y_eps - 0.05*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                }
+                            ]
+                            };
+
+
+                            const config = {
+                            displayModeBar: false,   // ✅ Removes toolbar
+                            responsive: false
+                            };
+
+                            Plotly.newPlot("plot-2", traces, layout, config);
+                        });
+                        </script>
+                    </div>
+                    <i id="arrow-2" class="fa-solid fa-arrow-right plot-hidden" style="font-size: 2rem; color: var(--arrow-color);"></i>
+                    <div id="plot-group-3" class="plot-hidden" style="position: relative;">
+                        <div class="plot-label"><span style="color: var(--highlight1-color)">Absorción</span></div>
+                        <div id="plot-3" style="width: 300px; height: 220px;"></div>
+
+                        <script>
+                        fetch("absorbed.dat")
+                        .then(r => r.text())
+                        .then(text => {
+
+                            const rows = text
+                            .split("\n")
+                            .filter(r => r.trim() && !r.trim().startsWith("#"));
+
+                            const k = [];
+                            const v1 = [];
+                            const y_eps = Number(0.2);
+
+                            rows.forEach(r => {
+                            const cols = r.trim().split(/\s+/);
+                            const x  = Number(cols[0]);
+                            const y1 = Number(cols[1]);
+
+                            if (!isNaN(x) && !isNaN(y1)) {
+                                k.push(x);
+                                v1.push(y1);
+                            }
+                            });
+
+                            const traces = [{
+                            x: k,
+                            y: v1,
+                            mode: "lines",
+                            name: "Absorción",
+                            line: { width: 2, color: PALETTE.curve1 }
+                            }];
+
+                            const layout = {
+                            width: 300,
+                            height: 220,
+                            margin: { l: 40, r: 20, t: 10, b: 40 },
+
+                            paper_bgcolor: "#111",
+                            plot_bgcolor: "#111",
+                            font: { color: PALETTE.text },
+
+                            xaxis: {
+                                title: "Energía",
+                                showgrid: false,
+                                zeroline: false,
+                                showticklabels: false,
+                                range: [-0.05, Math.max(...k)]   // ✅ only positive x
+                            },
+
+                            yaxis: {
+                                title: "Intensidad",
+                                showgrid: false,
+                                zeroline: false,
+                                showticklabels: false,
+                                range: [-0.05, Math.max(...v1) + y_eps]  // ✅ only positive y
+                            },
+
+                            // ✅ MANUAL AXES WITH ARROWS
+                            shapes: [
+                                // X-axis with arrow
+                                {
+                                type: "line",
+                                x0: 0, y0: 0,
+                                x1: Math.max(...k), y1: 0,
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: Math.max(...k), y0: 0,
+                                x1: Math.max(...k) - 0.05*Math.max(...k), y1: 0.02*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: Math.max(...k), y0: 0,
+                                x1: Math.max(...k) - 0.05*Math.max(...k), y1: -0.02*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                },
+
+                                // Y-axis with arrow
+                                {
+                                type: "line",
+                                x0: 0, y0: 0,
+                                x1: 0, y1: Math.max(...v1) + y_eps,
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: 0, y0: Math.max(...v1) + y_eps,
+                                x1: 0.02*Math.max(...k), y1: Math.max(...v1) + y_eps - 0.05*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                },
+                                {
+                                type: "line",
+                                x0: 0, y0: Math.max(...v1) + y_eps,
+                                x1: -0.02*Math.max(...k), y1: Math.max(...v1) + y_eps - 0.05*Math.max(...v1),
+                                line: { color: "white", width: 2 }
+                                }
+                            ]
+                            };
+
+
+                            const config = {
+                            displayModeBar: false,   // ✅ Removes toolbar
+                            responsive: false
+                            };
+
+                            Plotly.newPlot("plot-3", traces, layout, config);
+                        });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAYER C: Static Band Diagram (New) -->
+            <div class="slide-layer hidden" id="layer-static-bands">
+                <h2>Estructura de Bandas <span class="highlight">Esquemática</span></h2>
+                <div class="media-container" style="background: var(--bg-color); border: 1px solid var(--border-color); width: 80%; height: 60%;">
+                    <canvas id="staticBandsCanvas"></canvas>
+                </div>
+                <p style="margin-top: 20px;">Representación del Gap Directo.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SLIDE 2: Theoretical Framework -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2 style="color: var(--highlight1-color)">Marco Teórico</h2>
+            <div class="grid-3">
+                <div class="tile">
+                    <i class="fa-solid fa-cube"></i>
+                    <h3>1. DFT</h3>
+                    <p>Resuelve las ecuaciones de Kohn-Sham para obtener funciones de onda (\(\phi\)) y energías (\(E^{KS}\)).</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-atom"></i>
+                    <h3>2. Aprox. GW</h3>
+                    <p>Calcula energías de Cuasipartícula (\(E^{QP}\)). Corrige el gap de banda mediante la autoenergía.</p>
+                </div>
+                <div class="tile">
+                    <i class="fa-solid fa-bolt"></i>
+                    <h3>3. BSE</h3>
+                    <p>Resuelve la Ecuación de Bethe-Salpeter para la función de Green de dos partículas (e-h).</p>
+                </div>
+            </div>
+            <div class="slide-footer"><span></span><span>2 / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: DFT - Intro -->
+    <div class="slide" id="slide-DFT-intro1">
+        <div class="slide-content">
+            <h2>DFT: Teoría del Funcional de la Densidad </span></h2>
+            <div class="two-column">
+                <div>
+                    <ul>
+                        <li><strong style="color: var(--highlight2-color)">Reformula el problema</strong> de muchos cuerpos en términos de la densidad electrónica ρ(r).</li>
+                        <li><strong style="color: var(--highlight2-color)">Reduce el número de variables</strong> necesarias.</li>
+                        <li>Resolución mediante la <strong style="color: var(--highlight2-color)">minimización de la funcional energía.</strong></li>
+                    </ul>
+                </div>
+
+                <!-- ANIMATED CANVAS REPLACING SVG -->
+                <div class="media-container" style="background: var(--bg-color); border: 1px solid var(--border-color);">
+                    <canvas id="mbDftCanvas"></canvas>
+                </div>
+
+
+            </div>
+            <div class="slide-footer"><span></span><span>3 / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: DFT - intro2 -->
+    <div class="slide" id="slide-DFT-intro2">
+        <div class="slide-content">
+            <h2>DFT: Teoría del Funcional de la Densidad </span></h2>
+            <div class="two-column">
+                <div>
+                    <ul>
+                        <li><strong style="color: var(--highlight2-color)">Las ecuaciones de Kohn-Sham</strong> mapean el problema a un sistema efectivo de partículas <strong style="color: var(--highlight2-color)">independientes</strong>.
+                        <div class="math-block">
+                        $$ \left\{ -\frac{\hbar^2\nabla^2}{2m} + v_H[n] + v_{ext} + v_{xc}[n]\right\}\phi_i(\textbf{r}\sigma) = \epsilon_i\phi_i(\textbf{r}\sigma)$$
+                        </div></li>
+                        <li><strong style="color: var(--highlight2-color)">Remueve </strong> las interacciones explícitas.</li>
+                        <li><strong style="color: var(--highlight2-color)">Debe aproximarse</strong> el potencial de correlación intercambio \(v_{xc}\).</li>
+                    </ul>
+                </div>
+
+                <!-- ANIMATED CANVAS REPLACING SVG -->
+                <div class="media-container" style="background: var(--bg-color); border: 1px solid var(--border-color);">
+                    <canvas id="KSCanvas"></canvas>
+                </div>
+
+
+            </div>
+            <div class="slide-footer"><span></span><span>4 / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: DFT - Pros -->
+    <div class="slide" id="slide-DFT-pros">
+        <div class="slide-content">
+            <h2>DFT: Teoría del Funcional de la Densidad </span></h2>
+            <div class="two-column">
+                <div>
+                    <p><strong>Pros:</strong></p>
+                    <ul>
+                        <li><strong style="color: var(--highlight2-color)">Costo computacional moderado.</strong></li>
+                        <li>Excelente descripción del <strong style="color: var(--highlight2-color)">estado fundamental.</strong></li>
+                        <li>Base de <strong style="color: var(--highlight2-color)"> los métodos ab initio modernos.</strong></li>
+                    </ul>
+                </div>
+
+                <!-- Humorous Illustration -->
+                <div class="media-container" style="height: 68%; width: 70%; background: var(--bg-color); border: 1px solid var(--border-color);">
+                    <img src="XC_illustration.png" alt="DFT Diagram">
+                </div>
+
+            </div>
+            <div class="slide-footer"><span></span><span>5 / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: DFT - Cons -->
+    <div class="slide" id="slide-DFT-cons">
+        <div class="slide-content">
+            <h2>DFT: Limitaciones</h2>
+
+            <div class="two-column">
+                <div>
+                    <p><strong>Contras:</strong></p>
+                    <ul>
+                        <li><strong style="color: var(--highlight2-color)">Subestima sistemáticamente el gap</strong> con funcionales estándar (LDA).</li>
+                        <li>No describe correctamente <strong style="color: var(--highlight2-color)">estados excitados</strong>.</li>
+                    </ul>
+
+                    <p style="margin-top:1rem; opacity:0.85;">
+                        Esta limitación motiva el uso de <strong style="color: var(--highlight1-color)">GW</strong> para cuasipartículas y <strong style="color: var(--highlight1-color)">BSE</strong> para excitaciones ópticas.
+                    </p>
+                </div>
+
+                <!-- BAND GAP UNDERESTIMATION IMAGE -->
+                <div class="media-container" style="background: var(--bg-color); border: 1px solid var(--border-color);">
+                    <canvas id="bandgapCanvas" width="900" height="500"></canvas>
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>5 / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: GW - Intro -->
+    <div class="slide" id="slide-GW-green">
+        <div class="slide-content">
+            <h2>Aprox. GW: Idea Función de Green G</h2>
+
+            <div class="two-column">
+                <p>Se introduce la <strong style="color: var(--highlight2-color)">función de Green (G)</strong> para describir la propagación de un electrón o hueco.</p>
+
+                <div class="two-column">
+                   <!-- ELECTRON PROPAGATION -->
+                    <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
+                        <h3 style="color: var(--accent-main); text-align:center;">Propagación de Electrón (G<sup>&gt;</sup>)</h3>
+                        <div class="media-container">
+                            <div class="anim-wrapper" >
+                                <canvas id="greenElectronCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HOLE PROPAGATION -->
+                    <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
+                        <h3 style="color: var(--accent-purple); text-align:center;">Propagación de Hueco (G<sup>&lt;</sup>)</h3>
+                        <div class="media-container" style="max-height: 260px;">
+                            <div class="anim-wrapper">
+                                <canvas id="greenHoleCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="slide-footer"><span></span><span>6 / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: GW - Intro -->
+    <div class="slide" id="slide-GW-intro">
+        <div class="slide-content">
+            <h2>Aprox. GW: interacción Coulomb apantallada W</h2>
+
+            <div class="two-column">
+                <div>
+                    <ul>
+                        <li>Se introduce una <strong style="color: var(--highlight2-color)">apantallamiento (W)</strong> por la <strong style="color: var(--highlight2-color)">polarización del medio (\(\Pi\))</strong>.</li>
+                        <li>La partícula real se describe como una <strong style="color: var(--highlight1-color)">cuasipartícula</strong>:
+                        <strong style="color: var(--highlight2-color)">electrón/hueco</strong> + <strong style="color: var(--highlight2-color)">respuesta del medio</strong>.</li>
+                    </ul>
+
+                </div>
+
+                <!-- INTERACTIVE SCREENING DEMO -->
+                <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
+                    <h3 style="color: var(--accent-purple); text-align:center;">Extra electrón (repulsión)</h3>
+                    <div class="media-container" style="flex: 1;  max-height: 300px;">
+                        <div style="position: absolute; top: 10px; left: 10px; color: var(--text-secondary); font-size: 14px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 4px;">Extra Electrón (Repulsión)</div>
+                        <canvas id="screenElectronCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer"><span></span><span>6 / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: GW - Teoría -->
+    <div class="slide" id="slide-GW-theory">
+        <div class="slide-content">
+            <h2>Aprox. GW: correción de cuasipartículas</h2>
+
+            <div class="two-column">
+                <div>
+                    <p><strong>Pros:</strong></p>
+                    <ul>
+                        <li>GW surge como la <strong style="color: var(--highlight2-color)">aproximación más baja</strong> de las ecuaciones de Hedin.</li>
+                        <li>Se corrigen las energías con la <strong style="color: var(--highlight2-color)">autoenergía Σ</strong>.
+                        <div class="math-block">
+                        $$
+                        E^{\mathrm{QP}} = E^{KS} + Z \left[  \mathrm{Re}\{\Sigma(E)\} - V^{\mathrm{xc}}
+                        \right]
+                        $$
+                        </div></li>
+                        <li><strong style="color: var(--highlight2-color)">Corrige el gap electrónico</strong> por interacciones de muchos cuerpos.</li>
+                    </ul>
+
+                </div>
+
+                <!-- Humorous Illustration -->
+                <div class="media-container" style="height: 75%; width: 78%; background: var(--bg-color); border: 1px solid var(--border-color);">
+                    <img src="First_order_illustration.jpg" alt="GW Diagram">
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>7 / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: GW - Contras -->
+    <div class="slide" id="slide-GW-cons">
+        <div class="slide-content">
+            <h2>Aprox. GW: Limitaciones</h2>
+
+            <div class="two-column">
+                <div>
+                    <p><strong>Contras:</strong></p>
+                    <ul>
+                        <li>Los espectros calculados corresponden a <strong style="color: var(--highlight2-color)">cuasipartículas independientes</strong>.</li>
+                        <li><strong style="color: var(--highlight2-color)">No describe excitaciones neutras</strong> (no hay electrón-hueco ligado).</li>
+                        <li>El cálculo <strong style="color: var(--highlight2-color)">single-shot</strong> depende del punto de partida del estado fundamental.</li>
+                    </ul>
+
+                    <p style="margin-top:1rem; opacity:0.85;">
+                        Para describir <strong style="color: var(--highlight1-color)">excitones</strong> y absorción óptica es necesario resolver la
+                        <strong style="color: var(--highlight1-color)">ecuación de Bethe-Salpeter (BSE)</strong>.
+                    </p>
+                </div>
+
+                <!-- GW vs Optical Experiment -->
+                <div class="media-container" style="background: var(--bg-color); border: 1px solid var(--border-color);">
+                    <canvas id="GWvsExpCanvas"></canvas>
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>9 / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: BSE - Intro -->
+    <div class="slide" id="slide-BSE-intro">
+        <div class="slide-content">
+            <h2>La Ecuación de <span class="highlight">Bethe-Salpeter</span></h2>
+            <div class="two-column" style="grid-template-columns: 40% 60%;">
+                <div>
+                    <p>Para describir excitaciones neutras, debemos tratar el electrón y el hueco como un par acoplado. Se resuelve un sistema efectivo con:</p>
+
+                    <ul>
+                        <li>\(H^{\mathrm{diag}}\) - partículas independientes.</li>
+                        <li>\(H^c\) - correlación (atractivo).</li>
+                        <li>\(H^x\) - intercambio (repulsivo).</li>
+                    </ul>
+                    <div class="math-block">
+                        $$
+                        H^{\mathrm{eff}} A^{\lambda} = E^{\lambda} A^{\lambda}, \\
+                        $$
+                        $$
+                        H^{\mathrm{eff}} = H^{\mathrm{diag}} + \gamma_c H^c + 2\gamma_x H^x
+                        $$
+                    </div>
+                </div>
+                <div class="media-container" onclick="resetAnim()"  style="max-height: 350px;max-width: 700px;">
+                    <div class="anim-wrapper">
+                        <canvas id="excitationCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer"><span></span><span>4 / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Electronic Structure -->
+    <div class="slide" id="slide-electStruct">
+        <div class="slide-content">
+            <h2>Estructura Electrónica</h2>
+
+        <div class="two-row-wrapper">
+
+            <!-- Row 1 -->
+            <div class="row-with-captions">
+                <div class="caption caption-left" style="color:var(--highlight2-color);">LiF</div>
+
+                <div class="plot-grid-custom2">
+                    <img src="LiF/bands-dos.png" alt="electStruct_LiF">
+                    <img src="MgO/bands-dos.png" alt="electStruct_MgO">
+                </div>
+
+                <div class="caption caption-right" style="color:var(--highlight2-color);">MgO</div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="row-with-captions">
+                <div class="caption caption-left" style="color:var(--highlight2-color);">CaO</div>
+
+                <div class="plot-grid-custom2">
+                    <img src="CaO/bands-dos.png" alt="electStruct_CaO">
+                    <img src="ZnO/bands-dos.png" alt="electStruct_ZnO">
+                </div>
+
+                <div class="caption caption-right" style="color:var(--highlight2-color);">ZnO</div>
+            </div>
+
+        </div>
+
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Optical Plots (Im) -->
+    <div class="slide" id="slide-optical-Im">
+        <div class="slide-content">
+            <h2>Espectros Ópticos: Absorción</h2>
+
+            <div style="width: 80%; margin: 0 auto;">
+                <div class="plot-grid-custom3">
+                    <div id="plot-optical_LiF" class="plot-box"></div>
+                    <div id="plot-optical_MgO" class="plot-box" ></div>
+                    <div id="plot-optical_CaO" class="plot-box" ></div>
+                    <div id="plot-optical_ZnO_extr" class="plot-box" ></div>
+                    <div id="plot-optical_ZnO_ord" class="plot-box" ></div>
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Optical Plots (Re) -->
+    <div class="slide" id="slide-optical-Re">
+        <div class="slide-content">
+            <h2>Espectros Ópticos: Dispersión</h2>
+
+            <div style="width: 80%; margin: 0 auto;">
+                <div class="plot-grid-custom3">
+                    <div id="plot-optical_LiF_Re" class="plot-box" style="height: 100%;width: 100%;" ></div>
+                    <div id="plot-optical_MgO_Re" class="plot-box" style="height: 100%;width: 100%;" ></div>
+                    <div id="plot-optical_CaO_Re" class="plot-box" style="height: 100%;width: 100%;" ></div>
+                    <div id="plot-optical_ZnO_Re_extr" class="plot-box" style="height: 100%;width: 100%;" ></div>
+                    <div id="plot-optical_ZnO_Re_ord" class="plot-box" style="height: 100%;width: 100%;" ></div>
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+
+    <!-- SLIDE ??: CONCLUSIONS -->
+    <div class="slide">
+        <div class="slide-content" style="text-align: center; justify-content: center;">
+            <h2>Conclusiones</h2>
+            <ul style="text-align: left; width: 60%; margin: 0 auto;">
+                <li>Metodología Validada: All-Electron DFT + G₀W₀ + BSE funciona robustamente.</li>
+                <li>Excitones Clave: Explican las características pre-borde.</li>
+                <li>Diversidad Material: Escala desde LiF hasta ZnO.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: awknoledgements -->
+    <div class="slide">
+        <div class="slide-awknoledgements" style="text-align: center; justify-content: center;">
+            <h2>Agradecimientos</h2>
+            <ul style="text-align: left; width: 60%; margin: 0 auto;">
+                <li>Gracias.</li>
+            </ul>
+        </div>
+    </div>
+
+
+<!-- CONTROLS -->
+<div class="controls-overlay">
+    <button class="nav-btn" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="nav-btn" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button>
+    <button class="nav-btn" onclick="toggleFullScreen()"><i class="fa-solid fa-expand"></i></button>
+</div>
+<div class="progress-bar" id="progressBar"></div>
+
+<script>
+
+    // GLOBAL COLOR PALETTE
+    function css(name) {
+        return getComputedStyle(document.documentElement)
+            .getPropertyValue(name)
+            .trim();
+    }
+
+    const PALETTE = {
+        background: css("--bg-color"),
+        border: css("--border-color"),
+        shadow: css("--shadow-color"),
+        axes: css("--axes-color"),
+        text: css("--text-color"),
+        highlight2: css("--highlight1-color"),
+        highlight2: css("--highlight1-color"),
+        curve1: css("--curve1-color"),
+        curve2: css("--curve2-color"),
+        curve3: css("--curve3-color"),
+
+        photon: css("--particle-photon"),       // Yellow
+        electron: css("--particle-electron"),     // Blue
+        ion: css("--particle-ion"),          // Reds
+        interaction: 'rgba(77, 77, 255, 0.8)', // Brighter interaction line
+
+        arrow: css("--arrow-color"),
+
+        valenceBand: css("--valence-band"),
+        conductionBand: css("--conduction-band"),
+
+        gapArrow: css("--gap-arrow"),
+        xcArrow: css("--xc-arrow"),
+        guideLines: css("--guide-lines"),
+
+        incident: css("--incident"),
+        transmitted: css("--transmitted"),
+        absorbed: css("--absorbed")
+    };
+
+    /* --- SCENE MANAGER LOGIC --- */
+    let currentSlide = 0;
+
+    // Slide 1 State Tracker
+    // -1: Intro, 0..7: Steps
+    let slide1Step = -1;
+
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progressBar');
+
+    // Animation frames trackers
+    let anims = {
+        expSetup: null,
+        mbDft: null,
+        KS: null,
+        excitation: null,
+        screenE: null,
+        greenE: null
+    };
+
+    function showSlide(index) {
+        if (index < 0) index = 0;
+        if (index >= slides.length) index = slides.length - 1;
+
+        slides.forEach(slide => slide.classList.remove('active'));
+        slides[index].classList.add('active');
+        currentSlide = index;
+        updateProgress();
+
+        // Stop All
+        Object.keys(anims).forEach(k => { if(anims[k]) cancelAnimationFrame(anims[k]); anims[k]=null; });
+
+        // Start Specific
+        if (slides[index].id === 'slide1') {
+            // Check if we are in the workflow state to restart that animation if needed
+            if(slide1Step >= 2 && slide1Step <= 4) initExpSetupAnim();
+        }
+        if (slides[index].id === 'slide-DFT-intro1') initMbDftAnim();
+        else if (slides[index].id === 'slide-BSE-intro') resizeExcitation();
+        else if (slides[index].id === 'slide-DFT-intro2') initKSAnim();
+        else if (slides[index].id === 'slide-GW-green') initGreensAnim();
+        else if (slides[index].id === 'slide-GW-intro') initScreeningBox('screenElectronCanvas', 'electron');
+    }
+
+    /* --- ROBUST STATE MACHINE --- */
+    function updateSlide1State(step) {
+        const titleLayer = document.getElementById('layer-title');
+        const workLayer = document.getElementById('layer-workflow');
+        const bandsLayer = document.getElementById('layer-static-bands');
+        const steps = document.querySelectorAll('.step-text');
+
+        // Reset everything
+        steps.forEach(s => s.classList.remove('active'));
+
+        // Manage Layer Visibility
+        titleLayer.classList.add('hidden');
+        workLayer.classList.add('hidden');
+        bandsLayer.classList.add('hidden');
+
+        // Animation Handling for Slide 1
+        if(anims.expSetup) { cancelAnimationFrame(anims.expSetup); anims.expSetup = null; }
+
+        if (step >= 2 && step <= 4) {
+            workLayer.classList.remove('hidden');
+            initExpSetupAnim(); // Start Experimental Animation
+        } else if (step === 6) {
+            bandsLayer.classList.remove('hidden');
+            drawStaticBands(); // Draw when visible
+        } else {
+            titleLayer.classList.remove('hidden');
+        }
+
+        // Apply Steps
+        const p1 = document.getElementById('plot-group-1');
+        const a1 = document.getElementById('arrow-1');
+        const p2 = document.getElementById('plot-group-2');
+        const a2 = document.getElementById('arrow-2');
+        const p3 = document.getElementById('plot-group-3');
+        const plots = [p1, a1, p2, a2, p3];
+        plots.forEach(p => { p.classList.remove('plot-visible'); p.classList.add('plot-hidden'); });
+
+        if (step === 0) document.getElementById('step-0').classList.add('active');
+        else if (step === 1) document.getElementById('step-1').classList.add('active');
+        else if (step === 2) { p1.classList.add('plot-visible'); p1.classList.remove('plot-hidden'); }
+        else if (step === 3) {
+            p1.classList.add('plot-visible'); p1.classList.remove('plot-hidden');
+            a1.classList.add('plot-visible'); a1.classList.remove('plot-hidden');
+            p2.classList.add('plot-visible'); p2.classList.remove('plot-hidden');
+        }
+        else if (step === 4) { plots.forEach(p => { p.classList.add('plot-visible'); p.classList.remove('plot-hidden'); }); }
+        else if (step === 5) document.getElementById('step-5').classList.add('active');
+        // Step 6 is handled by Layer Visibility above
+        else if (step === 7) document.getElementById('step-7').classList.add('active');
+        else if (step === 8) document.getElementById('step-8').classList.add('active');
+    }
+
+    function nextSlide() {
+        if (currentSlide === 0) {
+            if (slide1Step < 8) { slide1Step++; updateSlide1State(slide1Step); }
+            else { showSlide(currentSlide + 1); }
+        } else { showSlide(currentSlide + 1); }
+    }
+
+    function prevSlide() {
+        if (currentSlide === 0) {
+            if (slide1Step > -1) { slide1Step--; updateSlide1State(slide1Step); }
+        } else { showSlide(currentSlide - 1); }
+    }
+
+    function updateProgress() {
+        const progress = ((currentSlide + 1) / slides.length) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else if (document.exitFullscreen) document.exitFullscreen();
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'f') toggleFullScreen();
+    });
+
+    /* --- NEW: EXPERIMENTAL SETUP ANIMATION (Slide 1) --- */
+    function initExpSetupAnim() {
+        const canvas = document.getElementById("experimentCanvas");
+        const ctx = canvas.getContext("2d");
+        const container = canvas.parentElement;
+
+        let width, height;
+        let time = 0;
+
+        function animate() {
+            if (canvas.width !== container.clientWidth) {
+                canvas.width = container.clientWidth; canvas.height = container.clientHeight;
+            }
+            width = canvas.width; height = canvas.height;
+            const centerY = height/2;
+
+            ctx.clearRect(0,0,width,height);
+
+            // 1. Light Source (Beam) - Incident
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(width * 0.35, centerY); // To Sample
+            ctx.strokeStyle = "#31E1F7E6"; ctx.lineWidth = 6; ctx.stroke();
+
+            // Flowing effect
+            ctx.setLineDash([10, 10]); ctx.lineDashOffset = -time; ctx.stroke(); ctx.setLineDash([]);
+
+            // 2. Sample (The Material)
+            const sampleX = width * 0.35; const sampleW = width * 0.1;
+            ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+            ctx.fillRect(sampleX, centerY - 40, sampleW, 80);
+            ctx.strokeStyle = PALETTE.text; ctx.lineWidth = 2;
+            ctx.strokeRect(sampleX, centerY - 40, sampleW, 80);
+            ctx.fillStyle = PALETTE.text; ctx.font="12px Urbanist"; ctx.textAlign="center";
+            ctx.fillText("Muestra", sampleX + sampleW/2, centerY - 50);
+
+            // 3. Transmitted Beam (Dimmer)
+            ctx.beginPath();
+            ctx.moveTo(sampleX + sampleW, centerY);
+            ctx.lineTo(width * 0.8, centerY); // To Detector
+            ctx.strokeStyle = "#31E1F780"; // Dimmer yellow
+            ctx.lineWidth = 6; ctx.stroke();
+            ctx.setLineDash([10, 10]); ctx.lineDashOffset = -time; ctx.stroke(); ctx.setLineDash([]);
+
+            // 4. Detector
+            const detX = width * 0.8;
+            ctx.fillStyle = "#333";
+            ctx.fillRect(detX, centerY - 30, 20, 60);
+
+            // Detector Active Light (Blinking)
+            ctx.beginPath(); ctx.arc(detX + 10, centerY, 5, 0, Math.PI*2);
+            const blink = Math.sin(time * 0.2) > 0 ? PALETTE.curve1 : "#333";
+            ctx.fillStyle = "red"; ctx.fill();
+            ctx.shadowBlur = 10; ctx.shadowColor = "red"; ctx.fill(); ctx.shadowBlur = 0;
+
+            ctx.fillStyle = PALETTE.text; ctx.fillText("Detector", detX + 10, centerY + 50);
+
+            time+=2;
+            anims.expSetup = requestAnimationFrame(animate);
+        }
+        animate();
+    }
+
+    /* --- STATIC BANDS DRAWER (New Slide 1 Feature) --- */
+    function drawStaticBands() {
+        const canvas = document.getElementById("staticBandsCanvas");
+        const ctx = canvas.getContext("2d");
+        const container = canvas.parentElement;
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        const width = canvas.width;
+        const height = canvas.height;
+        const centerX = width/2;
+        const vbY = height * 0.3;
+        const cbY = height * 0.7;
+
+        ctx.clearRect(0,0,width,height);
+
+        // Draw Parabolas
+        function drawPara(y0, curvature, color) {
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            const kMax = 400;
+            for (let k = -kMax; k <= kMax; k++) {
+                const x = centerX + k;
+                const y = y0 + curvature * (k * k) / 3000;
+                if (k === -kMax) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        drawPara(cbY, +1, PALETTE.curve1); // CB
+        drawPara(vbY, -1, PALETTE.curve1); // VB
+
+        // Arrow
+        ctx.beginPath(); ctx.moveTo(centerX, vbY); ctx.lineTo(centerX, cbY);
+        ctx.strokeStyle = PALETTE.curve1; ctx.lineWidth = 2; ctx.stroke();
+        // Arrowhead
+        ctx.beginPath(); ctx.moveTo(centerX, cbY); ctx.lineTo(centerX-5, cbY-15); ctx.lineTo(centerX+5, cbY-15);
+        ctx.fillStyle = PALETTE.curve1; ctx.fill();
+        ctx.beginPath(); ctx.moveTo(centerX, vbY); ctx.lineTo(centerX-5, vbY+15); ctx.lineTo(centerX+5, vbY+15);
+        ctx.fillStyle = PALETTE.curve1; ctx.fill();
+
+        // Labels
+        ctx.fillStyle = PALETTE.text; ctx.font="bold 20px Urbanist";
+        ctx.fillText("Banda de Conducción", centerX+ 300, vbY);
+        ctx.fillText("Banda de Valencia", centerX + 300, cbY);
+        ctx.fillStyle = PALETTE.text;
+
+        const gapY = (vbY + cbY) / 2;
+        ctx.font = "bold 20px Urbanist";
+        ctx.fillText("E", centerX + 20, gapY);
+        ctx.font = "bold 14px Urbanist";
+        ctx.fillText("gap", centerX + 36, gapY + 6);
+
+    }
+
+    /* --- 1. MANY-BODY vs DFT ANIMATION (Slide 2) --- */
+    function initMbDftAnim() {
+        const canvas = document.getElementById('mbDftCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = canvas.parentElement;
+
+        // Setup Electrons
+        const electrons = [];
+        for(let i=0; i<4; i++) {
+            electrons.push({
+                angle: Math.random() * Math.PI * 2,
+                speed: 0.02 + Math.random() * 0.1,  // Wider spread
+                radiusX: 60 + Math.random() * 30,
+                radiusY: 50 + Math.random() * 30,
+                phase: Math.random() * Math.PI,
+                t: Math.random() * 1000  // Independent internal time
+            });
+        }
+
+        let time = 0;
+
+        function animate() {
+            // Resize if needed
+            if (canvas.width !== container.clientWidth || canvas.height !== container.clientHeight) {
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+            }
+            const w = canvas.width;
+            const h = canvas.height;
+            const cxL = w * 0.25; // Center Left
+            const cxR = w * 0.75; // Center Right
+            const cy = h * 0.55;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // --- LEFT: MANY BODY ---
+            // Draw Interactions first (behind)
+            ctx.beginPath();
+            ctx.strokeStyle = "rgba(77, 77, 255, 1.0)";
+            ctx.lineWidth = 1;
+
+            // Calculate current positions
+            const currentPos = electrons.map(e => {
+                e.t += e.speed * (0.95 + Math.random() * 0.1);
+
+                return {
+                    x: cxL + Math.cos(e.t) * e.radiusX,
+                    y: cy + Math.sin(e.t + e.phase) * Math.cos(e.t * 0.3) * e.radiusY
+                };
+            });
+
+
+            // Draw interaction lines between all electrons
+            for(let i=0; i<currentPos.length; i++) {
+                for(let j=i+1; j<currentPos.length; j++) {
+                    ctx.moveTo(currentPos[i].x, currentPos[i].y);
+                    ctx.lineTo(currentPos[j].x, currentPos[j].y);
+                }
+                // Interaction to Ion
+                ctx.moveTo(currentPos[i].x, currentPos[i].y);
+                ctx.lineTo(cxL, cy);
+            }
+            ctx.stroke();
+
+            // Draw Ion Left
+            ctx.beginPath(); ctx.arc(cxL, cy, 20, 0, Math.PI*2);
+            ctx.fillStyle = "#ff4d4d"; ctx.fill();
+            ctx.fillStyle = "black"; ctx.font = "bold 12px Arial"; ctx.textAlign = "center"; ctx.fillText("ION", cxL, cy+4);
+
+            // Draw Electrons Left
+            currentPos.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, 8, 0, Math.PI*2);
+                ctx.fillStyle = "#4d4dff"; ctx.fill();
+                ctx.fillStyle = "white"; ctx.fillText("e-", p.x, p.y+4);
+            });
+
+            // Label Left
+            ctx.fillStyle = PALETTE.text; ctx.font = "20px Urbanist"; ctx.fillText("Muchos Cuerpos", cxL, h - 30);
+
+
+            // --- TRANSITION ARROW ---
+            ctx.beginPath();
+            ctx.moveTo(w*0.45, cy); ctx.lineTo(w*0.55, cy);
+            ctx.strokeStyle = PALETTE.arrow; ctx.lineWidth = 4; ctx.stroke();
+            // Arrowhead
+            ctx.beginPath(); ctx.moveTo(w*0.55, cy); ctx.lineTo(w*0.53, cy-10); ctx.lineTo(w*0.53, cy+10);
+            ctx.fillStyle = PALETTE.arrow; ctx.fill();
+
+
+            // --- RIGHT: DFT ---
+            // Draw Electron Cloud
+            const cloudRadius = 70 + Math.sin(time * 0.05) * 5;
+            const grad = ctx.createRadialGradient(cxR, cy, 10, cxR, cy, cloudRadius);
+            grad.addColorStop(0, "rgba(77, 77, 255, 0.8)");
+            grad.addColorStop(1, "rgba(77, 77, 255, 0)");
+
+            ctx.beginPath(); ctx.arc(cxR, cy, cloudRadius, 0, Math.PI*2);
+            ctx.fillStyle = grad; ctx.fill();
+
+            // Draw Ion Right
+            ctx.beginPath(); ctx.arc(cxR, cy, 20, 0, Math.PI*2);
+            ctx.fillStyle = "#ff4d4d"; ctx.fill();
+            ctx.fillStyle = "black"; ctx.font = "bold 12px Arial"; ctx.fillText("ION", cxR, cy+4);
+
+            // Label Right
+            ctx.fillStyle = PALETTE.text; ctx.font = "20px Urbanist"; ctx.fillText("DFT", cxR, h - 30);
+            ctx.fillStyle = PALETTE.text; ctx.font = "14px Arial"; ctx.fillText("Densidad electrónica", cxR, cy - cloudRadius - 10);
+
+            time++;
+            anims.mbDft = requestAnimationFrame(animate);
+        }
+        animate();
+    }
+
+    /* --- 2. MANY-BODY vs KOHN-SHAM ANIMATION (Slide ?) --- */
+    function initKSAnim() {
+        let initialized = false;
+        const canvas = document.getElementById('KSCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = canvas.parentElement;
+
+        const numElectrons = 7;
+        const kRepulsion = 100.2;   // MUCH stronger repulsion
+        const minDist = 20;
+        const damping = 1;  // Almost no artificial friction
+
+        const electronsLeft = [];
+        const electronsRight = [];
+
+        function createElectron(index) {
+            const row = Math.floor(index / 4);
+            const col = index % 4;
+
+            const spacing = 30;
+
+            return {
+                x: col * spacing,
+                y: row * spacing,
+                vx: (index % 2 === 0 ? 5.2/(index+3) : -5.2/(index+3)),   // EVEN vs ODD
+                vy: (index % 2 === 0 ? 5.9/(index+3) : -5.9/(index+3)),
+            };
+        }
+
+        for(let i=0; i<numElectrons; i++) {
+            electronsLeft.push(createElectron(i));
+            electronsRight.push(createElectron(i));
+        }
+
+        function updatePos(e, width, height, offsetX) {
+            e.x += e.vx;
+            e.y += e.vy;
+
+            // Bounce box
+            const boxW = width * 0.35;
+            const boxH = height * 0.7;
+            const left = offsetX - boxW/2;
+            const right = offsetX + boxW/2;
+            const top = height/2 - boxH/2;
+            const bottom = height/2 + boxH/2;
+
+            if(e.x < left || e.x > right) e.vx *= -1;
+            if(e.y < top || e.y > bottom) e.vy *= -1;
+
+            // Clamp
+            e.x = Math.max(left, Math.min(right, e.x));
+            e.y = Math.max(top, Math.min(bottom, e.y));
+        }
+
+        function applyRepulsion(electrons) {
+            for (let i = 0; i < electrons.length; i++) {
+                for (let j = i + 1; j < electrons.length; j++) {
+                    const e1 = electrons[i];
+                    const e2 = electrons[j];
+
+                    let dx = e1.x - e2.x;
+                    let dy = e1.y - e2.y;
+
+                    let r2 = dx*dx + dy*dy;
+                    let r = Math.sqrt(r2);
+
+                    if (r < 1) r = 1;
+                    if (r < 100) {   // interaction cutoff
+                        const f = kRepulsion / (r2 + minDist*minDist);
+
+                        const fx = f * dx / r;
+                        const fy = f * dy / r;
+
+                        e1.vx += fx;
+                        e1.vy += fy;
+                        e2.vx -= fx;
+                        e2.vy -= fy;
+                    }
+                }
+            }
+
+            // Light damping
+            electrons.forEach(e => {
+                e.vx *= damping;
+                e.vy *= damping;
+            });
+        }
+
+        function animate() {
+            if (canvas.width !== container.clientWidth || canvas.height !== container.clientHeight) {
+                canvas.width = container.clientWidth; canvas.height = container.clientHeight;
+            }
+            const w = canvas.width;
+            const h = canvas.height;
+            const cxL = w * 0.25;
+            const cxR = w * 0.75;
+
+            // Init positions if first frame
+            if (!initialized) {
+                electronsLeft.forEach(e => {
+                    e.x = cxL + (Math.random() - 0.5) * 120;
+                    e.y = h/2 + (Math.random() - 0.5) * 120;
+                });
+
+                electronsRight.forEach(e => {
+                    e.x = cxR + (Math.random() - 0.5) * 120;
+                    e.y = h/2 + (Math.random() - 0.5) * 120;
+                });
+
+                initialized = true;
+            }
+
+
+            ctx.clearRect(0, 0, w, h);
+
+            // --- LEFT: INTERACTING ---
+            applyRepulsion(electronsLeft);
+            electronsLeft.forEach(e => updatePos(e, w, h, cxL));
+
+            // Draw Interactions
+            ctx.beginPath();
+            ctx.strokeStyle = PALETTE.interaction;
+            ctx.lineWidth = 2;
+            for(let i=0; i<electronsLeft.length; i++) {
+                for(let j=i+1; j<electronsLeft.length; j++) {
+                    const dx = electronsLeft[i].x - electronsLeft[j].x;
+                    const dy = electronsLeft[i].y - electronsLeft[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if(dist < 80) { // Interaction threshold
+                        ctx.moveTo(electronsLeft[i].x, electronsLeft[i].y);
+                        ctx.lineTo(electronsLeft[j].x, electronsLeft[j].y);
+                    }
+                }
+            }
+            ctx.stroke();
+
+            // Draw Electrons Left
+            electronsLeft.forEach(e => {
+                ctx.beginPath(); ctx.arc(e.x, e.y, 6, 0, Math.PI*2);
+                ctx.fillStyle = PALETTE.electron; ctx.fill();
+            });
+
+            // Labels
+            ctx.fillStyle = PALETTE.text;
+            ctx.textAlign = "center";
+            ctx.font = "20px Urbanist";
+            ctx.fillText("Sistema Interactuante", cxL, h - 30);
+
+
+            // --- ARROW ---
+            ctx.beginPath(); ctx.moveTo(w*0.45, h/2); ctx.lineTo(w*0.53, h/2); ctx.strokeStyle = PALETTE.arrow; ctx.lineWidth = 4; ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(w*0.55, h/2); ctx.lineTo(w*0.53, h/2-10); ctx.lineTo(w*0.53, h/2+10); ctx.fillStyle = PALETTE.arrow; ctx.fill();
+
+
+            // --- RIGHT: KOHN-SHAM (NON-INTERACTING) ---
+            electronsRight.forEach(e => updatePos(e, w, h, cxR));
+
+             electronsRight.forEach(e => {
+                ctx.beginPath(); ctx.arc(e.x, e.y, 6, 0, Math.PI*2);
+                ctx.fillStyle = PALETTE.ion; ctx.fill();
+            });
+
+            // Label
+            ctx.fillStyle = PALETTE.text;
+            ctx.fillText("Sistema Kohn-Sham", cxR, h - 30);
+
+            anims.KS = requestAnimationFrame(animate);
+        }
+        animate();
+    }
+
+    function drawBandgapFigure() {
+        const canvas = document.getElementById("bandgapCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const W = canvas.width;
+        const H = canvas.height;
+
+        ctx.clearRect(0, 0, W, H);
+        ctx.strokeStyle = PALETTE.text;
+        ctx.fillStyle = PALETTE.text;
+        ctx.lineWidth = 2;
+        ctx.font = "20px Urbanist";
+
+        // --- Coordinate mapping ---
+        function X(x) { return W * (0.40 + x * 0.07); }
+        function Y(y) { return H * (0.9 - y * 0.14); }
+
+        // --- Axes N ---
+        drawArrow(X(-5), Y(0), X(0), Y(0));   // k
+        drawArrow(X(-5), Y(0), X(-5), Y(5.5)); // E
+
+        ctx.fillText("k", X(0) + 5, Y(0) + 5);
+        ctx.fillText("E", X(-5) - 10, Y(5.5) - 5);
+        ctx.fillText("N electrones", X(-2.5) - 5, Y(0) + 20);
+
+        // --- Axes N+1 ---
+        drawArrow(X(3), Y(0), X(8), Y(0));
+        drawArrow(X(3), Y(0), X(3), Y(5.5));
+
+        ctx.fillText("k", X(8) + 5, Y(0) + 5);
+        ctx.fillText("E", X(3) - 10, Y(5.5) - 5);
+        ctx.fillText("N + 1 electrones", X(5.5) - 10, Y(0) + 20);
+
+        // --- Parabolas N ---
+        drawParabola(x => 2.4 - 0.38 * (x + 2.5) ** 2, -5, 0);
+        drawParabola(x => 3.7 + 0.20 * (x + 2.5) ** 2, -5, 0);
+
+        // --- Parabolas N+1 ---
+        drawParabola(x => 3.0 - 0.40 * (x - 5.5) ** 2, 3, 8);
+        drawParabola(x => 4.5 + 0.25 * (x - 5.5) ** 2, 3, 8);
+
+        // --- Key points ---
+        const VBM1 = { x: -2.5, y: 2.4 };
+        const CBM1 = { x: -2.5, y: 3.7 };
+        const VBM2 = { x: 5.5, y: 3.0 };
+        const CBM2 = { x: 5.5, y: 4.5 };
+
+        // --- Δε arrow ---
+        drawDoubleArrow(X(VBM1.x), Y(VBM1.y), X(CBM1.x), Y(CBM1.y));
+        ctx.font = "20px Urbanist";
+        ctx.fillText("Δε", X(VBM1.x) - 35, (Y(VBM1.y) + Y(CBM1.y)) / 2);
+
+        // --- Dashed guides ---
+        drawDashed(X(VBM1.x), Y(VBM1.y), X(VBM1.x + 4), Y(VBM1.y));
+        drawDashed(X(CBM1.x), Y(CBM1.y), X(CBM1.x + 4), Y(CBM1.y));
+        drawDashed(X(CBM2.x), Y(CBM2.y), X(CBM2.x - 4.5), Y(CBM2.y));
+
+        // --- Δxc arrow ---
+        drawDoubleArrow(
+            X(CBM1.x + 3.5), Y(CBM1.y),
+            X(CBM2.x - 4.5), Y(CBM2.y)
+        );
+        ctx.font = "20px Urbanist";
+        ctx.fillText("Δ", X(CBM1.x + 2.6), (Y(CBM1.y) + Y(CBM2.y)) / 2);
+        ctx.font = "12px Urbanist";
+        ctx.fillText("XC", X(CBM1.x + 2.9), (Y(CBM1.y) + Y(CBM2.y)) / 2 + 3);
+
+        // --- Egap arrow ---
+        drawDoubleArrow(
+            X(VBM1.x + 4), Y(VBM1.y),
+            X(CBM2.x - 4), Y(CBM2.y)
+        );
+        ctx.font = "20px Urbanist";
+        ctx.fillText("E", X(VBM1.x + 4.2), (Y(VBM1.y) + Y(CBM2.y)) / 2);
+        ctx.font = "12px Urbanist";
+        ctx.fillText("gap", X(VBM1.x + 4.5), (Y(VBM1.y) + Y(CBM2.y)) / 2 + 3);
+
+        // ========== Helper Functions ==========
+
+        function drawArrow(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+
+            const a = Math.atan2(y2 - y1, x2 - x1);
+            const L = 10;
+
+            ctx.beginPath();
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - L * Math.cos(a - 0.3), y2 - L * Math.sin(a - 0.3));
+            ctx.lineTo(x2 - L * Math.cos(a + 0.3), y2 - L * Math.sin(a + 0.3));
+            ctx.fill();
+        }
+
+        function drawDoubleArrow(x1, y1, x2, y2) {
+            drawArrow(x1, y1, x2, y2);
+            drawArrow(x2, y2, x1, y1);
+        }
+
+        function drawDashed(x1, y1, x2, y2) {
+            ctx.setLineDash([6, 5]);
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawParabola(f, xmin, xmax) {
+            ctx.beginPath();
+            ctx.strokeStyle = PALETTE.curve1;
+            let first = true;
+            for (let x = xmin; x <= xmax; x += 0.02) {
+                const px = X(x);
+                const py = Y(f(x));
+                if (first) {
+                    ctx.moveTo(px, py);
+                    first = false;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+            ctx.stroke();
+            ctx.strokeStyle = PALETTE.text;
+        }
+    }
+    drawBandgapFigure();
+
+    /* --- NEW: GREEN'S FUNCTION ANIMATION (Electron forward, Hole backward) --- */
+    function initGreensAnim() {
+        const cE = document.getElementById('greenElectronCanvas');
+        const cH = document.getElementById('greenHoleCanvas');
+        const ctxE = cE.getContext('2d');
+        const ctxH = cH.getContext('2d');
+        const contE = cE.parentElement;
+        const contH = cH.parentElement;
+
+        let w, h, time = 0;
+
+        // Trails
+        let eTrail = [];
+        let hTrail = [];
+        const MAX_TRAIL = 40;
+
+        // Matching exciton style
+        function drawElectronStyle(ctx, x, y) {
+            const grad = ctx.createRadialGradient(x, y, 2, x, y, 15);
+            grad.addColorStop(0, '#ffffff');
+            grad.addColorStop(0.4, PALETTE.curve1);
+            grad.addColorStop(1, 'rgba(222,255,154,0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath(); ctx.arc(x, y, 15, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill();
+        }
+
+        function drawHoleStyle(ctx, x, y) {
+            ctx.strokeStyle = PALETTE.curve1;
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(x, y, 8, 0, Math.PI*2); ctx.stroke();
+            ctx.fillStyle = '#000';
+            ctx.fill();
+        }
+
+        function drawTrail(ctx, trailArray, color) {
+            if (trailArray.length < 2) return;
+            ctx.setLineDash([5,5]);
+            ctx.lineWidth = 2;
+
+            for (let i = 1; i < trailArray.length; i++) {
+                const p1 = trailArray[i-1];
+                const p2 = trailArray[i];
+                const alpha = i / trailArray.length * 0.6; // fade out
+
+                ctx.strokeStyle = `rgba(${color.r},${color.g},${color.b}, ${alpha})`;
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
+        }
+
+        function animate() {
+            // Resize if needed
+            if (cE.width !== contE.clientWidth) {
+                cE.width = contE.clientWidth;
+                cE.height = contE.clientHeight;
+                cH.width = contH.clientWidth;
+                cH.height = contH.clientHeight;
+            }
+
+            w = cE.width;
+            h = cE.height;
+            const yCenter = h/2;
+
+            ctxE.clearRect(0,0,w,h);
+            ctxH.clearRect(0,0,w,h);
+
+            // Time axis + arrowhead
+            [ctxE, ctxH].forEach(ctx => {
+                ctx.beginPath();
+                ctx.moveTo(20, yCenter);
+                ctx.lineTo(w-30, yCenter);
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Arrowhead
+                ctx.beginPath();
+                ctx.moveTo(w-30, yCenter - 6);
+                ctx.lineTo(w-20, yCenter);
+                ctx.lineTo(w-30, yCenter + 6);
+                ctx.stroke();
+
+                ctx.fillStyle = "white";
+                ctx.font = "bold 15px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText("t", w-30, yCenter + 30);
+            });
+
+            // Motion parameters
+            const loop = time % 300;
+            const startX = 40;
+            const endX = w - 40;
+
+            // *** FIXED: Separate progress for electron and hole ***
+            const eProgress = (loop - 20) / 100;
+            const hProgress = (loop - 160) / 100;
+
+            /* ------------------------------
+            ELECTRON: forward in time
+            ------------------------------ */
+
+            // Creation flash
+            if (loop >= 15 && loop < 25) {
+                const R = (loop - 15) * 3;
+                ctxE.beginPath();
+                ctxE.arc(startX, yCenter, R, 0, 2*Math.PI);
+                ctxE.strokeStyle = PALETTE.curve1;
+                ctxE.lineWidth = 2;
+                ctxE.stroke();
+            }
+
+            // Motion
+            if (loop >= 20 && loop <= 120) {
+                const x = startX + (endX - startX) * eProgress;
+                const y = yCenter
+                    + Math.sin(eProgress * 13) * 12
+                    + Math.cos(eProgress * 31) * 6
+                    + Math.cos(eProgress * 19) * 15;
+
+                // Update trail
+                eTrail.push({x, y});
+                if (eTrail.length > MAX_TRAIL) eTrail.shift();
+
+                // Draw
+                drawTrail(ctxE, eTrail, {r:117,g:201,b:104});
+                drawElectronStyle(ctxE, x, y);
+            } else {
+                eTrail = [];
+            }
+
+            // Annihilation flash
+            if (loop >= 120 && loop < 140) {
+                const R = (loop - 120) * 4;
+                ctxE.beginPath();
+                ctxE.arc(endX, yCenter, R, 0, 2*Math.PI);
+                ctxE.strokeStyle = PALETTE.curve1;
+                ctxE.lineWidth = 2;
+                ctxE.stroke();
+            }
+
+            /* ------------------------------
+            HOLE: backward in time
+            ------------------------------ */
+
+            // Creation flash — FIXED R
+            if (loop >= 155 && loop < 165) {
+                const R = (loop - 155) * 3;
+                ctxH.beginPath();
+                ctxH.arc(endX, yCenter, R, 0, 2*Math.PI);
+                ctxH.strokeStyle = "white";
+                ctxH.lineWidth = 2;
+                ctxH.stroke();
+            }
+
+            // Motion — FIXED progress
+            if (loop >= 160 && loop <= 260) {
+                const x = endX - (endX - startX) * hProgress;
+                const y = yCenter
+                    + Math.sin(eProgress * 13) * 12
+                    - Math.cos(eProgress * 31) * 6
+                    + Math.cos(eProgress * 19) * 15;
+
+                hTrail.push({x, y});
+                if (hTrail.length > MAX_TRAIL) hTrail.shift();
+
+                drawTrail(ctxH, hTrail, {r:117,g:201,b:104});
+                drawHoleStyle(ctxH, x, y);
+            } else {
+                hTrail = [];
+            }
+
+            // Annihilation flash — FIXED condition + radii
+            if (loop >= 260 && loop < 280) {
+                const R = (loop - 260) * 4;
+
+                // hole annihilation at start
+                ctxH.beginPath();
+                ctxH.arc(startX, yCenter, R, 0, 2*Math.PI);
+                ctxH.strokeStyle = "white";
+                ctxH.lineWidth = 2;
+                ctxH.stroke();
+            }
+
+            time++;
+            anims.greenE = requestAnimationFrame(animate);
+        }
+
+        animate();
+    }
+
+    /* --- ANIMATION 2: GW SCREENING (ELECTRON ONLY) --- */
+    function initScreeningBox(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        const container = canvas.parentElement;
+
+        // Physics State
+        const ions = [];
+        const electrons = [];
+        const mouse = { x: -1000, y: -1000 };
+        const rows = 5;
+        const cols = 15;
+        const spacing = 40;
+
+        // Init Grid
+        function initGrid() {
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            ions.length = 0;
+            electrons.length = 0;
+
+            const startX = (canvas.width - (cols - 1) * spacing) / 2;
+            const startY = (canvas.height - (rows - 1) * spacing) / 2;
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const x = startX + c * spacing;
+                    const y = startY + r * spacing;
+
+                    ions.push({ x, y });
+
+                    electrons.push({
+                        originX: x,
+                        originY: y,
+                        x: x,
+                        y: y,
+                        vx: 0,
+                        vy: 0
+                    });
+                }
+            }
+        }
+        initGrid();
+
+        // Mouse Tracker
+        container.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+        });
+
+        container.addEventListener('mouseleave', () => {
+            mouse.x = -1000;
+            mouse.y = -1000;
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // --- 1. Draw Fixed Ions ---
+            ctx.fillStyle = PALETTE.ion;
+            ions.forEach(ion => {
+                ctx.beginPath();
+                ctx.arc(ion.x, ion.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // --- 2. Physics & Draw Background Electrons ---
+            ctx.fillStyle = PALETTE.electron;
+
+            electrons.forEach(e => {
+                // Spring force to lattice site
+                const k = 0.05;
+                let fx = (e.originX - e.x) * k;
+                let fy = (e.originY - e.y) * k;
+
+                // Repulsive Coulomb from extra electron (mouse)
+                const dx = e.x - mouse.x;
+                const dy = e.y - mouse.y;
+                const distSq = dx * dx + dy * dy;
+                const dist = Math.sqrt(distSq);
+
+                if (dist < 200) {
+                    const forceMag = 1500 / (distSq + 400); // softened Coulomb
+                    fx += (dx / dist) * forceMag;
+                    fy += (dy / dist) * forceMag;
+                }
+
+                // Integration with damping
+                e.vx = (e.vx + fx) * 0.85;
+                e.vy = (e.vy + fy) * 0.85;
+                e.x += e.vx;
+                e.y += e.vy;
+
+                // Draw electron
+                ctx.beginPath();
+                ctx.arc(e.x, e.y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // --- 3. Draw Extra Electron (Mouse Probe) ---
+            if (mouse.x > 0) {
+                ctx.beginPath();
+                ctx.arc(mouse.x, mouse.y, 8, 0, Math.PI * 2);
+                ctx.fillStyle = PALETTE.electron;
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = PALETTE.electron;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            anims.screenE = requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Handle Resize
+        window.addEventListener('resize', initGrid);
+    }
+
+    function loadMultiFilePlot(divId, curveSpecs, options = {}) {
+
+        const {
+            xlim = null,
+            ylim = null,
+            xlabel = "",
+            ylabel = "",
+            title = "",          // title text to show top-right
+            showTicks = false
+        } = options;
+
+        Promise.all(
+            curveSpecs.map(spec =>
+                fetch(spec.file)
+                    .then(r => r.text())
+                    .then(text => {
+
+                        const rows = text
+                            .split("\n")
+                            .filter(r => r.trim() && !r.trim().startsWith("#"));
+
+                        const x = [];
+                        const y = [];
+
+                        rows.forEach(r => {
+                            const c = r.trim().split(/[\s,]+/).map(Number);
+                            if (!isNaN(c[0]) && !isNaN(c[1])) {
+                                x.push(c[0]);
+                                y.push(c[1]);
+                            }
+                        });
+
+                        return { spec, x, y };
+                    })
+            )
+        ).then(datasets => {
+
+            // -----------------------------
+            // FONT SCALING FUNCTION
+            // -----------------------------
+            function adaptiveFont(container) {
+                const h = container.clientHeight;
+                const w = container.clientWidth;
+                const base = Math.min(w, h);
+
+                return {
+                    title: Math.max(12, base * 0.05),
+                    label: Math.max(10, base * 0.04),
+                    ticks: Math.max(8, base * 0.03),
+                    legend: Math.max(8, base * 0.025)
+                };
+            }
+
+            const container = document.getElementById(divId);
+            const fonts = adaptiveFont(container);
+
+            const allX = datasets.flatMap(d => d.x);
+            const allY = datasets.flatMap(d => d.y);
+            const dataMinX = Math.min(...allX);
+            const dataMaxX = Math.max(...allX);
+            const dataMinY = Math.min(...allY);
+            const dataMaxY = Math.max(...allY);
+            const y_eps = 0.2;
+
+            const traces = [];
+
+            datasets.forEach(({ spec, x, y }) => {
+                let trace;
+
+                if (spec.mode === "impulse") {
+                    const xi = [], yi = [];
+                    for (let i = 0; i < x.length; i++) {
+                        xi.push(x[i], x[i], NaN);
+                        yi.push(0, y[i], NaN);
+                    }
+                    trace = {
+                        x: xi,
+                        y: yi,
+                        mode: "lines",
+                        name: spec.name,
+                        line: { width: 1, color: spec.color },
+                        hoverinfo: "skip",
+                        connectgaps: false
+                    };
+                } else if (spec.mode === "line") {
+                    trace = {
+                        x, y,
+                        mode: "lines",
+                        name: spec.name,
+                        line: { width: 2, color: spec.color }
+                    };
+                } else if (spec.mode === "markers") {
+                    trace = {
+                        x, y,
+                        mode: "markers",
+                        name: spec.name,
+                        marker: { size: 6, color: spec.color }
+                    };
+                } else if (spec.mode === "line+markers") {
+                    trace = {
+                        x, y,
+                        mode: "lines+markers",
+                        name: spec.name,
+                        line: { width: 2, color: spec.color },
+                        marker: { size: 6, color: spec.color }
+                    };
+                }
+
+                traces.push(trace);
+            });
+
+            // --- layout ---
+            const layout = {
+                // give a little more top margin so annotation/legend are not clipped
+                margin: { l: 40, r: 14, t: 50, b: 40 },
+
+                paper_bgcolor: "#111",
+                plot_bgcolor: "#111",
+                font: { color: PALETTE.text },
+
+                // annotation used as "title" placed at upper-right (paper coords)
+                annotations: title ? [
+                    {
+                        x: 1.00,
+                        y: 1.03,
+                        xref: "paper",
+                        yref: "paper",
+                        text: title,
+                        showarrow: false,
+                        xanchor: "right",
+                        yanchor: "bottom",
+                        align: "right",
+                        font: {
+                            size: fonts.title,
+                            color: PALETTE.text
+                        }
+                    }
+                ] : [],
+
+                xaxis: {
+                    title: xlabel,
+                    titlefont: { size: fonts.label },
+                    tickfont: { size: fonts.ticks },
+                    showgrid: false,
+                    zeroline: false,
+                    showticklabels: showTicks,
+                    range: xlim || [dataMinX, dataMaxX]
+                },
+
+                yaxis: {
+                    title: ylabel,
+                    titlefont: { size: fonts.label },
+                    tickfont: { size: fonts.ticks },
+                    showgrid: false,
+                    zeroline: false,
+                    showticklabels: showTicks,
+                    range: ylim || [Math.min(0, dataMinY), dataMaxY + y_eps]
+                },
+
+                // force legend to be top-right, just under the annotation
+                legend: {
+                    font: { size: fonts.legend },
+                    x: 1.00,
+                    y: 0.98,
+                    xanchor: "right",
+                    yanchor: "top",
+                    orientation: "v"
+                },
+
+                shapes: [
+                    {
+                        type: "line",
+                        x0: xlim ? xlim[0] : dataMinX,
+                        y0: 0,
+                        x1: xlim ? xlim[1] : dataMaxX,
+                        y1: 0,
+                        line: { width: 2, color: "white" }
+                    },
+                    {
+                        type: "line",
+                        x0: 0,
+                        y0: ylim ? ylim[0] : Math.min(0, dataMinY),
+                        x1: 0,
+                        y1: ylim ? ylim[1] : dataMaxY + y_eps,
+                        line: { width: 2, color: "white" }
+                    }
+                ],
+
+                autosize: true
+            };
+
+            Plotly.newPlot(divId, traces, layout, {
+                displayModeBar: false,
+                responsive: true
+            });
+        });
+    }
+
+
+    window.plotSpecs = {
+        "plot-optical_LiF": {
+            curves: [
+                { file: "LiF/optical_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                { file: "LiF/optical_Im.dat",        mode: "line",    name: "G0W0 + BSE", color: PALETTE.curve1 },
+                { file: "LiF/optical_exp_Im.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+            ],
+            settings: { title: "LiF  shift=0.9eV", xlim: [10, 30], ylim: [0, 9], xlabel: "Energy (eV)", ylabel: "Intensity", showTicks: true }
+        },
+
+        "plot-optical_MgO": {
+            curves: [
+                { file: "MgO/optical_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                { file: "MgO/optical_Im.dat",        mode: "line",    name: "G0W0 + BSE", color: PALETTE.curve1 },
+                { file: "MgO/optical_exp_Im.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+            ],
+            settings: { title: "MgO  shift=0.7eV", xlim: [0, 30], ylim: [0, 6], xlabel: "Energy (eV)", ylabel: "Intensity", showTicks: true }
+        },
+
+        "plot-optical_CaO": {
+            curves: [
+                { file: "CaO/optical_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                { file: "CaO/optical_Im.dat",        mode: "line",    name: "G0W0 + BSE", color: PALETTE.curve1 },
+                { file: "CaO/optical_exp_Im.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+            ],
+            settings: { title: "CaO  shift=0.8eV", xlim: [4, 15], ylim: [0, 16], xlabel: "Energy (eV)", ylabel: "Intensity", showTicks: true }
+        },
+
+        "plot-optical_ZnO_extr": {
+            curves: [
+                { file: "ZnO/optical_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                { file: "ZnO/optical_Im_xy.dat",        mode: "line",    name: "G0W0 + BSE",  color: PALETTE.curve1 },
+                { file: "ZnO/optical_exp_Im_xy.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+            ],
+            settings: { title: "ZnO  shift=1.0eV pol.\u2225", xlim: [2, 20], ylim: [0, 5], xlabel: "Energy (eV)", ylabel: "Intensity", showTicks: true }
+        },
+
+        "plot-optical_ZnO_ord": {
+            curves: [
+                { file: "ZnO/optical_EXC_z.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                { file: "ZnO/optical_Im_z.dat",        mode: "line",    name: "G0W0 + BSE",  color: PALETTE.curve1 },
+                { file: "ZnO/optical_exp_Im_z.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+            ],
+            settings: { title: "ZnO  shift=1.0eV pol.\u22A5", xlim: [2, 20], ylim: [0, 5], xlabel: "Energy (eV)", ylabel: "Intensity", showTicks: true }
+        },
+
+        "plot-optical_LiF_Re": {
+            curves: [
+                { file: "LiF/optical_Re.dat",        mode: "line",    name: "G0W0 + BSE", color: PALETTE.curve1 },
+                { file: "LiF/optical_exp_Re.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+            ],
+            settings: { title: "LiF  shift=0.9eV", xlim: [10, 30], ylim: [-3, 5], xlabel: "Energy (eV)", ylabel: "Intensity", showTicks: true }
+        },
+
+        "plot-optical_MgO_Re": {
+            curves: [
+                { file: "MgO/optical_Re.dat",        mode: "line",    name: "G0W0 + BSE", color: PALETTE.curve1 },
+                { file: "MgO/optical_exp_Re.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+            ],
+            settings: { title: "MgO  shift=0.7eV", xlim: [0, 30], ylim: [-1, 8], xlabel: "Energy (eV)", ylabel: "Intensity", showTicks: true }
+        },
+
+        "plot-optical_CaO_Re": {
+            curves: [
+                { file: "CaO/optical_Re.dat",        mode: "line",    name: "G0W0 + BSE", color: PALETTE.curve1 },
+                { file: "CaO/optical_exp_Re.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+            ],
+            settings: { title: "CaO  shift=0.8eV", xlim: [4, 15], ylim: [-2, 7], xlabel: "Energy (eV)", ylabel: "Intensity", showTicks: true }
+        },
+
+        "plot-optical_ZnO_Re_extr": {
+            curves: [
+                { file: "ZnO/optical_Re_z.dat",        mode: "line",    name: "G0W0 + BSE",  color: PALETTE.curve1 },
+                { file: "ZnO/optical_exp_Re_z.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+            ],
+            settings: { title: "ZnO  shift=1.0eV pol.\u2225", xlim: [2, 20], ylim: [-2, 8.5], xlabel: "Energy (eV)", ylabel: "Intensity", showTicks: true }
+        },
+
+        "plot-optical_ZnO_Re_ord": {
+            curves: [
+                { file: "ZnO/optical_Re_xy.dat",        mode: "line",    name: "G0W0 + BSE",  color: PALETTE.curve1 },
+                { file: "ZnO/optical_exp_Re_xy.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+            ],
+            settings: { title: "ZnO  shift=1.0eV pol.\u22A5", xlim: [2, 20], ylim: [-2, 8.5], xlabel: "Energy (eV)", ylabel: "Intensity", showTicks: true }
+        }
+    };
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* -----------------------------------------
+       1. Lazy-load plots (your original code)
+    ----------------------------------------- */
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && entry.target.dataset.loaded !== "true") {
+                const id = entry.target.id;
+                const spec = window.plotSpecs[id];
+                loadMultiFilePlot(id, spec.curves, spec.settings);
+                entry.target.dataset.loaded = "true";
+            }
+        });
+    }, { threshold: 0.25 });
+
+    document.querySelectorAll(".plot-box").forEach(box => observer.observe(box));
+
+    /* -----------------------------------------
+       2. Plot zoom modal
+    ----------------------------------------- */
+    document.addEventListener("click", e => {
+        const box = e.target.closest(".plot-box");
+        if (!box) return;  // only plots enter here
+
+        const modal = document.getElementById("plot-modal");
+        const content = document.getElementById("plot-modal-content");
+        const modalId = "modal-" + box.id;
+
+        content.innerHTML = `<div id="${modalId}" style="width:100%;height:100%;"></div>`;
+        const spec = window.plotSpecs[box.id];
+
+        loadMultiFilePlot(modalId, spec.curves, spec.settings);
+
+        modal.classList.remove("hidden");
+    });
+
+    // close plot modal on click
+    document.getElementById("plot-modal").addEventListener("click", () => {
+        document.getElementById("plot-modal").classList.add("hidden");
+    });
+
+    /* -----------------------------------------
+       3. Image zoom modal  (FIXED)
+    ----------------------------------------- */
+    const imgModal = document.getElementById("imgZoomModal");
+    const imgModalImg = document.getElementById("imgZoomModalImg");
+
+    // must wait until images are present in DOM
+    document.querySelectorAll(".plot-grid-custom2 img").forEach(img => {
+        img.style.cursor = "zoom-in";
+        img.addEventListener("click", e => {
+            e.stopPropagation(); // prevents plot modal handler
+            imgModalImg.src = img.src;
+            imgModal.style.display = "flex";
+        });
+    });
+
+    imgModal.addEventListener("click", () => {
+        imgModal.style.display = "none";
+    });
+});
+
+    /* --- 4. EXCITATION ANIMATION (Slide ?? - Parabolic) --- */
+    const exCanvas = document.getElementById('excitationCanvas');
+    const exCtx = exCanvas.getContext('2d');
+    let width, height, exTime=0, phase='incoming', photonX=-100, electronY=0, electronX=0;
+    const bands = { vbTop: 0, cbBottom: 0, centerX: 0 };
+
+    function resizeExcitation() {
+        const wrapper = exCanvas.parentElement;
+        if(!wrapper) return;
+        width = exCanvas.width = wrapper.clientWidth; height = exCanvas.height = wrapper.clientHeight;
+        bands.vbTop = height * 0.7; bands.cbBottom = height * 0.3; bands.centerX = width / 2;
+        if (phase === 'incoming') { electronY = bands.vbTop; electronX = bands.centerX; }
+        animateExcitation();
+    }
+
+    function drawParabolicBands() {
+        exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 3;
+        const kMax = 400;
+
+        // CB (Up)
+        exCtx.beginPath();
+        for (let k = -kMax; k <= kMax; k++) {
+            const x = bands.centerX + k;
+            const y = bands.cbBottom - (k*k)/2500;
+            if (k === -kMax) exCtx.moveTo(x, y); else exCtx.lineTo(x, y);
+        }
+        exCtx.stroke();
+
+        // VB (Down)
+        exCtx.beginPath();
+        for (let k = -kMax; k <= kMax; k++) {
+            const x = bands.centerX + k;
+            const y = bands.vbTop + (k*k)/2500;
+            if (k === -kMax) exCtx.moveTo(x, y); else exCtx.lineTo(x, y);
+        }
+        exCtx.stroke();
+    }
+
+    function drawPhoton(x, y) {
+        exCtx.beginPath(); exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 3;
+        for (let i = 0; i < 80; i++) {
+            const px = x - i; const py = y + Math.sin((x - i) * 0.2 - exTime * 0.2) * 8;
+            if (i === 0) exCtx.moveTo(px, py); else exCtx.lineTo(px, py);
+        }
+        exCtx.stroke(); exCtx.fillStyle = PALETTE.curve1; exCtx.beginPath();
+        exCtx.arc(x, y + Math.sin(x * 0.2 - exTime * 0.2) * 8, 3, 0, Math.PI*2); exCtx.fill();
+    }
+
+    function drawElectron(x, y) {
+        const grad = exCtx.createRadialGradient(x, y, 2, x, y, 15);
+        grad.addColorStop(0, '#ffffff'); grad.addColorStop(0.4, PALETTE.curve1); grad.addColorStop(1, 'rgba(222, 255, 154, 0)');
+        exCtx.fillStyle = grad; exCtx.beginPath(); exCtx.arc(x, y, 15, 0, Math.PI*2); exCtx.fill();
+        exCtx.fillStyle = '#fff'; exCtx.beginPath(); exCtx.arc(x, y, 4, 0, Math.PI*2); exCtx.fill();
+    }
+
+    function drawHole(x, y) {
+        exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 2;
+        exCtx.beginPath(); exCtx.arc(x, y, 8, 0, Math.PI*2); exCtx.stroke();
+        exCtx.fillStyle = '#000'; exCtx.fill();
+        //exCtx.beginPath(); exCtx.moveTo(x-4, y); exCtx.lineTo(x+4, y); exCtx.moveTo(x, y-4); exCtx.lineTo(x, y+4); exCtx.stroke();
+    }
+
+    function drawInteraction(ex, ey, hx, hy) {
+        exCtx.setLineDash([5, 5]); exCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        exCtx.beginPath(); exCtx.moveTo(ex, ey); exCtx.lineTo(hx, hy); exCtx.stroke(); exCtx.setLineDash([]);
+    }
+
+    function animateExcitation() {
+        exCtx.clearRect(0, 0, width, height); drawParabolicBands();
+
+        // Positions
+        const targetY = bands.cbBottom + 0; // Slightly above bottom for visual
+        const startY = bands.vbTop - 0;     // Slightly below top
+
+        if (phase === 'incoming') {
+            drawElectron(electronX, startY); photonX += 6; drawPhoton(photonX, startY);
+            if (photonX >= electronX) phase = 'transition';
+        } else if (phase === 'transition') {
+            drawHole(electronX, startY); const speed = (electronY - targetY) * 0.08;
+            electronY -= Math.max(speed, 1.0); drawElectron(electronX, electronY);
+            if (electronY <= targetY) { electronY = targetY; phase = 'bound'; }
+        } else if (phase === 'bound') {
+            drawHole(electronX, startY); drawElectron(electronX, targetY + Math.sin(exTime*0.05)*3);
+            drawInteraction(electronX, targetY, electronX, startY);
+            exCtx.fillStyle = PALETTE.text; exCtx.font = 'bold 20px Urbanist'; exCtx.textAlign = 'center';
+            exCtx.fillText("Excitón", bands.centerX + 100, height/2 ); exCtx.textAlign = 'left';
+        }
+        exTime++;
+        anims.excitation = requestAnimationFrame(animateExcitation);
+    }
+
+    function resetAnim() {
+        if(anims.excitation) cancelAnimationFrame(anims.excitation);
+        phase = 'incoming'; photonX = -100; resizeExcitation();
+    }
+
+    window.addEventListener('resize', () => {
+        if(currentSlide === 1) initMbDftAnim();
+        if(currentSlide === 2) initGreensAnim(); // NEW Slide index
+        if(currentSlide === 3) resizeExcitation();
+    });
+    window.addEventListener('load', () => { updateProgress(); });
+
+</script>
+
+
+<!-- IMAGE ZOOM MODAL -->
+<div id="imgZoomModal" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+">
+    <img id="imgZoomModalImg" style="
+        max-width: 90vw;
+        max-height: 90vh;
+        border-radius: 8px;
+        box-shadow: 0px 0px 20px #000;
+    ">
+</div>
+
+
+<div id="plot-modal" class="plot-modal hidden">
+    <div id="plot-modal-content" class="plot-modal-content"></div>
+</div>
+
+</body>
+</html>
+
+TO DO:
+- Colores a partir de espectros
+- Relajación de celdas de materiales
