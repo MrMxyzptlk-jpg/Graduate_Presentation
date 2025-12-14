@@ -150,11 +150,11 @@
         .plot-grid-custom2 img {
             width: 100%;
             height: auto;
-            max-height: 200px;  /* adjust to taste */
+            max-height: 250px;  /* adjust to taste */
             object-fit: contain;
             border-radius: 6px;
             border: 1px solid var(--border-color);
-            background: #000;
+            background: #ffffff;
             padding: 4px;
         }
 
@@ -281,31 +281,31 @@
             box-sizing: border-box;
         }
 
-.subfigure-row {
-    display: flex;
-    justify-content: center;
-    align-items: stretch; /* Aligns them nicely */
-    gap: 0;               /* Images/Videos touch */
-    width: 100%;
-}
+        .subfigure-row {
+            display: flex;
+            justify-content: center;
+            align-items: stretch; /* Aligns them nicely */
+            gap: 0;               /* Images/Videos touch */
+            width: 100%;
+        }
 
-/* TARGET BOTH IMG AND VIDEO */
-.subfigure-row img, 
-.subfigure-row video {
-    height: 160px;        /* Fixed height for all items */
-    width: auto;          /* Width adjusts automatically based on aspect ratio */
-    object-fit: contain;  /* Prevents cutting off content */
-    margin: 0;
-    
-    /* Force removal of borders/backgrounds */
-    border-radius: 0 !important;
-    border: none !important;
-    padding: 0 !important;
-    background: none !important;
-    
-    /* Optional: Ensure video controls don't mess up layout */
-    display: block; 
-}
+        /* TARGET BOTH IMG AND VIDEO */
+        .subfigure-row img,
+        .subfigure-row video {
+            height: 160px;        /* Fixed height for all items */
+            width: auto;          /* Width adjusts automatically based on aspect ratio */
+            object-fit: contain;  /* Prevents cutting off content */
+            margin: 0;
+
+            /* Force removal of borders/backgrounds */
+            border-radius: 0 !important;
+            border: none !important;
+            padding: 0 !important;
+            background: none !important;
+
+            /* Optional: Ensure video controls don't mess up layout */
+            display: block;
+        }
 
         .figure-caption {
             text-align: center;
@@ -455,6 +455,97 @@
             z-index: 2147483647; /* beats everything */
         }
 
+        /* CITATIONS */
+
+        .cite {
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #0059ff;
+            margin-left: 3px;
+        }
+
+        .cite:hover {
+            text-decoration: underline;
+        }
+
+        #cite-tooltip {
+            position: fixed;
+            max-width: 340px;
+            background: #ffffff;
+            border: 1px solid #333;
+            padding: 8px 10px;
+            font-size: 1.0rem;
+            line-height: 1.3;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.25);
+            display: none;
+            z-index: 1000;
+
+            color: #000000;   /* ← THIS IS THE MISSING PIECE */
+        }
+
+        /* TABLES */
+
+        .thesis-table {
+            border-collapse: collapse;
+            margin: 12px auto;
+            font-size: 1.4rem;   /* similar to \scriptsize */
+            min-width: 420px;
+        }
+
+        .thesis-table caption {
+            caption-side: bottom;
+            font-size: 1.7rem;
+            margin-top: 6px;
+            color: var(--text-color);
+        }
+
+        .thesis-table th,
+        .thesis-table td {
+            border: 2px solid #bababa;
+            padding: 4px 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .thesis-table th {
+            font-weight: 600;
+        }
+
+        .thesis-table .group-header {
+            font-weight: 600;
+            background: var(--bg-color);
+        }
+
+        /* Turns white-background plots into dark-mode plots */
+        .img-dark-mode1,
+        .img-dark-mode2 {
+            /* invert(0.9) = Dark Grey background (softer than black)
+            hue-rotate(180deg) = Fixes colors (Blue stays Blue)
+            saturate(2) = A moderate boost to make colors visible on grey */
+            filter: invert(0.85) hue-rotate(180deg) saturate(4) contrast(1.2);
+        }
+
+        /* --- Special Fix for Zoomed Dark Mode Images --- */
+        /* Target the modal image ID + the dark mode class */
+        #mediaZoomImg.img-dark-mode1,
+        #imgZoomModalImg.img-dark-mode1 {
+            /* 1. invert(1) hue-rotate(180deg): Standard inversion.
+            2. saturate(5): Extreme saturation to force color back into the white lines.
+            3. brightness(0.7): THE KEY FIX. Dims the "Neon White" down to "Deep Blue".
+            4. contrast(1.5): Ensures the background stays pitch black.
+            */
+            filter: invert(0.88) hue-rotate(180deg) saturate(6) brightness(0.7) contrast(1.6);
+        }
+        #mediaZoomImg.img-dark-mode2,
+        #imgZoomModalImg.img-dark-mode2 {
+            /* 1. invert(1) hue-rotate(180deg): Standard inversion.
+            2. saturate(5): Extreme saturation to force color back into the white lines.
+            3. brightness(0.7): THE KEY FIX. Dims the "Neon White" down to "Deep Blue".
+            4. contrast(1.5): Ensures the background stays pitch black.
+            */
+            filter: invert(0.88) hue-rotate(180deg) saturate(6) brightness(0.8) contrast(1.6);
+        }
+
     </style>
 </head>
 <body>
@@ -477,8 +568,9 @@
                     </h1>
 
                     <div style="margin-top: 60px; border-top: 2px solid #41B3FF; padding-top: 30px; display: inline-block;">
-                        <p style="font-size: 1.8rem; color: #fff; margin: 0;">Jerónimo Noé Acito Pino</p>
-                        <p style="opacity: 0.7; margin: 10px 0 0 0;">Universidad Nacional de Córdoba | FAMAF</p>
+                        <p style="font-size: 1.8rem; color: #fff; margin: 0;">Alumno - Jerónimo Noé Acito Pino</p>
+                        <p style="font-size: 1.5rem; color: #fff; margin: 0;">Directora - Dra Gabriela Grad</p>
+                        <p style="font-size: 1.5rem; opacity: 0.7; margin: 10px 0 0 0;">Universidad Nacional de Córdoba | FAMAF</p>
                     </div>
                 </div>
             </div>
@@ -1133,6 +1225,44 @@
         </div>
     </div>
 
+    <!-- SLIDE ??: Materials -->
+    <div class="slide" data-ignore id="slide-materials">
+        <div class="slide-content">
+            <h2>Materiales</h2>
+
+            <div class="two-row-wrapper">
+
+                <!-- Row 1 -->
+                <div class="row-with-captions">
+                    <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem; text-align: right;">LiF</div>
+
+                    <div class="plot-grid-custom2" style="background-color: var(--bg-color);">
+                        <img src="LiF/LiF_structure.png" alt="Struct_LiF">
+                        <img src="MgO/MgO_structure.png" alt="Struct_MgO">
+                    </div>
+
+                    <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem; text-align: left;">MgO</div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="row-with-captions">
+                    <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem;">CaO</div>
+
+                    <div class="plot-grid-custom2" style="background-color: var(--bg-color);">
+                        <img src="CaO/CaO_structure.png" alt="Struct_CaO">
+                        <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO">
+                    </div>
+
+                    <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">ZnO</div>
+                </div>
+
+            </div>
+
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
     <!-- SLIDE ??: Electronic Structure -->
     <div class="slide" data-ignore id="slide-electStruct">
         <div class="slide-content">
@@ -1145,8 +1275,8 @@
                 <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem;">LiF</div>
 
                 <div class="plot-grid-custom2">
-                    <img src="LiF/PROJECTED/bands-dos.png" alt="electStruct_LiF">
-                    <img src="MgO/PROJECTED/bands-dos.png" alt="electStruct_MgO">
+                    <img src="LiF/PROJECTED/bands-dos.png" alt="electStruct_LiF" class="img-dark-mode2">
+                    <img src="MgO/PROJECTED/bands-dos.png" alt="electStruct_MgO" class="img-dark-mode2">
                 </div>
 
                 <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">MgO</div>
@@ -1157,12 +1287,93 @@
                 <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem;">CaO</div>
 
                 <div class="plot-grid-custom2">
-                    <img src="CaO/PROJECTED/bands-dos.png" alt="electStruct_CaO">
-                    <img src="ZnO/PROJECTED/bands-dos.png" alt="electStruct_ZnO">
+                    <img src="CaO/PROJECTED/bands-dos.png" alt="electStruct_CaO" class="img-dark-mode2">
+                    <img src="ZnO/PROJECTED/bands-dos.png" alt="electStruct_ZnO" class="img-dark-mode2">
                 </div>
 
                 <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">ZnO</div>
             </div>
+
+        </div>
+
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Groundstate Tables -->
+    <div class="slide" data-ignore id="slide-groundstate-tables">
+        <div class="slide-content">
+            <h2>Estructura Electrónica</h2>
+
+        <div class="plot-grid-custom2">
+
+            <table class="thesis-table">
+                <caption>
+                    Calculated lattice parameters compared to experiment <span class="cite" data-cite="lattice_constants"></span>.
+                </caption>
+                <thead>
+                    <tr>
+                        <th class="group-header" colspan="5">Parámetros de Red</th>
+                    </tr>
+                    <tr>
+                        <th>Material</th>
+                        <th>a [Å] (KS)</th>
+                        <th>c/a (KS)</th>
+                        <th>a [Å] (Exp.)</th>
+                        <th>c/a (Exp.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>  <td>LiF</td>  <td>4.006</td>  <td>1</td>      <td>3.960</td>  <td>1</td>      </tr>
+                    <tr>  <td>MgO</td>  <td>4.218</td>  <td>1</td>      <td>4.186</td>  <td>1</td>      </tr>
+                    <tr>  <td>CaO</td>  <td>4.768</td>  <td>1</td>      <td>4.787</td>  <td>1</td>      </tr>
+                    <tr>  <td>ZnO</td>  <td>3.233</td>  <td>5.220</td>  <td>3.275</td>  <td>5.247</td>  </tr>
+                </tbody>
+            </table>
+
+            <table class="thesis-table">
+                <caption>
+                    Calculated band gaps compared with experiment.
+                </caption>
+                <thead>
+                    <tr>
+                        <th class="group-header" colspan="4">\(E_{gap}\) [eV]</th>
+                    </tr>
+                    <tr>
+                        <th>Material</th>
+                        <th>KS</th>
+                        <th>KS + G<sub>0</sub>W<sub>0</sub></th>
+                        <th>Exp.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LiF</td>
+                        <td>9.07</td>
+                        <td>13.63</td>
+                        <td>13.7-14.2 <span class="cite" data-cite="LiF_bandgap_1"></span><span class="cite" data-cite="LiF_bandgap_2"></span></td>
+                    </tr>
+                    <tr>
+                        <td>MgO</td>
+                        <td>4.6</td>
+                        <td>7.29</td>
+                        <td>7.77-7.83 <span class="cite" data-cite="MgO_bandgap_1"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
+                    </tr>
+                    <tr>
+                        <td>CaO</td>
+                        <td>3.5</td>
+                        <td>6.02</td>
+                        <td>6.88-7.09 <span class="cite" data-cite="CaO_bandgap_2"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
+                    </tr>
+                    <tr>
+                        <td>ZnO</td>
+                        <td>0.72</td>
+                        <td>2.27</td>
+                        <td>3.4 <span class="cite" data-cite="ZnO_bandgap_1"></span></td>
+                    </tr>
+                </tbody>
+            </table>
 
         </div>
 
@@ -1216,19 +1427,19 @@
 
                 <div class="plot-grid-custom2" style="border-radius: 0;">
                     <div class="subfigure-row">
-                        <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_LiF_1_bands">
-                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_LiF_1_wf">
-                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_1.mp4" type="video/mp4" >
+                        <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_LiF_1_bands" class="img-dark-mode1">
+                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_LiF_1_wf" class="img-dark-mode2">
+                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_1.mp4" type="video/mp4" class="img-dark-mode2" >
                     </div>
                     <div class="subfigure-row">
-                        <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_LiF_2_bands">
-                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_LiF_2_wf">
-                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_2.mp4" type="video/mp4" >
+                        <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_LiF_2_bands" class="img-dark-mode1">
+                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_LiF_2_wf" class="img-dark-mode2">
+                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_2.mp4" type="video/mp4" class="img-dark-mode2" >
                     </div>
                     <div class="subfigure-row">
-                        <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000003.OUT.png" alt="exciton_LiF_3_bands">
-                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000003-000001_iso.png" alt="exciton_LiF_3_wf">
-                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_3.mp4" type="video/mp4" >
+                        <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000003.OUT.png" alt="exciton_LiF_3_bands" class="img-dark-mode1">
+                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000003-000001_iso.png" alt="exciton_LiF_3_wf" class="img-dark-mode2">
+                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_3.mp4" type="video/mp4" class="img-dark-mode2" >
                     </div>
                 </div>
 
@@ -1243,9 +1454,9 @@
             <h2>Funciones de Onda de Excitones: MgO</h2>
 
                 <div class="subfigure-row">
-                    <img src="MgO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_MgO_1_bands">
-                    <img src="MgO/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_MgO_1">
-                    <video autoplay muted loop playsinline src="MgO/EXCITONS/optical/MgO_optical_1.mp4" type="video/mp4" >
+                    <img src="MgO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_MgO_1_bands" class="img-dark-mode1">
+                    <img src="MgO/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_MgO_1" class="img-dark-mode2">
+                    <video autoplay muted loop playsinline src="MgO/EXCITONS/optical/MgO_optical_1.mp4" type="video/mp4" class="img-dark-mode2" >
                 </div>
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
@@ -1259,14 +1470,14 @@
 
                 <div class="plot-grid-custom2" no-round>
                     <div class="subfigure-row">
-                        <img src="CaO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_CaO_1_bands">
-                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_CaO_1_wf">
-                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_2.mp4" type="video/mp4" >
+                        <img src="CaO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_CaO_1_bands" class="img-dark-mode1">
+                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_CaO_1_wf" class="img-dark-mode2">
+                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_2.mp4" type="video/mp4" class="img-dark-mode2" >
                     </div>
                     <div class="subfigure-row">
-                        <img src="CaO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000005.OUT.png" alt="exciton_CaO_2_bands">
-                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000005-000001_iso.png" alt="exciton_CaO_2_wf">
-                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_5.mp4" type="video/mp4" >
+                        <img src="CaO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000005.OUT.png" alt="exciton_CaO_2_bands" class="img-dark-mode1">
+                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000005-000001_iso.png" alt="exciton_CaO_2_wf" class="img-dark-mode2">
+                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_5.mp4" type="video/mp4"  class="img-dark-mode2">
                     </div>
                 </div>
 
@@ -1282,12 +1493,12 @@
 
                 <div class="plot-grid-custom2">
                     <div class="subfigure-row">
-                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands">
-                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_ZnO_1_wf">
+                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_ZnO_1_wf" class="img-dark-mode2">
                     </div>
                     <div class="subfigure-row">
-                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_2_bands">
-                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000006_iso.png" alt="exciton_ZnO_2_wf">
+                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_2_bands" class="img-dark-mode1">
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000006_iso.png" alt="exciton_ZnO_2_wf" class="img-dark-mode2">
                     </div>
                 </div>
 
@@ -1339,6 +1550,26 @@
                     <div id="plot-XANES_CaO_Ca_L23" class="plot-box" style="height: 275px;"></div>
                     <div id="plot-XANES_CaO_O_K" class="plot-box" style="height: 275px;"></div>
                     <div id="plot-XANES_CaO_Ca_K" class="plot-box" style="height: 275px;"></div>
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: XANES Plots (Im) ZnO -->
+    <div class="slide" id="slide-XANES-Im-ZnO">
+        <div class="slide-content">
+            <h2>Espectros XANES: ZnO</h2>
+
+            <div style="width: 95%; height: 70%; margin: 0 auto;">
+                <div class="plot-grid-custom3">
+                    <div id="plot-XANES_ZnO_O_K_ord" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_ZnO_Zn_L23_ord" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_ZnO_Zn_K_ord" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_ZnO_O_K_extr" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_ZnO_Zn_L23_extr" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_ZnO_Zn_K_extr" class="plot-box" style="height: 275px;"></div>
                 </div>
             </div>
 
@@ -1416,6 +1647,7 @@
     </div>
 
     <div id="cursor-halo"></div>
+    <div id="cite-tooltip"></div>
 
 
     <!-- CONTROLS -->
@@ -2778,15 +3010,16 @@
                     { file: "LiF/XANES_Li_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
                     { file: "LiF/XANES_Li_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
                 ],
-                settings: { title: "LiF  shift=0.2eV", xlim: [57, 74], ylim: [0, 1.4], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                settings: { title: "Li borde-K  shift=0.2eV", xlim: [57, 74], ylim: [0, 1.4], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
             },
+
             "plot-XANES_LiF_F_K": {
                 curves: [
                     { file: "LiF/XANES_F_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
                     { file: "LiF/XANES_F_K_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 95.16 },
                     { file: "LiF/XANES_F_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
                 ],
-                settings: { title: "LiF  shift=29.1eV", xlim: [682, 705], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                settings: { title: "F borde-K  shift=29.1eV", xlim: [682, 705], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
             },
 
             // XANES MgO
@@ -2795,11 +3028,11 @@
                     { file: "MgO/XANES_Mg_L23_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
                     { file: "MgO/XANES_Mg_L23_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 53.06 },
                     { file: "MgO/XANES_Mg_L23_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
-                    { file: "MgO/XANES_Mg_L23_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 },
-                    { file: "MgO/XANES_Mg_L23_exp3.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve5 }
+                    { file: "MgO/XANES_Mg_L23_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
                 ],
-                settings: { title: "Mg L₂₃-edge  shift=-0.5eV", xlim: [50, 73], ylim: [0, 1.5], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                settings: { title: "Mg borde-L₂₃  shift=-0.5eV", xlim: [50, 73], ylim: [0, 1.5], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
             },
+
             "plot-XANES_MgO_O_K": {
                 curves: [
                     { file: "MgO/XANES_O_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
@@ -2807,8 +3040,9 @@
                     { file: "MgO/XANES_O_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
                     { file: "MgO/XANES_O_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
                 ],
-                settings: { title: "O K-edge  shift=28eV", xlim: [530, 565], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                settings: { title: "O borde-K  shift=28eV", xlim: [530, 565], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
             },
+
             "plot-XANES_MgO_Mg_K": {
                 curves: [
                     { file: "MgO/XANES_Mg_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
@@ -2817,7 +3051,7 @@
                     { file: "MgO/XANES_Mg_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 },
                     { file: "MgO/XANES_Mg_K_exp3.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve5 }
                 ],
-                settings: { title: "Mg K-edge  shift=52.5eV", xlim: [1300, 1335], ylim: [0, 1.2], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                settings: { title: "Mg borde-K  shift=52.5eV", xlim: [1300, 1335], ylim: [0, 1.2], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
             },
 
             // XANES CaO
@@ -2827,8 +3061,9 @@
                     { file: "CaO/XANES_Ca_L23_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 351.16 },
                     { file: "CaO/XANES_Ca_L23_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
                 ],
-                settings: { title: "Ca L₂₃-edge  shift=-0.5eV", xlim: [345, 354], ylim: [0, 1.7], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                settings: { title: "Ca borde-L₂₃  shift=24.4eV", xlim: [345, 354], ylim: [0, 1.7], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
             },
+
             "plot-XANES_CaO_O_K": {
                 curves: [
                     { file: "CaO/XANES_O_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
@@ -2836,42 +3071,73 @@
                     { file: "CaO/XANES_O_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
                     { file: "CaO/XANES_O_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
                 ],
-                settings: { title: "O K-edge  shift=28eV", xlim: [523, 560], ylim: [0, 1.1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                settings: { title: "O borde-K  shift=25.9eV", xlim: [523, 560], ylim: [0, 1.1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
             },
+
             "plot-XANES_CaO_Ca_K": {
                 curves: [
                     { file: "CaO/XANES_Ca_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
                     { file: "CaO/XANES_Ca_K_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 4033.36 },
                     { file: "CaO/XANES_Ca_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
                 ],
-                settings: { title: "Ca K-edge  shift=52.5eV", xlim: [4022, 4160], ylim: [0, 0.38], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                settings: { title: "Ca borde-K  shift=95eV", xlim: [4022, 4160], ylim: [0, 0.38], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
             },
 
             // XANES ZnO
-            "plot-XANES_ZnO_Ca_L23": {
+            "plot-XANES_ZnO_O_K_ord": {
                 curves: [
-                    { file: "ZnO/XANES_Zn_L23_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "ZnO/XANES_Zn_L23_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 351.16 },
-                    { file: "ZnO/XANES_Zn_L23_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "Zn L₂₃-edge  shift=-0.5eV", xlim: [345, 354], ylim: [0, 1.7], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
-            "plot-XANES_ZnO_O_K": {
-                curves: [
-                    { file: "ZnO/XANES_O_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "ZnO/XANES_O_K_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 532.02 },
+                    { file: "ZnO/XANES_O_K_EXC_xy.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                    { file: "ZnO/XANES_O_K_Im_xy.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 530.57 },
                     { file: "ZnO/XANES_O_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
                     { file: "ZnO/XANES_O_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
                 ],
-                settings: { title: "O K-edge  shift=28eV", xlim: [523, 560], ylim: [0, 1.1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                settings: { title: "O borde-K  shift=25.7eV pol.\u22A5", xlim: [526, 565], ylim: [0, 1.], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
             },
-            "plot-XANES_ZnO_Ca_K": {
+
+            "plot-XANES_ZnO_O_K_extr": {
                 curves: [
-                    { file: "ZnO/XANES_Zn_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "ZnO/XANES_Zn_K_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 4033.36 },
+                    { file: "ZnO/XANES_O_K_EXC_z.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                    { file: "ZnO/XANES_O_K_Im_z.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 530.57 },
+                    { file: "ZnO/XANES_O_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
+                    { file: "ZnO/XANES_O_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
+                ],
+                settings: { title: "O borde-K  shift=25.7eV pol.\u2225", xlim: [526, 565], ylim: [0, 1.], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+            },
+
+            "plot-XANES_ZnO_Zn_L23_ord": {
+                curves: [
+                    { file: "ZnO/XANES_Zn_L23_EXC_xy.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                    { file: "ZnO/XANES_Zn_L23_Im_xy.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 1022.62 },
+                    { file: "ZnO/XANES_Zn_L23_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                ],
+                settings: { title: "Zn borde-L₂₃  shift=31.5eV pol.\u22A5", xlim: [1018, 1082], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+            },
+
+            "plot-XANES_ZnO_Zn_L23_extr": {
+                curves: [
+                    { file: "ZnO/XANES_Zn_L23_EXC_z.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                    { file: "ZnO/XANES_Zn_L23_Im_z.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 1022.62 },
+                    { file: "ZnO/XANES_Zn_L23_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                ],
+                settings: { title: "Zn borde-L₂₃  shift=31.5eV pol.\u2225", xlim: [1018, 1082], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+            },
+
+            "plot-XANES_ZnO_Zn_K_ord": {
+                curves: [
+                    { file: "ZnO/XANES_Zn_K_EXC_xy.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                    { file: "ZnO/XANES_Zn_K_Im_xy.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 9660.09 },
                     { file: "ZnO/XANES_Zn_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
                 ],
-                settings: { title: "Zn K-edge  shift=52.5eV", xlim: [4022, 4160], ylim: [0, 0.38], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                settings: { title: "Zn borde-K  shift=149.3eV pol.\u22A5", xlim: [9650, 9730], ylim: [0, 1.2], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+            },
+
+            "plot-XANES_ZnO_Zn_K_extr": {
+                curves: [
+                    { file: "ZnO/XANES_Zn_K_EXC_z.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                    { file: "ZnO/XANES_Zn_K_Im_z.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 9660.09 },
+                    { file: "ZnO/XANES_Zn_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                ],
+                settings: { title: "Zn borde-K  shift=149.3eV pol.\u2225", xlim: [9650, 9730], ylim: [0, 1.2], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
             },
 
 
@@ -2932,16 +3198,19 @@
                 modalVideo.style.display = "none";
                 modalVideo.pause();
                 modalVideo.src = "";
+
+                // --- CLEANUP ---
+                // Clear the custom filters so they don't apply to the next image
+                modalImg.style.filter = "";
+                modalVideo.style.filter = "";
             }
 
             /* ----------------------------
-            IMAGE ZOOM
+            IMAGE ZOOM (Dual Presets)
             ---------------------------- */
             document.addEventListener("click", e => {
                 const img = e.target.closest("img");
                 if (!img) return;
-
-                // optional: ignore UI icons, logos, etc
                 if (img.closest(".no-zoom")) return;
 
                 e.stopPropagation();
@@ -2949,16 +3218,46 @@
                 modalImg.src = img.src;
                 modalImg.style.display = "block";
                 modalVideo.style.display = "none";
+
+                // Check which mode the image is using
+                const isMode1 = img.classList.contains("img-dark-mode1");
+                const isMode2 = img.classList.contains("img-dark-mode2");
+
+                if (isMode1 || isMode2) {
+
+                    let defaults;
+
+                    if (isMode1) {
+                        // PRESET 1: "Blue Fix" (High Saturation, Darker)
+                        defaults = { hue: "180deg", sat: "6", bright: "0.7", con: "1.6" };
+                    } else {
+                        // PRESET 2: "Standard" (Softer, Normal Brightness)
+                        defaults = { hue: "180deg", sat: "1.5", bright: "1.0", con: "1.1" };
+                    }
+
+                    // Apply overrides if data attributes exist, otherwise use selected defaults
+                    const hue = img.dataset.hue || defaults.hue;
+                    const sat = img.dataset.sat || defaults.sat;
+                    const bright = img.dataset.bright || defaults.bright;
+                    const con = img.dataset.con || defaults.con;
+
+                    // Apply filter
+                    modalImg.style.filter = `invert(0.88) hue-rotate(${hue}) saturate(${sat}) brightness(${bright}) contrast(${con})`;
+
+                } else {
+                    // Normal Image
+                    modalImg.style.filter = "none";
+                }
+
                 modal.style.display = "flex";
             });
 
             /* ----------------------------
-            VIDEO ZOOM
+            VIDEO ZOOM (Dual Presets)
             ---------------------------- */
             document.addEventListener("click", e => {
                 const video = e.target.closest("video");
                 if (!video) return;
-
                 if (video.closest(".no-zoom")) return;
 
                 e.stopPropagation();
@@ -2966,14 +3265,46 @@
                 modalVideo.src = video.currentSrc || video.src;
                 modalVideo.style.display = "block";
                 modalImg.style.display = "none";
+
+                const isMode1 = video.classList.contains("img-dark-mode1");
+                const isMode2 = video.classList.contains("img-dark-mode2");
+
+                if (isMode1 || isMode2) {
+                    let defaults;
+                    if (isMode1) {
+                        defaults = { hue: "180deg", sat: "6", bright: "0.7", con: "1.6" };
+                    } else {
+                        defaults = { hue: "180deg", sat: "1.5", bright: "1.0", con: "1.1" };
+                    }
+
+                    const hue = video.dataset.hue || defaults.hue;
+                    const sat = video.dataset.sat || defaults.sat;
+                    const bright = video.dataset.bright || defaults.bright;
+                    const con = video.dataset.con || defaults.con;
+
+                    modalVideo.style.filter = `invert(0.88) hue-rotate(${hue}) saturate(${sat}) brightness(${bright}) contrast(${con})`;
+                } else {
+                    modalVideo.style.filter = "none";
+                }
+
                 modal.style.display = "flex";
                 modalVideo.play();
             });
-
             /* ----------------------------
-            CLOSE MODAL
+            CLOSE MODAL (PRESERVED FIX)
             ---------------------------- */
-            modal.addEventListener("click", closeModal);
+            modal.addEventListener("click", (e) => {
+                // --- CHANGE B: TARGET CHECK ---
+                // Only close if we clicked the black background, NOT the image itself
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            /* Optional: Stop clicks on the image/video from bubbling up at all */
+            [modalImg, modalVideo].forEach(el => {
+                el.addEventListener("click", e => e.stopPropagation());
+            });
 
             document.addEventListener("keydown", e => {
                 if (e.key === "Escape") closeModal();
@@ -2991,6 +3322,68 @@
                 // show halo while Ctrl is held
                 halo.style.opacity = e.ctrlKey ? "1" : "0";
             });
+
+            // CITATIONS
+                const citations = {
+                // Groundstate Tables
+                lattice_constants: "D. M.Roessler and W. C. Walker., Phys. Rev., 159:733-738, Jul 1967.",
+                LiF_bandgap_1: "F. Bechstedt., volume 181. 01 2015.",
+                LiF_bandgap_2: "M. Piacentini, D. W. Lynch, and C. G. Olson., Phys. Rev. B, 13:5530-5543, Jun 1976.",
+                MgO_bandgap_1: "D. M.Roessler and W. C. Walker., Phys. Rev., 159:733-738, Jul 1967.",
+                MgO_CaO_bandgap: "R. C.Whited, C.J. Flaten, and W. C.Walker., 13(11):1903-1905, 1973.",
+                CaO_bandgap_2: "Yoshio Kaneko and Takao Koda, Journal of Crystal Growth, 86(1):72-78, 1988.",
+                ZnO_bandgap_1: "Dirk Vogel, Peter Kr¨uger, and Johannes Pollmann, Phys. Rev. B, 52:R14316-R14319, Nov 1995.",
+
+                citation_placeHolder: "",
+                citation_placeHolder: "",
+                citation_placeHolder: "",
+                citation_placeHolder: "",
+                citation_placeHolder: "",
+                citation_placeHolder: "",
+
+            };
+
+            const tooltip = document.getElementById("cite-tooltip");
+
+            if (!tooltip) {
+                console.error("cite-tooltip div not found");
+                return;
+            }
+
+            // --- Auto-number citations ---
+            const citeOrder = [];
+            const citeNumber = {};
+
+            document.querySelectorAll(".cite").forEach(cite => {
+                const key = cite.dataset.cite;
+
+                if (!(key in citeNumber)) {
+                    citeOrder.push(key);
+                    citeNumber[key] = citeOrder.length;
+                }
+
+                cite.textContent = `[${citeNumber[key]}]`;
+            });
+
+            document.addEventListener("click", e => {
+
+                const citeEl = e.target.closest(".cite");
+                if (citeEl) {
+                    const key = citeEl.dataset.cite;
+                    tooltip.textContent = citations[key] || "Reference not found.";
+
+                    const rect = citeEl.getBoundingClientRect();
+                    tooltip.style.left = rect.left + "px";
+                    tooltip.style.top  = rect.bottom + 6 + "px";
+
+                    tooltip.style.display = "block";
+                    e.stopPropagation();
+                    return;
+                }
+
+                tooltip.style.display = "none";
+
+            }, true); // capture phase
 
         });
 
@@ -3097,6 +3490,7 @@
         });
         window.addEventListener('load', () => { updateProgress(); });
 
+
     </script>
 
 
@@ -3140,9 +3534,6 @@
 </body>
 </html>
 
-TO DO:
-- Colores a partir de espectros
-- Relajación de celdas de materiales
 <!--
     SET UP LOCAL SERVER:
     Open a terminal inside the folder where your HTML is, then: python3 -m http.server 5500
