@@ -6,7 +6,7 @@
     <title>Espectros de Absorción Óptica y de Rayos X</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -17,6 +17,7 @@
 
             /* UI Elements */
                 --bg-color: #000;
+                --bg2-color: #111;
                 --border-color: rgba(255, 255, 255, 0.1);
                 --shadow-color: rgba(222, 255, 154, 0.05);
                 --axes-color: #cbd5f5;
@@ -196,7 +197,7 @@
             max-width: 100%;
             max-height: 45vh;   /* adapts to screen */
             aspect-ratio: 16 / 9;        /* preserve your visual format */
-            background: #111;
+            background: var(--bg-color);
             border-radius: 10px;
             border: 1px solid var(--border-color);
             overflow: hidden;
@@ -254,7 +255,7 @@
         .plot-modal-content {
             width: 80vw;
             height: 80vh;
-            background: #111;
+            background: var(--bg-color);
             border-radius: 12px;
             padding: 10px;
         }
@@ -334,7 +335,7 @@
             width: 100%;
             min-width: 220px;
             height: 300px;
-            background: #111;
+            background: var(--bg-color);
             border-radius: 10px;
             border: 1px solid var(--border-color);
             overflow: hidden;
@@ -516,6 +517,57 @@
             background: var(--bg-color);
         }
 
+        .table-panel {
+            position: relative;      /* relative INSIDE grid slot */
+            transform: scale(0.7);
+            transform-origin: center;
+
+            background: var(--bg2-color);
+            border-radius: 10px;
+            padding: 6px;
+
+            font-size: 0.6rem;
+            cursor: pointer;
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+        .plot-box.table-slot {
+            overflow: visible;       /* 🔑 allow expansion */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg2-color);
+        }
+
+        /* compact table style */
+        .thesis-table.compact th,
+        .thesis-table.compact td {
+            padding: 3px 6px;
+        }
+
+        .table-panel.expanded {
+            position: fixed;
+
+            top: 8%;
+            bottom: 8%;
+            left: 8%;
+            right: 8%;
+
+            transform: scale(1);
+            font-size: 0.95rem;
+
+            z-index: 3000;
+            box-shadow: 0 0 30px var(--shadow-color);
+            background: var(--bg2-color);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         /* Turns white-background plots into dark-mode plots */
         .img-dark-mode1,
         .img-dark-mode2 {
@@ -568,7 +620,7 @@
                     </h1>
 
                     <div style="margin-top: 60px; border-top: 2px solid #41B3FF; padding-top: 30px; display: inline-block;">
-                        <p style="font-size: 1.8rem; color: #fff; margin: 0;">Alumno - Jerónimo Noé Acito Pino</p>
+                        <p style="font-size: 1.8rem; color: #fff; margin: 0;">Jerónimo Noé Acito Pino</p>
                         <p style="font-size: 1.5rem; color: #fff; margin: 0;">Directora - Dra Gabriela Grad</p>
                         <p style="font-size: 1.5rem; opacity: 0.7; margin: 10px 0 0 0;">Universidad Nacional de Córdoba | FAMAF</p>
                     </div>
@@ -1237,8 +1289,8 @@
                     <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem; text-align: right;">LiF</div>
 
                     <div class="plot-grid-custom2" style="background-color: var(--bg-color);">
-                        <img src="LiF/LiF_structure.png" alt="Struct_LiF">
-                        <img src="MgO/MgO_structure.png" alt="Struct_MgO">
+                        <img src="LiF/LiF_structure.png" alt="Struct_LiF"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                        <img src="MgO/MgO_structure.png" alt="Struct_MgO"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
                     </div>
 
                     <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem; text-align: left;">MgO</div>
@@ -1248,15 +1300,48 @@
                 <div class="row-with-captions">
                     <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem;">CaO</div>
 
-                    <div class="plot-grid-custom2" style="background-color: var(--bg-color);">
-                        <img src="CaO/CaO_structure.png" alt="Struct_CaO">
-                        <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO">
+                    <div class="plot-grid-custom2">
+                        <img src="CaO/CaO_structure.png" alt="Struct_CaO" style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                        <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO" style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
                     </div>
 
                     <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">ZnO</div>
                 </div>
 
             </div>
+
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Groundstate Tables -->
+    <div class="slide" data-ignore id="slide-groundstate-tables">
+        <div class="slide-content">
+            <h2>Estructura Electrónica</h2>
+
+
+            <table class="thesis-table">
+                <caption>
+                    Parámetros de red calculados, comparados con los experimentales <span class="cite" data-cite="lattice_constants"></span>.
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>a [Å] (KS)</th>
+                        <th>c/a (KS)</th>
+                        <th>a [Å] (Exp.)</th>
+                        <th>c/a (Exp.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>  <td>LiF</td>  <td>4.006</td>  <td>1</td>      <td>3.960</td>  <td>1</td>      </tr>
+                    <tr>  <td>MgO</td>  <td>4.218</td>  <td>1</td>      <td>4.186</td>  <td>1</td>      </tr>
+                    <tr>  <td>CaO</td>  <td>4.768</td>  <td>1</td>      <td>4.787</td>  <td>1</td>      </tr>
+                    <tr>  <td>ZnO</td>  <td>3.233</td>  <td>5.220</td>  <td>3.275</td>  <td>5.247</td>  </tr>
+                </tbody>
+            </table>
+
 
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
@@ -1306,35 +1391,10 @@
         <div class="slide-content">
             <h2>Estructura Electrónica</h2>
 
-        <div class="plot-grid-custom2">
 
             <table class="thesis-table">
                 <caption>
-                    Calculated lattice parameters compared to experiment <span class="cite" data-cite="lattice_constants"></span>.
-                </caption>
-                <thead>
-                    <tr>
-                        <th class="group-header" colspan="5">Parámetros de Red</th>
-                    </tr>
-                    <tr>
-                        <th>Material</th>
-                        <th>a [Å] (KS)</th>
-                        <th>c/a (KS)</th>
-                        <th>a [Å] (Exp.)</th>
-                        <th>c/a (Exp.)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>  <td>LiF</td>  <td>4.006</td>  <td>1</td>      <td>3.960</td>  <td>1</td>      </tr>
-                    <tr>  <td>MgO</td>  <td>4.218</td>  <td>1</td>      <td>4.186</td>  <td>1</td>      </tr>
-                    <tr>  <td>CaO</td>  <td>4.768</td>  <td>1</td>      <td>4.787</td>  <td>1</td>      </tr>
-                    <tr>  <td>ZnO</td>  <td>3.233</td>  <td>5.220</td>  <td>3.275</td>  <td>5.247</td>  </tr>
-                </tbody>
-            </table>
-
-            <table class="thesis-table">
-                <caption>
-                    Calculated band gaps compared with experiment.
+                    Energías de gap calculadas, comparadas con las experimentales.
                 </caption>
                 <thead>
                     <tr>
@@ -1358,7 +1418,7 @@
                         <td>MgO</td>
                         <td>4.6</td>
                         <td>7.29</td>
-                        <td>7.77-7.83 <span class="cite" data-cite="MgO_bandgap_1"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
+                        <td>7.77-7.83 <span class="cite" data-cite="lattice_constants"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
                     </tr>
                     <tr>
                         <td>CaO</td>
@@ -1374,8 +1434,6 @@
                     </tr>
                 </tbody>
             </table>
-
-        </div>
 
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
@@ -1394,25 +1452,6 @@
                     <div id="plot-optical_CaO" class="plot-box" style="height: 275px;"></div>
                     <div id="plot-optical_ZnO_ord" class="plot-box" style="height: 275px;"></div>
                     <div id="plot-optical_ZnO_extr" class="plot-box" style="height: 275px;"></div>
-                </div>
-            </div>
-
-            <div class="slide-footer"><span></span><span>?? / 12</span></div>
-        </div>
-    </div>
-
-    <!-- SLIDE ??: Optical Plots (Re) -->
-    <div class="slide" data-ignore id="slide-optical-Re">
-        <div class="slide-content">
-            <h2>Espectros Ópticos: Dispersión</h2>
-
-            <div style="width: 95%; height: 70%; margin: 0 auto;">
-                <div class="plot-grid-custom3">
-                    <div id="plot-optical_LiF_Re" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_MgO_Re" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_CaO_Re" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_ZnO_Re_ord" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_ZnO_Re_extr" class="plot-box" style="height: 275px;"></div>
                 </div>
             </div>
 
@@ -1507,6 +1546,63 @@
         </div>
     </div>
 
+    <!-- SLIDE ??: Optical Plots (Re) -->
+    <div class="slide" data-ignore id="slide-optical-Re">
+        <div class="slide-content">
+            <h2>Espectros Ópticos: Dispersión</h2>
+
+            <div style="width: 95%; height: 70%; margin: 0 auto;">
+                <div class="plot-grid-custom3">
+                    <div id="plot-optical_LiF_Re" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-optical_MgO_Re" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-optical_CaO_Re" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-optical_ZnO_Re_ord" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-optical_ZnO_Re_extr" class="plot-box" style="height: 275px;"></div>
+                    <!-- TABLE SLOT -->
+                    <div class="plot-box table-slot" style="height: 275px;">
+                        <div class="table-panel">
+                        <table class="thesis-table compact">
+                            <caption>Constantes dieléctricas macroscópicas \(\varepsilon^\infty\)  </caption>
+                            <thead>
+                                <tr>
+                                    <th>Material</th>
+                                    <th>\(G_0W_0\) + BSE</th>
+                                    <th>Exp.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>LiF</td>
+                                    <td>1.81</td>
+                                    <td>1.96 <span class="cite" data-cite="LiF_ZnO_epsInf"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>MgO</td>
+                                    <td>2.87</td>
+                                    <td>2.944 <span class="cite" data-cite="dielectric_constants"></span> - 2.95</span><span class="cite" data-cite="lattice_constants"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>CaO</td>
+                                    <td>3.02</td>
+                                    <td>3.27 <span class="cite" data-cite="dielectric_constants"></span> - 3.33  </span><span class="cite" data-cite="CaO_epsInf"></span></span></td>
+                                </tr>
+                                <tr>
+                                    <td>ZnO</td>
+                                    <td>3.74 \(\left(\perp\right)\) - 3.77 \(\left(\parallel\right)\)</td>
+                                    <td>3.70 \(\left(\perp\right)\) - 3.75 \(\left(\parallel\right)\) <span class="cite" data-cite="dielectric_constants"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                </div>
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
     <!-- SLIDE ??: XANES Plots (Im) LiF -->
     <div class="slide" id="slide-XANES-Im-LiF">
         <div class="slide-content">
@@ -1583,7 +1679,7 @@
         <div class="slide-content" style="text-align: center; justify-content: center;">
             <h2>Conclusiones</h2>
             <ul style="text-align: left; width: 60%; margin: 0 auto;">
-                <li>Metodología Validada: All-Electron DFT + G₀W₀ + BSE funciona robustamente.</li>
+                <li>Metodología Validada: All-Electron DFT + \(G_0W_0\) + BSE funciona robustamente.</li>
                 <li>Excitones Clave: Explican las características pre-borde.</li>
                 <li>Diversidad Material: Escala desde LiF hasta ZnO.</li>
             </ul>
@@ -3326,18 +3422,16 @@
             // CITATIONS
                 const citations = {
                 // Groundstate Tables
-                lattice_constants: "D. M.Roessler and W. C. Walker., Phys. Rev., 159:733-738, Jul 1967.",
+                lattice_constants: "D. M. Roessler and W. C. Walker., Phys. Rev., 159:733-738, Jul 1967.",
                 LiF_bandgap_1: "F. Bechstedt., volume 181. 01 2015.",
                 LiF_bandgap_2: "M. Piacentini, D. W. Lynch, and C. G. Olson., Phys. Rev. B, 13:5530-5543, Jun 1976.",
-                MgO_bandgap_1: "D. M.Roessler and W. C. Walker., Phys. Rev., 159:733-738, Jul 1967.",
                 MgO_CaO_bandgap: "R. C.Whited, C.J. Flaten, and W. C.Walker., 13(11):1903-1905, 1973.",
                 CaO_bandgap_2: "Yoshio Kaneko and Takao Koda, Journal of Crystal Growth, 86(1):72-78, 1988.",
                 ZnO_bandgap_1: "Dirk Vogel, Peter Kr¨uger, and Johannes Pollmann, Phys. Rev. B, 52:R14316-R14319, Nov 1995.",
 
-                citation_placeHolder: "",
-                citation_placeHolder: "",
-                citation_placeHolder: "",
-                citation_placeHolder: "",
+                LiF_ZnO_epsInf: "F. Bernardini and V. Fiorentini, Phys. Rev. B, 1386795 (1998).",
+                dielectric_constants: "W. Martienssen and H. Warlimont, Springer Handbook of Condensed Matter and Materials Data, Vol. 1 (2005).",
+                CaO_epsInf: "J. Jacobson and E. Nixon, Journal of Physics and Chemistry of Solids 29, 967 (1968).",
                 citation_placeHolder: "",
                 citation_placeHolder: "",
 
@@ -3384,6 +3478,32 @@
                 tooltip.style.display = "none";
 
             }, true); // capture phase
+
+            // TABLE zoom
+
+            document.addEventListener("click", e => {
+
+                const panel = document.querySelector(".table-panel.expanded");
+
+                // Click INSIDE expanded table → do nothing
+                if (panel && panel.contains(e.target)) {
+                    e.stopPropagation();
+                    return;
+                }
+
+                // Click on collapsed table → expand
+                const collapsed = e.target.closest(".table-panel:not(.expanded)");
+                if (collapsed) {
+                    collapsed.classList.add("expanded");
+                    e.stopPropagation();
+                    return;
+                }
+
+                // Click anywhere else → collapse
+                document.querySelectorAll(".table-panel.expanded")
+                    .forEach(p => p.classList.remove("expanded"));
+
+            }, true);
 
         });
 
