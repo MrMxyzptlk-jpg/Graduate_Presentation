@@ -519,7 +519,7 @@
 
         .table-panel {
             position: relative;      /* relative INSIDE grid slot */
-            transform: scale(0.7);
+            transform: scale(0.6);
             transform-origin: center;
 
             background: var(--bg2-color);
@@ -1409,25 +1409,25 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>LiF</td>
+                        <td>LiF (\(\Gamma - \Gamma\))</td>
                         <td>9.07</td>
                         <td>13.63</td>
                         <td>13.7-14.2 <span class="cite" data-cite="LiF_bandgap_1"></span><span class="cite" data-cite="LiF_bandgap_2"></span></td>
                     </tr>
                     <tr>
-                        <td>MgO</td>
+                        <td>MgO (\(\Gamma - \Gamma\))</td>
                         <td>4.6</td>
                         <td>7.29</td>
-                        <td>7.77-7.83 <span class="cite" data-cite="lattice_constants"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
+                        <td>7.77-7.83 <span class="cite" data-cite="MgO_paper"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
                     </tr>
                     <tr>
-                        <td>CaO</td>
+                        <td>CaO (\(X - X\))</td>
                         <td>3.5</td>
                         <td>6.02</td>
                         <td>6.88-7.09 <span class="cite" data-cite="CaO_bandgap_2"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
                     </tr>
                     <tr>
-                        <td>ZnO</td>
+                        <td>ZnO (\(\Gamma - \Gamma\))</td>
                         <td>0.72</td>
                         <td>2.27</td>
                         <td>3.4 <span class="cite" data-cite="ZnO_bandgap_1"></span></td>
@@ -1452,6 +1452,54 @@
                     <div id="plot-optical_CaO" class="plot-box" style="height: 275px;"></div>
                     <div id="plot-optical_ZnO_ord" class="plot-box" style="height: 275px;"></div>
                     <div id="plot-optical_ZnO_extr" class="plot-box" style="height: 275px;"></div>
+                    <!-- TABLE SLOT -->
+                    <div class="plot-box table-slot" style="height: 275px;">
+                        <div class="table-panel">
+                        <table class="thesis-table compact">
+                            <caption> Energías de ligadura de excitones. </caption>
+                            <thead>
+                                <tr>
+                                    <th class="group-header" colspan="4">\(E_{b}\) [meV]</th>
+                                </tr>
+                                <tr>
+                                    <th>Material</th>
+                                    <th>\(G_0W_0\) + BSE</th>
+                                    <th>Exp.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>LiF</td>
+                                    <td>1870</td>
+                                    <td>900 <span class="cite" data-cite="LiF_exciton"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>MgO</td>
+                                    <td>510</td>
+                                    <td>80 <span class="cite" data-cite="MgO_paper"></span> </td>
+                                </tr>
+                                <tr>
+                                    <td>CaO</td>
+                                    <td>495</td>
+                                    <td>60 <span class="cite" data-cite="CaO_exciton"></span> </td>
+                                </tr>
+                                <tr>
+                                    <td>ZnO</td>
+                                    <td>
+                                        362 <br>
+                                        287 <br>
+                                        256
+                                    </td>
+                                    <td>
+                                        63.1   <span class="cite" data-cite="ZnO_exciton"></span><br>
+                                        50.4   <span class="cite" data-cite="ZnO_exciton"></span><br>
+                                        48.9   <span class="cite" data-cite="ZnO_exciton"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1562,8 +1610,11 @@
                     <div class="plot-box table-slot" style="height: 275px;">
                         <div class="table-panel">
                         <table class="thesis-table compact">
-                            <caption>Constantes dieléctricas macroscópicas \(\varepsilon^\infty\)  </caption>
+                            <caption>Constantes dieléctricas electrónicas estáticas macroscópicas \(\varepsilon_\infty\) </caption>
                             <thead>
+                                <tr>
+                                    <th class="group-header" colspan="4">\(\varepsilon_\infty\)</th>
+                                </tr>
                                 <tr>
                                     <th>Material</th>
                                     <th>\(G_0W_0\) + BSE</th>
@@ -1579,12 +1630,12 @@
                                 <tr>
                                     <td>MgO</td>
                                     <td>2.87</td>
-                                    <td>2.944 <span class="cite" data-cite="dielectric_constants"></span> - 2.95</span><span class="cite" data-cite="lattice_constants"></span></td>
+                                    <td>2.944 <span class="cite" data-cite="dielectric_constants"></span> - 2.95 <span class="cite" data-cite="MgO_paper"></span></td>
                                 </tr>
                                 <tr>
                                     <td>CaO</td>
                                     <td>3.02</td>
-                                    <td>3.27 <span class="cite" data-cite="dielectric_constants"></span> - 3.33  </span><span class="cite" data-cite="CaO_epsInf"></span></span></td>
+                                    <td>3.27 <span class="cite" data-cite="dielectric_constants"></span> - 3.33 </span><span class="cite" data-cite="CaO_epsInf"></span></td>
                                 </tr>
                                 <tr>
                                     <td>ZnO</td>
@@ -3422,17 +3473,17 @@
             // CITATIONS
                 const citations = {
                 // Groundstate Tables
-                lattice_constants: "D. M. Roessler and W. C. Walker., Phys. Rev., 159:733-738, Jul 1967.",
-                LiF_bandgap_1: "F. Bechstedt., volume 181. 01 2015.",
-                LiF_bandgap_2: "M. Piacentini, D. W. Lynch, and C. G. Olson., Phys. Rev. B, 13:5530-5543, Jun 1976.",
-                MgO_CaO_bandgap: "R. C.Whited, C.J. Flaten, and W. C.Walker., 13(11):1903-1905, 1973.",
-                CaO_bandgap_2: "Yoshio Kaneko and Takao Koda, Journal of Crystal Growth, 86(1):72-78, 1988.",
-                ZnO_bandgap_1: "Dirk Vogel, Peter Kr¨uger, and Johannes Pollmann, Phys. Rev. B, 52:R14316-R14319, Nov 1995.",
+                lattice_constants: "Philipp Haas, Fabien Tran, and Peter Blaha. Calculation of the lattice constant of solids with semilocal functionals. Phys. Rev. B, 79:085104, Feb 2009. ",
+                LiF_bandgap_1: "F. Bechstedt. Many-Body Approach to Electronic Excitations, volume 181. 01 2015.",
+                LiF_bandgap_2: "M. Piacentini, D. W. Lynch, and C. G. Olson. Thermoreflectance of lif between 12 and 30 ev. Phys. Rev. B, 13:5530-5543, Jun 1976.",
+                MgO_CaO_bandgap: "R. C. Whited, C.J. Flaten, and W. C.Walker. Exciton thermoreflectance of MgO and CaO. Solid State Communications, 13(11):1903-1905, 1973.",
+                MgO_paper: "D. M. Roessler and W. C. Walker. Electronic spectrum and ultraviolet optical properties of crystalline MgO., Phys. Rev., 159:733-738, Jul 1967.",
+                CaO_bandgap_2: "Yoshio Kaneko and Takao Koda. New developments in iia-vib (alkaline-earth chalcogenide) binary semiconductors. Journal of Crystal Growth, 86(1):72-78, 1988.",
+                ZnO_bandgap_1: "Dirk Vogel, Peter Krüger. Ab initio electronic-structure calculations for ii-vi semiconductors using self-interaction-corrected pseudopotentials. and Johannes Pollmann. Phys. Rev. B, 52:R14316-R14319, Nov 1995.",
 
-                LiF_ZnO_epsInf: "F. Bernardini and V. Fiorentini, Phys. Rev. B, 1386795 (1998).",
+                LiF_ZnO_epsInf: "F. Bernardini and V. Fiorentini.  Electronic dielectric constants of insulatorsby the polarization method. Phys. Rev. B, 1386795 (1998).",
                 dielectric_constants: "W. Martienssen and H. Warlimont, Springer Handbook of Condensed Matter and Materials Data, Vol. 1 (2005).",
-                CaO_epsInf: "J. Jacobson and E. Nixon, Journal of Physics and Chemistry of Solids 29, 967 (1968).",
-                citation_placeHolder: "",
+                CaO_epsInf: "J.L. Jacobson and E.R. Nixon. Infrared dielectric response and lattice vibrations of calcium and strontium oxides. Journal of Physics and Chemistry of Solids 29, 967 (1968).",
                 citation_placeHolder: "",
 
             };
