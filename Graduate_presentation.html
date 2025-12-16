@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
-    <script src="presentation_data.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" defer ></script>
+    <script src="presentation_data.js" ></script>
 
     <style>
         :root {
@@ -56,6 +56,8 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0; visibility: hidden; transition: opacity 0.5s ease-in-out;
             display: flex; justify-content: center; align-items: center; z-index: 1;
+            /* Add this to hint the browser to promote this to a GPU layer */
+            will-change: opacity, visibility;
         }
 
         .slide.active { opacity: 1; visibility: visible; z-index: 2; }
@@ -397,12 +399,12 @@
         .credit-roll {
             position: absolute;
             width: 100%;
-            top: 70%;
+            top: 90%;
             transform: translateY(-50%);
             text-align: center;
-            animation: creditScroll 30s linear forwards;
+            animation: creditScroll 40s linear forwards;
             animation-delay: 0.2s;
-            animation-timing-function: ease-in-out;
+            /*animation-timing-function: ease-in-out;*/
         }
 
         /* Animation */
@@ -411,7 +413,7 @@
                 transform: translateY(-50%);
             }
             100% {
-                transform: translateY(-250%);
+                transform: translateY(-348%);
             }
         }
 
@@ -1409,25 +1411,25 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>LiF (\(\Gamma - \Gamma\))</td>
+                        <td>LiF \(\left(\Gamma - \Gamma\right)\)</td>
                         <td>9.07</td>
                         <td>13.63</td>
                         <td>13.7-14.2 <span class="cite" data-cite="LiF_bandgap_1"></span><span class="cite" data-cite="LiF_bandgap_2"></span></td>
                     </tr>
                     <tr>
-                        <td>MgO (\(\Gamma - \Gamma\))</td>
+                        <td>MgO \(\left(\Gamma - \Gamma\right)\)</td>
                         <td>4.6</td>
                         <td>7.29</td>
                         <td>7.77-7.83 <span class="cite" data-cite="MgO_paper"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
                     </tr>
                     <tr>
-                        <td>CaO (\(X - X\))</td>
+                        <td>CaO \(\left(X - X\right)\)</td>
                         <td>3.5</td>
                         <td>6.02</td>
                         <td>6.88-7.09 <span class="cite" data-cite="CaO_bandgap_2"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
                     </tr>
                     <tr>
-                        <td>ZnO (\(\Gamma - \Gamma\))</td>
+                        <td>ZnO \(\left(\Gamma - \Gamma\right)\)</td>
                         <td>0.72</td>
                         <td>2.27</td>
                         <td>3.4 <span class="cite" data-cite="ZnO_bandgap_1"></span></td>
@@ -1515,18 +1517,18 @@
                 <div class="plot-grid-custom2" style="border-radius: 0;">
                     <div class="subfigure-row">
                         <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_LiF_1_bands" class="img-dark-mode1">
-                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_LiF_1_wf" class="img-dark-mode2">
-                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_1.mp4" type="video/mp4" class="img-dark-mode2" >
+                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_LiF_1_wf">
+                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_1.mp4.mov" type="video/mov" >
                     </div>
                     <div class="subfigure-row">
                         <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_LiF_2_bands" class="img-dark-mode1">
-                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_LiF_2_wf" class="img-dark-mode2">
-                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_2.mp4" type="video/mp4" class="img-dark-mode2" >
+                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_LiF_2_wf">
+                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_2.mp4.mov" type="video/mov" >
                     </div>
                     <div class="subfigure-row">
                         <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000003.OUT.png" alt="exciton_LiF_3_bands" class="img-dark-mode1">
-                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000003-000001_iso.png" alt="exciton_LiF_3_wf" class="img-dark-mode2">
-                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_3.mp4" type="video/mp4" class="img-dark-mode2" >
+                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000003-000001_iso.png" alt="exciton_LiF_3_wf">
+                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_3.mp4.mov" type="video/mov" >
                     </div>
                 </div>
 
@@ -1542,8 +1544,8 @@
 
                 <div class="subfigure-row">
                     <img src="MgO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_MgO_1_bands" class="img-dark-mode1">
-                    <img src="MgO/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_MgO_1" class="img-dark-mode2">
-                    <video autoplay muted loop playsinline src="MgO/EXCITONS/optical/MgO_optical_1.mp4" type="video/mp4" class="img-dark-mode2" >
+                    <img src="MgO/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_MgO_1">
+                    <video autoplay muted loop playsinline src="MgO/EXCITONS/optical/MgO_optical_1.mp4.mov" type="video/mov" >
                 </div>
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
@@ -1558,13 +1560,13 @@
                 <div class="plot-grid-custom2" no-round>
                     <div class="subfigure-row">
                         <img src="CaO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_CaO_1_bands" class="img-dark-mode1">
-                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_CaO_1_wf" class="img-dark-mode2">
-                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_2.mp4" type="video/mp4" class="img-dark-mode2" >
+                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_CaO_1_wf">
+                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_2.mp4.mov" type="video/mov" >
                     </div>
                     <div class="subfigure-row">
                         <img src="CaO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000005.OUT.png" alt="exciton_CaO_2_bands" class="img-dark-mode1">
-                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000005-000001_iso.png" alt="exciton_CaO_2_wf" class="img-dark-mode2">
-                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_5.mp4" type="video/mp4"  class="img-dark-mode2">
+                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000002-000005_iso.png" alt="exciton_CaO_2_wf">
+                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_5.mp4.mov" type="video/mov" >
                     </div>
                 </div>
 
@@ -1581,11 +1583,23 @@
                 <div class="plot-grid-custom2">
                     <div class="subfigure-row">
                         <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
-                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_ZnO_1_wf" class="img-dark-mode2">
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_ZnO_1_wf">
+                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_1.mp4.mov" type="video/mov" >
                     </div>
                     <div class="subfigure-row">
-                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_2_bands" class="img-dark-mode1">
-                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000006_iso.png" alt="exciton_ZnO_2_wf" class="img-dark-mode2">
+                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000002_iso.png" alt="exciton_ZnO_1_wf">
+                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_2.mp4.mov" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000003_iso.png" alt="exciton_ZnO_1_wf">
+                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_3.mp4.mov" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000004_iso.png" alt="exciton_ZnO_1_wf">
+                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_4.mp4.mov" type="video/mov" >
                     </div>
                 </div>
 
@@ -1741,7 +1755,7 @@
     <div class="slide" id="slide-acknowledgements">
         <div class="slide-content credit-slide">
 
-            <h2>Acknowledgements</h2>
+            <h2>Agradecimientos</h2>
 
             <div class="credit-viewport">
                 <div class="credit-roll">
@@ -1862,7 +1876,16 @@
         const progressBar = document.getElementById('progressBar');
 
         // Animation frames trackers
-        let anims = {
+        const anims = {
+            expSetup: null,
+            mbDft: null,
+            KS: null,
+            excitation: null,
+            screenE: null,
+            greenE: null
+        };
+
+        const animState = {
             expSetup: null,
             mbDft: null,
             KS: null,
@@ -1882,6 +1905,8 @@
 
             // Stop All
             Object.keys(anims).forEach(k => { if(anims[k]) cancelAnimationFrame(anims[k]); anims[k]=null; });
+            // 🔑 RESET STATES
+            Object.keys(animState).forEach(k => animState[k] = false);
 
             // Start Specific
             if (slides[index].id === 'slide1') {
@@ -2106,6 +2131,9 @@
 
         /* --- 1. MANY-BODY vs DFT ANIMATION (Slide 2) --- */
         function initMbDftAnim() {
+            if (animState.mbDft) return;
+            animState.mbDft = true;
+
             const canvas = document.getElementById('mbDftCanvas');
             const ctx = canvas.getContext('2d');
             const container = canvas.parentElement;
@@ -2126,6 +2154,8 @@
             let time = 0;
 
             function animate() {
+                if (!animState.mbDft) return;
+
                 // Resize if needed
                 if (canvas.width !== container.clientWidth || canvas.height !== container.clientHeight) {
                     canvas.width = container.clientWidth;
@@ -2219,8 +2249,16 @@
             animate();
         }
 
+        function stopMbDftAnim() {
+            animState.mbDft = false;
+            if (anims.mbDft) cancelAnimationFrame(anims.mbDft);
+        }
+
         /* --- 2. MANY-BODY vs KOHN-SHAM ANIMATION (Slide ?) --- */
         function initKSAnim() {
+            if (animState.KS) return;
+            animState.KS = true;
+
             let initialized = false;
             const canvas = document.getElementById('KSCanvas');
             const ctx = canvas.getContext('2d');
@@ -2308,6 +2346,8 @@
             }
 
             function animate() {
+                if (!animState.KS) return;
+
                 if (canvas.width !== container.clientWidth || canvas.height !== container.clientHeight) {
                     canvas.width = container.clientWidth; canvas.height = container.clientHeight;
                 }
@@ -2388,6 +2428,11 @@
                 anims.KS = requestAnimationFrame(animate);
             }
             animate();
+        }
+
+        function stopKSAnim() {
+            animState.KS = false;
+            if (anims.KS) cancelAnimationFrame(anims.KS);
         }
 
         function drawBandgapFigure() {
@@ -2521,6 +2566,9 @@
 
         /* --- NEW: GREEN'S FUNCTION ANIMATION (Electron forward, Hole backward) --- */
         function initGreensAnim() {
+            if (animState.greens) return;
+            animState.greens = true;
+
             const cE = document.getElementById('greenElectronCanvas');
             const cH = document.getElementById('greenHoleCanvas');
             const ctxE = cE.getContext('2d');
@@ -2575,6 +2623,8 @@
             }
 
             function animate() {
+                if (!animState.greens) return;
+
                 // Resize if needed
                 if (cE.width !== contE.clientWidth) {
                     cE.width = contE.clientWidth;
@@ -2712,6 +2762,11 @@
             }
 
             animate();
+        }
+
+        function stopGreensAnim() {
+            animState.greens = false;
+            if (anims.greenE) cancelAnimationFrame(anims.greenE);
         }
 
         /* --- ANIMATION 2: GW SCREENING (ELECTRON ONLY) --- */
@@ -3271,6 +3326,102 @@
 
             };
 
+        /* --- 4. EXCITATION ANIMATION (Slide ?? - Parabolic) --- */
+        const exCanvas = document.getElementById('excitationCanvas');
+        const exCtx = exCanvas.getContext('2d');
+        let width, height, exTime=0, phase='incoming', photonX=-100, electronY=0, electronX=0;
+        const bands = { vbTop: 0, cbBottom: 0, centerX: 0 };
+
+        function resizeExcitation() {
+            const wrapper = exCanvas.parentElement;
+            if(!wrapper) return;
+            width = exCanvas.width = wrapper.clientWidth; height = exCanvas.height = wrapper.clientHeight;
+            bands.vbTop = height * 0.7; bands.cbBottom = height * 0.3; bands.centerX = width / 2;
+            if (phase === 'incoming') { electronY = bands.vbTop; electronX = bands.centerX; }
+            animateExcitation();
+        }
+
+        function drawParabolicBands() {
+            exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 3;
+            const kMax = 400;
+
+            // CB (Up)
+            exCtx.beginPath();
+            for (let k = -kMax; k <= kMax; k++) {
+                const x = bands.centerX + k;
+                const y = bands.cbBottom - (k*k)/2500;
+                if (k === -kMax) exCtx.moveTo(x, y); else exCtx.lineTo(x, y);
+            }
+            exCtx.stroke();
+
+            // VB (Down)
+            exCtx.beginPath();
+            for (let k = -kMax; k <= kMax; k++) {
+                const x = bands.centerX + k;
+                const y = bands.vbTop + (k*k)/2500;
+                if (k === -kMax) exCtx.moveTo(x, y); else exCtx.lineTo(x, y);
+            }
+            exCtx.stroke();
+        }
+
+        function drawPhoton(x, y) {
+            exCtx.beginPath(); exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 3;
+            for (let i = 0; i < 80; i++) {
+                const px = x - i; const py = y + Math.sin((x - i) * 0.2 - exTime * 0.2) * 8;
+                if (i === 0) exCtx.moveTo(px, py); else exCtx.lineTo(px, py);
+            }
+            exCtx.stroke(); exCtx.fillStyle = PALETTE.curve1; exCtx.beginPath();
+            exCtx.arc(x, y + Math.sin(x * 0.2 - exTime * 0.2) * 8, 3, 0, Math.PI*2); exCtx.fill();
+        }
+
+        function drawElectron(x, y) {
+            const grad = exCtx.createRadialGradient(x, y, 2, x, y, 15);
+            grad.addColorStop(0, '#ffffff'); grad.addColorStop(0.4, PALETTE.curve1); grad.addColorStop(1, 'rgba(222, 255, 154, 0)');
+            exCtx.fillStyle = grad; exCtx.beginPath(); exCtx.arc(x, y, 15, 0, Math.PI*2); exCtx.fill();
+            exCtx.fillStyle = '#fff'; exCtx.beginPath(); exCtx.arc(x, y, 4, 0, Math.PI*2); exCtx.fill();
+        }
+
+        function drawHole(x, y) {
+            exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 2;
+            exCtx.beginPath(); exCtx.arc(x, y, 8, 0, Math.PI*2); exCtx.stroke();
+            exCtx.fillStyle = '#000'; exCtx.fill();
+            //exCtx.beginPath(); exCtx.moveTo(x-4, y); exCtx.lineTo(x+4, y); exCtx.moveTo(x, y-4); exCtx.lineTo(x, y+4); exCtx.stroke();
+        }
+
+        function drawInteraction(ex, ey, hx, hy) {
+            exCtx.setLineDash([5, 5]); exCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            exCtx.beginPath(); exCtx.moveTo(ex, ey); exCtx.lineTo(hx, hy); exCtx.stroke(); exCtx.setLineDash([]);
+        }
+
+        function animateExcitation() {
+            exCtx.clearRect(0, 0, width, height); drawParabolicBands();
+
+            // Positions
+            const targetY = bands.cbBottom + 0; // Slightly above bottom for visual
+            const startY = bands.vbTop - 0;     // Slightly below top
+
+            if (phase === 'incoming') {
+                drawElectron(electronX, startY); photonX += 6; drawPhoton(photonX, startY);
+                if (photonX >= electronX) phase = 'transition';
+            } else if (phase === 'transition') {
+                drawHole(electronX, startY); const speed = (electronY - targetY) * 0.08;
+                electronY -= Math.max(speed, 1.0); drawElectron(electronX, electronY);
+                if (electronY <= targetY) { electronY = targetY; phase = 'bound'; }
+            } else if (phase === 'bound') {
+                drawHole(electronX, startY); drawElectron(electronX, targetY + Math.sin(exTime*0.05)*3);
+                drawInteraction(electronX, targetY, electronX, startY);
+                exCtx.fillStyle = PALETTE.text; exCtx.font = 'bold 20px Urbanist'; exCtx.textAlign = 'center';
+                exCtx.fillText("Excitón", bands.centerX + 100, height/2 ); exCtx.textAlign = 'left';
+            }
+            exTime++;
+            anims.excitation = requestAnimationFrame(animateExcitation);
+        }
+
+        function resetAnim() {
+            if(anims.excitation) cancelAnimationFrame(anims.excitation);
+            phase = 'incoming'; photonX = -100; resizeExcitation();
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
 
             /* -----------------------------------------
@@ -3563,107 +3714,17 @@
 
         });
 
-        /* --- 4. EXCITATION ANIMATION (Slide ?? - Parabolic) --- */
-        const exCanvas = document.getElementById('excitationCanvas');
-        const exCtx = exCanvas.getContext('2d');
-        let width, height, exTime=0, phase='incoming', photonX=-100, electronY=0, electronX=0;
-        const bands = { vbTop: 0, cbBottom: 0, centerX: 0 };
-
-        function resizeExcitation() {
-            const wrapper = exCanvas.parentElement;
-            if(!wrapper) return;
-            width = exCanvas.width = wrapper.clientWidth; height = exCanvas.height = wrapper.clientHeight;
-            bands.vbTop = height * 0.7; bands.cbBottom = height * 0.3; bands.centerX = width / 2;
-            if (phase === 'incoming') { electronY = bands.vbTop; electronX = bands.centerX; }
-            animateExcitation();
-        }
-
-        function drawParabolicBands() {
-            exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 3;
-            const kMax = 400;
-
-            // CB (Up)
-            exCtx.beginPath();
-            for (let k = -kMax; k <= kMax; k++) {
-                const x = bands.centerX + k;
-                const y = bands.cbBottom - (k*k)/2500;
-                if (k === -kMax) exCtx.moveTo(x, y); else exCtx.lineTo(x, y);
-            }
-            exCtx.stroke();
-
-            // VB (Down)
-            exCtx.beginPath();
-            for (let k = -kMax; k <= kMax; k++) {
-                const x = bands.centerX + k;
-                const y = bands.vbTop + (k*k)/2500;
-                if (k === -kMax) exCtx.moveTo(x, y); else exCtx.lineTo(x, y);
-            }
-            exCtx.stroke();
-        }
-
-        function drawPhoton(x, y) {
-            exCtx.beginPath(); exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 3;
-            for (let i = 0; i < 80; i++) {
-                const px = x - i; const py = y + Math.sin((x - i) * 0.2 - exTime * 0.2) * 8;
-                if (i === 0) exCtx.moveTo(px, py); else exCtx.lineTo(px, py);
-            }
-            exCtx.stroke(); exCtx.fillStyle = PALETTE.curve1; exCtx.beginPath();
-            exCtx.arc(x, y + Math.sin(x * 0.2 - exTime * 0.2) * 8, 3, 0, Math.PI*2); exCtx.fill();
-        }
-
-        function drawElectron(x, y) {
-            const grad = exCtx.createRadialGradient(x, y, 2, x, y, 15);
-            grad.addColorStop(0, '#ffffff'); grad.addColorStop(0.4, PALETTE.curve1); grad.addColorStop(1, 'rgba(222, 255, 154, 0)');
-            exCtx.fillStyle = grad; exCtx.beginPath(); exCtx.arc(x, y, 15, 0, Math.PI*2); exCtx.fill();
-            exCtx.fillStyle = '#fff'; exCtx.beginPath(); exCtx.arc(x, y, 4, 0, Math.PI*2); exCtx.fill();
-        }
-
-        function drawHole(x, y) {
-            exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 2;
-            exCtx.beginPath(); exCtx.arc(x, y, 8, 0, Math.PI*2); exCtx.stroke();
-            exCtx.fillStyle = '#000'; exCtx.fill();
-            //exCtx.beginPath(); exCtx.moveTo(x-4, y); exCtx.lineTo(x+4, y); exCtx.moveTo(x, y-4); exCtx.lineTo(x, y+4); exCtx.stroke();
-        }
-
-        function drawInteraction(ex, ey, hx, hy) {
-            exCtx.setLineDash([5, 5]); exCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-            exCtx.beginPath(); exCtx.moveTo(ex, ey); exCtx.lineTo(hx, hy); exCtx.stroke(); exCtx.setLineDash([]);
-        }
-
-        function animateExcitation() {
-            exCtx.clearRect(0, 0, width, height); drawParabolicBands();
-
-            // Positions
-            const targetY = bands.cbBottom + 0; // Slightly above bottom for visual
-            const startY = bands.vbTop - 0;     // Slightly below top
-
-            if (phase === 'incoming') {
-                drawElectron(electronX, startY); photonX += 6; drawPhoton(photonX, startY);
-                if (photonX >= electronX) phase = 'transition';
-            } else if (phase === 'transition') {
-                drawHole(electronX, startY); const speed = (electronY - targetY) * 0.08;
-                electronY -= Math.max(speed, 1.0); drawElectron(electronX, electronY);
-                if (electronY <= targetY) { electronY = targetY; phase = 'bound'; }
-            } else if (phase === 'bound') {
-                drawHole(electronX, startY); drawElectron(electronX, targetY + Math.sin(exTime*0.05)*3);
-                drawInteraction(electronX, targetY, electronX, startY);
-                exCtx.fillStyle = PALETTE.text; exCtx.font = 'bold 20px Urbanist'; exCtx.textAlign = 'center';
-                exCtx.fillText("Excitón", bands.centerX + 100, height/2 ); exCtx.textAlign = 'left';
-            }
-            exTime++;
-            anims.excitation = requestAnimationFrame(animateExcitation);
-        }
-
-        function resetAnim() {
-            if(anims.excitation) cancelAnimationFrame(anims.excitation);
-            phase = 'incoming'; photonX = -100; resizeExcitation();
-        }
-
+        let resizeTimer;
         window.addEventListener('resize', () => {
-            if(currentSlide === 1) initMbDftAnim();
-            if(currentSlide === 2) initGreensAnim(); // NEW Slide index
-            if(currentSlide === 3) resizeExcitation();
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                // runs ONCE after resize ends
+                if(currentSlide === 1) initMbDftAnim();
+                if(currentSlide === 2) initGreensAnim();
+                if(currentSlide === 3) resizeExcitation();
+            }, 200);
         });
+
         window.addEventListener('load', () => { updateProgress(); });
 
 
