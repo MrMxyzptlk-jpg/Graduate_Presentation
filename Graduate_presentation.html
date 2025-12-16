@@ -328,6 +328,18 @@
         .progress-bar { position: fixed; bottom: 0; left: 0; height: 4px; background: var(--border-color); width: 0%; transition: width 0.3s; z-index: 101; }
 
         .slide-footer { position: absolute; bottom: 20px; left: 70px; right: 70px; padding-top: 15px; display: flex; justify-content: space-between; opacity: 0.5; font-size: 0.9rem; }
+        .back-btn { left: 20px; }
+        .skip-btn { right: 20px; }
+
+        .plot-thumb {
+            width: 160px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s;
+        }
+        .plot-thumb:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
 
         /* Fix flex → grid collapse */
         .slide-content { min-width: 0; }
@@ -1183,7 +1195,7 @@
                 <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
                     <h3 style="color: var(--accent-purple); text-align:center;">Extra electrón (repulsión)</h3>
                     <div class="media-container" style="flex: 1;  max-height: 300px;">
-                        <div style="position: absolute; top: 10px; left: 10px; color: var(--text-secondary); font-size: 14px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 4px;">Extra Electrón (Repulsión)</div>
+                        <div style="position: absolute; top: 10px; left: 10px; color: var(--text-secondary); font-size: 14px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 4px;"></div>
                         <canvas id="screenElectronCanvas"></canvas>
                     </div>
                 </div>
@@ -1668,6 +1680,32 @@
         </div>
     </div>
 
+    <!-- SLIDE ??: XANES Plots (Im) -->
+    <div class="slide" id="slide-XANES">
+        <div class="slide-content">
+            <h2>Espectros XANES</h2>
+
+            <div style="width: 95%; height: 70%; margin: 0 auto;">
+                <div class="plot-grid-custom4">
+                    <div id="LiF_button" class="plot-thumb no-zoom" style="height: 275px;" onclick="openDetail('slide-XANES-Im-LiF')">
+                        <img src="LiF/LiF_structure.png" alt="Struct_LiF"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    </div>
+                    <div id="MgO_button" class="plot-thumb no-zoom" style="height: 275px;" onclick="openDetail('slide-XANES-Im-MgO')">
+                        <img src="MgO/MgO_structure.png" alt="Struct_MgO"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    </div>
+                    <div id="CaO_button" class="plot-thumb no-zoom" style="height: 275px;" onclick="openDetail('slide-XANES-Im-CaO')">
+                        <img src="CaO/CaO_structure.png" alt="Struct_CaO" style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    </div>
+                    <div id="ZnO_button" class="plot-thumb no-zoom" style="height: 275px;" onclick="openDetail('slide-XANES-Im-ZnO')">
+                        <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    </div>
+                </div>
+            </div>
+            <button class="nav-btn skip-btn" style="width: 100px;" onclick="openDetail('slide-conclusions')"> ⏭ </button>
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
     <!-- SLIDE ??: XANES Plots (Im) LiF -->
     <div class="slide" id="slide-XANES-Im-LiF">
         <div class="slide-content">
@@ -1679,7 +1717,7 @@
                     <div id="plot-XANES_LiF_F_K" class="plot-box" style="height: 275px;"></div>
                 </div>
             </div>
-
+            <button class="nav-btn back-btn" style="width: 100px;" onclick="goBackToOverview()">⬅ </button>
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
@@ -1697,6 +1735,7 @@
                 </div>
             </div>
 
+            <button class="nav-btn back-btn" style="width: 100px;" onclick="goBackToOverview()">⬅ </button>
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
@@ -1714,6 +1753,7 @@
                 </div>
             </div>
 
+            <button class="nav-btn back-btn" style="width: 100px;" onclick="goBackToOverview()">⬅ </button>
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
@@ -1734,13 +1774,14 @@
                 </div>
             </div>
 
+            <button class="nav-btn back-btn" style="width: 100px;" onclick="goBackToOverview()">⬅ </button>
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
 
     <!-- SLIDE ??: CONCLUSIONS -->
-    <div class="slide">
+    <div class="slide" id="slide-conclusions">
         <div class="slide-content" style="text-align: center; justify-content: center;">
             <h2>Conclusiones</h2>
             <ul style="text-align: left; width: 60%; margin: 0 auto;">
@@ -1867,6 +1908,7 @@
 
         /* --- SCENE MANAGER LOGIC --- */
         let currentSlide = 0;
+        let lastOverviewSlide = null;
 
         // Slide 1 State Tracker
         // -1: Intro, 0..7: Steps
@@ -2009,6 +2051,23 @@
             if (e.key === "Home") goToSlide(0);
             if (e.key === "End")  goToSlide(slides.length - 1);
             });
+
+        // Slide Jumping Mechanics
+        function openDetail(targetSlideId) {
+            lastOverviewSlide = currentSlide;
+            goToSlideById(targetSlideId);
+        }
+
+        function goToSlideById(id) {
+            const index = [...slides].findIndex(s => s.id === id);
+            if (index !== -1) showSlide(index);
+        }
+
+        function goBackToOverview() {
+            if (lastOverviewSlide !== null) {
+                showSlide(lastOverviewSlide);
+            }
+        }
 
         /* --- NEW: EXPERIMENTAL SETUP ANIMATION (Slide 1) --- */
         function initExpSetupAnim() {
