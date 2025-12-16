@@ -8,9 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+    <script src="presentation_data.js"></script>
 
     <style>
         :root {
@@ -2846,449 +2846,430 @@
                 showTicks = false
             } = options;
 
-            Promise.all(
-                curveSpecs.map(spec =>
-                    fetch(spec.file)
-                        .then(r => r.text())
-                        .then(text => {
+            // --- CHANGE 1: Remove Promise.all/fetch and map directly ---
+            const datasets = curveSpecs.map(spec => {
+                return {
+                    spec: spec,
+                    // Access the data object you passed (e.g., LiF_optical_EXC_data)
+                    x: spec.data.x,
+                    y: spec.data.y
+                };
+            });
 
-                            const rows = text
-                                .split("\n")
-                                .filter(r => r.trim() && !r.trim().startsWith("#"));
+            // --- CHANGE 2: The rest of the code is identical, just no longer inside .then() ---
 
-                            const x = [];
-                            const y = [];
+            // font scaling remains unchanged
+            function adaptiveFont(container) {
+                const h = container.clientHeight;
+                const w = container.clientWidth;
+                const base = Math.min(w, h);
 
-                            rows.forEach(r => {
-                                const c = r.trim().split(/[\s,]+/).map(Number);
-                                if (!isNaN(c[0]) && !isNaN(c[1])) {
-                                    x.push(c[0]);
-                                    y.push(c[1]);
-                                }
-                            });
+                return {
+                    title: Math.max(12, base * 0.05),
+                    label: Math.max(10, base * 0.04),
+                    ticks: Math.max(10, base * 0.04),
+                    legend: Math.max(10, base * 0.04)
+                };
+            }
 
-                            return { spec, x, y };
-                        })
-                )
-            ).then(datasets => {
+            const container = document.getElementById(divId);
+            if (!container) return; // Safety check
 
-                // font scaling remains unchanged
-                function adaptiveFont(container) {
-                    const h = container.clientHeight;
-                    const w = container.clientWidth;
-                    const base = Math.min(w, h);
+            const fonts = adaptiveFont(container);
 
-                    return {
-                        title: Math.max(12, base * 0.05),
-                        label: Math.max(10, base * 0.04),
-                        ticks: Math.max(10, base * 0.04),
-                        legend: Math.max(10, base * 0.04)
+            const allX = datasets.flatMap(d => d.x);
+            const allY = datasets.flatMap(d => d.y);
+            const dataMinX = Math.min(...allX);
+            const dataMaxX = Math.max(...allX);
+            const dataMinY = Math.min(...allY);
+            const dataMaxY = Math.max(...allY);
+            const y_eps = 0.2;
+
+            const traces = [];
+
+            datasets.forEach(({ spec, x, y }) => {
+                let trace;
+
+                if (spec.mode === "impulse") {
+                    const xi = [], yi = [];
+                    for (let i = 0; i < x.length; i++) {
+                        xi.push(x[i], x[i], NaN);
+                        yi.push(0, y[i], NaN);
+                    }
+                    trace = {
+                        x: xi,
+                        y: yi,
+                        mode: "lines",
+                        name: spec.name,
+                        line: { width: 1, color: spec.color },
+                        hoverinfo: "skip",
+                        connectgaps: false
+                    };
+                } else if (spec.mode === "line") {
+                    trace = {
+                        x, y,
+                        mode: "lines",
+                        name: spec.name,
+                        line: { width: 2, color: spec.color }
+                    };
+                } else if (spec.mode === "markers") {
+                    trace = {
+                        x, y,
+                        mode: "markers",
+                        name: spec.name,
+                        marker: { size: 6, color: spec.color }
+                    };
+                } else if (spec.mode === "line+markers") {
+                    trace = {
+                        x, y,
+                        mode: "lines+markers",
+                        name: spec.name,
+                        line: { width: 2, color: spec.color },
+                        marker: { size: 6, color: spec.color }
                     };
                 }
 
-                const container = document.getElementById(divId);
-                const fonts = adaptiveFont(container);
+                traces.push(trace);
+            });
 
-                const allX = datasets.flatMap(d => d.x);
-                const allY = datasets.flatMap(d => d.y);
-                const dataMinX = Math.min(...allX);
-                const dataMaxX = Math.max(...allX);
-                const dataMinY = Math.min(...allY);
-                const dataMaxY = Math.max(...allY);
-                const y_eps = 0.2;
+            // ----------- correct axis positions -----------
+            const xmin = xlim ? xlim[0] : dataMinX;
+            const xmax = xlim ? xlim[1] : dataMaxX;
+            const ymin = ylim ? ylim[0] : Math.min(0, dataMinY);
+            const ymax = ylim ? ylim[1] : dataMaxY + y_eps;
 
-                const traces = [];
+            // ----------- shapes array building ------------
+            const shapes = [
+                // horizontal axis at y=0
+                {
+                    type: "line",
+                    x0: xmin,
+                    x1: xmax,
+                    y0: 0,
+                    y1: 0,
+                    line: { width: 2, color: "white" }
+                },
+                // vertical axis at min-X
+                {
+                    type: "line",
+                    x0: xmin,
+                    x1: xmin,
+                    y0: ymin,
+                    y1: ymax,
+                    line: { width: 2, color: "white" }
+                }
+            ];
 
-                datasets.forEach(({ spec, x, y }) => {
-                    let trace;
-
-                    if (spec.mode === "impulse") {
-                        const xi = [], yi = [];
-                        for (let i = 0; i < x.length; i++) {
-                            xi.push(x[i], x[i], NaN);
-                            yi.push(0, y[i], NaN);
-                        }
-                        trace = {
-                            x: xi,
-                            y: yi,
-                            mode: "lines",
-                            name: spec.name,
-                            line: { width: 1, color: spec.color },
-                            hoverinfo: "skip",
-                            connectgaps: false
-                        };
-                    } else if (spec.mode === "line") {
-                        trace = {
-                            x, y,
-                            mode: "lines",
-                            name: spec.name,
-                            line: { width: 2, color: spec.color }
-                        };
-                    } else if (spec.mode === "markers") {
-                        trace = {
-                            x, y,
-                            mode: "markers",
-                            name: spec.name,
-                            marker: { size: 6, color: spec.color }
-                        };
-                    } else if (spec.mode === "line+markers") {
-                        trace = {
-                            x, y,
-                            mode: "lines+markers",
-                            name: spec.name,
-                            line: { width: 2, color: spec.color },
-                            marker: { size: 6, color: spec.color }
-                        };
-                    }
-
-                    traces.push(trace);
-                });
-
-                // ----------- NEW: correct axis positions -----------
-                const xmin = xlim ? xlim[0] : dataMinX;
-                const xmax = xlim ? xlim[1] : dataMaxX;
-                const ymin = ylim ? ylim[0] : Math.min(0, dataMinY);
-                const ymax = ylim ? ylim[1] : dataMaxY + y_eps;
-
-                // ----------- NEW: shapes array building ------------
-                const shapes = [
-                    // horizontal axis at y=0
-                    {
+            // ----------- add per-curve vertical dashed line ----------------
+            datasets.forEach(({ spec }) => {
+                if (spec.xline !== undefined && !isNaN(spec.xline)) {
+                    shapes.push({
                         type: "line",
-                        x0: xmin,
-                        x1: xmax,
-                        y0: 0,
-                        y1: 0,
-                        line: { width: 2, color: "white" }
-                    },
-                    // vertical axis at min-X
-                    {
-                        type: "line",
-                        x0: xmin,
-                        x1: xmin,
-                        y0: ymin,
-                        y1: ymax,
-                        line: { width: 2, color: "white" }
-                    }
-                ];
-
-                // ----------- NEW: add per-curve vertical dashed line ----------------
-                datasets.forEach(({ spec }) => {
-                    if (spec.xline !== undefined && !isNaN(spec.xline)) {
-                        shapes.push({
-                            type: "line",
-                            x0: spec.xline,
-                            y0: ymin,
-                            x1: spec.xline,
-                            y1: ymax,
-                            line: {
-                                width: 1,
-                                dash: "dash",
-                                color: PALETTE.text
-                            }
-                        });
-                    }
-                });
-
-                // --- layout ---
-                const layout = {
-                    margin: { l: 80, r: 14, t: 50, b: 80 },
-
-                    paper_bgcolor: "#111",
-                    plot_bgcolor: "#111",
-                    font: { color: PALETTE.text },
-
-                    annotations: title ? [
-                        {
-                            x: 1.00,
-                            y: 1.03,
-                            xref: "paper",
-                            yref: "paper",
-                            text: title,
-                            showarrow: false,
-                            xanchor: "right",
-                            yanchor: "bottom",
-                            align: "right",
-                            font: {
-                                size: fonts.title,
-                                color: PALETTE.text
-                            }
+                        x0: spec.xline, x1: spec.xline, y0: ymin, y1: ymax,
+                        line: {
+                            width: 1,
+                            dash: "dash",
+                            color: PALETTE.text
                         }
-                    ] : [],
+                    });
+                }
+            });
 
-                    xaxis: {
-                        title: xlabel,
-                        titlefont: { size: fonts.label },
-                        tickfont: { size: fonts.ticks },
-                        showgrid: false,
-                        zeroline: false,
-                        showticklabels: showTicks,
-                        range: [xmin, xmax]
-                    },
+            // --- layout ---
+            const layout = {
+                margin: { l: 80, r: 14, t: 50, b: 80 },
 
-                    yaxis: {
-                        title: ylabel,
-                        titlefont: { size: fonts.label },
-                        tickfont: { size: fonts.ticks },
-                        showgrid: false,
-                        zeroline: false,
-                        showticklabels: showTicks,
-                        range: [ymin, ymax]
-                    },
+                paper_bgcolor: "#111",
+                plot_bgcolor: "#111",
+                font: { color: "white" }, // Replaced PALETTE.text
 
-                    legend: {
-                        font: { size: fonts.legend },
+                annotations: title ? [
+                    {
                         x: 1.00,
-                        y: 0.98,
+                        y: 1.03,
+                        xref: "paper",
+                        yref: "paper",
+                        text: title,
+                        showarrow: false,
                         xanchor: "right",
-                        yanchor: "top",
-                        orientation: "v"
-                    },
+                        yanchor: "bottom",
+                        align: "right",
+                        font: {
+                            size: fonts.title,
+                            color: PALETTE.text
+                        }
+                    }
+                ] : [],
 
-                    // NEW: force legend display always
-                    showlegend: true,
+                xaxis: {
+                    title: xlabel,
+                    titlefont: { size: fonts.label },
+                    tickfont: { size: fonts.ticks },
+                    showgrid: false,
+                    zeroline: false,
+                    showticklabels: showTicks,
+                    range: [xmin, xmax]
+                },
 
-                    shapes,
+                yaxis: {
+                    title: ylabel,
+                    titlefont: { size: fonts.label },
+                    tickfont: { size: fonts.ticks },
+                    showgrid: false,
+                    zeroline: false,
+                    showticklabels: showTicks,
+                    range: [ymin, ymax]
+                },
 
-                    autosize: true
-                };
+                legend: {
+                    font: { size: fonts.legend },
+                    x: 1.00,
+                    y: 0.98,
+                    xanchor: "right",
+                    yanchor: "top",
+                    orientation: "v"
+                },
 
-                Plotly.newPlot(divId, traces, layout, {
-                    displayModeBar: false,
-                    responsive: true
-                });
+                showlegend: true,
+
+                shapes,
+
+                autosize: true
+            };
+
+            Plotly.newPlot(divId, traces, layout, {
+                displayModeBar: false,
+                responsive: true
             });
         }
 
-
         window.plotSpecs = {
-            // Optical Im
-            "plot-optical_LiF": {
-                curves: [
-                    { file: "LiF/optical_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "LiF/optical_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 14.66 },
-                    { file: "LiF/optical_exp_Im.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "LiF  shift=0.9eV", xlim: [10, 30], ylim: [0, 9], xlabel: "Energía [eV]", ylabel: "Im(ε)", showTicks: true }
-            },
+                // Optical Im
+                "plot-optical_LiF": {
+                    curves: [
+                        { data: LiF_optical_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: LiF_optical_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 14.66 },
+                        { data: LiF_optical_exp_Im,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "LiF  shift=0.9eV", xlim: [10, 30], ylim: [0, 9], xlabel: "Energía [eV]", ylabel: "Im(ε)", showTicks: true }
+                },
 
-            "plot-optical_MgO": {
-                curves: [
-                    { file: "MgO/optical_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "MgO/optical_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 7.99 },
-                    { file: "MgO/optical_exp_Im.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "MgO  shift=0.7eV", xlim: [0, 30], ylim: [0, 6], xlabel: "Energía [eV]", ylabel: "Im(ε)", showTicks: true }
-            },
+                "plot-optical_MgO": {
+                    curves: [
+                        { data: MgO_optical_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: MgO_optical_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 7.99 },
+                        { data: MgO_optical_exp_Im,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "MgO  shift=0.7eV", xlim: [0, 30], ylim: [0, 6], xlabel: "Energía [eV]", ylabel: "Im(ε)", showTicks: true }
+                },
 
-            "plot-optical_CaO": {
-                curves: [
-                    { file: "CaO/optical_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "CaO/optical_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 6.925 },
-                    { file: "CaO/optical_exp_Im.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "CaO  shift=0.8eV", xlim: [4, 15], ylim: [0, 16], xlabel: "Energía [eV]", ylabel: "Im(ε)", showTicks: true }
-            },
+                "plot-optical_CaO": {
+                    curves: [
+                        { data: CaO_optical_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: CaO_optical_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 6.925 },
+                        { data: CaO_optical_exp_Im,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "CaO  shift=0.8eV", xlim: [4, 15], ylim: [0, 16], xlabel: "Energía [eV]", ylabel: "Im(ε)", showTicks: true }
+                },
 
-            "plot-optical_ZnO_ord": {
-                curves: [
-                    { file: "ZnO/optical_EXC_xy.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "ZnO/optical_Im_xy.dat",        mode: "line",    name: "G₀W₀ + BSE",  color: PALETTE.curve1, xline: 3.786 },
-                    { file: "ZnO/optical_exp_Im_xy.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "ZnO  shift=1.0eV pol.\u22A5", xlim: [2, 20], ylim: [0, 5], xlabel: "Energía [eV]", ylabel: "Im(ε)", showTicks: true }
-            },
+                "plot-optical_ZnO_ord": {
+                    curves: [
+                        { data: ZnO_optical_EXC_xy,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: ZnO_optical_Im_xy,        mode: "line",    name: "G₀W₀ + BSE",  color: PALETTE.curve1, xline: 3.786 },
+                        { data: ZnO_optical_exp_Im_xy,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "ZnO  shift=1.0eV pol.\u22A5", xlim: [2, 20], ylim: [0, 5], xlabel: "Energía [eV]", ylabel: "Im(ε)", showTicks: true }
+                },
 
-            "plot-optical_ZnO_extr": {
-                curves: [
-                    { file: "ZnO/optical_EXC_z.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "ZnO/optical_Im_z.dat",        mode: "line",    name: "G₀W₀ + BSE",  color: PALETTE.curve1, xline: 3.786 },
-                    { file: "ZnO/optical_exp_Im_z.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "ZnO  shift=1.0eV pol.\u2225", xlim: [2, 20], ylim: [0, 5], xlabel: "Energía [eV]", ylabel: "Im(ε)", showTicks: true }
-            },
+                "plot-optical_ZnO_extr": {
+                    curves: [
+                        { data: ZnO_optical_EXC_z,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: ZnO_optical_Im_z,        mode: "line",    name: "G₀W₀ + BSE",  color: PALETTE.curve1, xline: 3.786 },
+                        { data: ZnO_optical_exp_Im_z,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "ZnO  shift=1.0eV pol.\u2225", xlim: [2, 20], ylim: [0, 5], xlabel: "Energía [eV]", ylabel: "Im(ε)", showTicks: true }
+                },
 
-            // Optical Re
-            "plot-optical_LiF_Re": {
-                curves: [
-                    { file: "LiF/optical_Re.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 14.66 },
-                    { file: "LiF/optical_exp_Re.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "LiF  shift=0.9eV", xlim: [10, 30], ylim: [-3, 5], xlabel: "Energía [eV]", ylabel: "Re(ε)", showTicks: true }
-            },
+                // Optical Re
+                "plot-optical_LiF_Re": {
+                    curves: [
+                        { data: LiF_optical_Re,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 14.66 },
+                        { data: LiF_optical_exp_Re,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "LiF  shift=0.9eV", xlim: [10, 30], ylim: [-3, 5], xlabel: "Energía [eV]", ylabel: "Re(ε)", showTicks: true }
+                },
 
-            "plot-optical_MgO_Re": {
-                curves: [
-                    { file: "MgO/optical_Re.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 7.99 },
-                    { file: "MgO/optical_exp_Re.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "MgO  shift=0.7eV", xlim: [0, 30], ylim: [-1, 8], xlabel: "Energía [eV]", ylabel: "Re(ε)", showTicks: true }
-            },
+                "plot-optical_MgO_Re": {
+                    curves: [
+                        { data: MgO_optical_Re,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 7.99 },
+                        { data: MgO_optical_exp_Re,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "MgO  shift=0.7eV", xlim: [0, 30], ylim: [-1, 8], xlabel: "Energía [eV]", ylabel: "Re(ε)", showTicks: true }
+                },
 
-            "plot-optical_CaO_Re": {
-                curves: [
-                    { file: "CaO/optical_Re.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 6.925 },
-                    { file: "CaO/optical_exp_Re.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "CaO  shift=0.8eV", xlim: [4, 15], ylim: [-2, 7], xlabel: "Energía [eV]", ylabel: "Re(ε)", showTicks: true }
-            },
+                "plot-optical_CaO_Re": {
+                    curves: [
+                        { data: CaO_optical_Re,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 6.925 }
+                    ],
+                    settings: { title: "CaO  shift=0.8eV", xlim: [4, 15], ylim: [-2, 7], xlabel: "Energía [eV]", ylabel: "Re(ε)", showTicks: true }
+                },
 
-            "plot-optical_ZnO_Re_ord": {
-                curves: [
-                    { file: "ZnO/optical_Re_xy.dat",        mode: "line",    name: "G₀W₀ + BSE",  color: PALETTE.curve1, xline: 3.786 },
-                    { file: "ZnO/optical_exp_Re_xy.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "ZnO  shift=1.0eV pol.\u22A5", xlim: [2, 20], ylim: [-2, 8.5], xlabel: "Energía [eV]", ylabel: "Re(ε)", showTicks: true }
-            },
+                "plot-optical_ZnO_Re_ord": {
+                    curves: [
+                        { data: ZnO_optical_Re_xy,        mode: "line",    name: "G₀W₀ + BSE",  color: PALETTE.curve1, xline: 3.786 },
+                        { data: ZnO_optical_exp_Re_xy,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "ZnO  shift=1.0eV pol.\u22A5", xlim: [2, 20], ylim: [-2, 8.5], xlabel: "Energía [eV]", ylabel: "Re(ε)", showTicks: true }
+                },
 
-            "plot-optical_ZnO_Re_extr": {
-                curves: [
-                    { file: "ZnO/optical_Re_z.dat",        mode: "line",    name: "G₀W₀ + BSE",  color: PALETTE.curve1, xline: 3.786 },
-                    { file: "ZnO/optical_exp_Re_z.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "ZnO  shift=1.0eV pol.\u2225", xlim: [2, 20], ylim: [-2, 8.5], xlabel: "Energía [eV]", ylabel: "Re(ε)", showTicks: true }
-            },
+                "plot-optical_ZnO_Re_extr": {
+                    curves: [
+                        { data: ZnO_optical_Re_z,        mode: "line",    name: "G₀W₀ + BSE",  color: PALETTE.curve1, xline: 3.786 },
+                        { data: ZnO_optical_exp_Re_z,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "ZnO  shift=1.0eV pol.\u2225", xlim: [2, 20], ylim: [-2, 8.5], xlabel: "Energía [eV]", ylabel: "Re(ε)", showTicks: true }
+                },
 
-            // XANES LiF
-            "plot-XANES_LiF_Li_K": {
-                curves: [
-                    { file: "LiF/XANES_Li_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "LiF/XANES_Li_K_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 63.32 },
-                    { file: "LiF/XANES_Li_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
-                    { file: "LiF/XANES_Li_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
-                ],
-                settings: { title: "Li borde-K  shift=0.2eV", xlim: [57, 74], ylim: [0, 1.4], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                // XANES LiF
+                "plot-XANES_LiF_Li_K": {
+                    curves: [
+                        { data: LiF_XANES_Li_K_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: LiF_XANES_Li_K_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 63.32 },
+                        { data: LiF_XANES_Li_K_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
+                        { data: LiF_XANES_Li_K_exp2,    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
+                    ],
+                    settings: { title: "Li borde-K  shift=0.2eV", xlim: [57, 74], ylim: [0, 1.4], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            "plot-XANES_LiF_F_K": {
-                curves: [
-                    { file: "LiF/XANES_F_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "LiF/XANES_F_K_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 95.16 },
-                    { file: "LiF/XANES_F_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "F borde-K  shift=29.1eV", xlim: [682, 705], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                "plot-XANES_LiF_F_K": {
+                    curves: [
+                        { data: LiF_XANES_F_K_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: LiF_XANES_F_K_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 95.16 },
+                        { data: LiF_XANES_F_K_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "F borde-K  shift=29.1eV", xlim: [682, 705], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            // XANES MgO
-            "plot-XANES_MgO_Mg_L23": {
-                curves: [
-                    { file: "MgO/XANES_Mg_L23_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "MgO/XANES_Mg_L23_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 53.06 },
-                    { file: "MgO/XANES_Mg_L23_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
-                    { file: "MgO/XANES_Mg_L23_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
-                ],
-                settings: { title: "Mg borde-L₂₃  shift=-0.5eV", xlim: [50, 73], ylim: [0, 1.5], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                // XANES MgO
+                "plot-XANES_MgO_Mg_L23": {
+                    curves: [
+                        { data: MgO_XANES_Mg_L23_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: MgO_XANES_Mg_L23_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 53.06 },
+                        { data: MgO_XANES_Mg_L23_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
+                        { data: MgO_XANES_Mg_L23_exp2,    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
+                    ],
+                    settings: { title: "Mg borde-L₂₃  shift=-0.5eV", xlim: [50, 73], ylim: [0, 1.5], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            "plot-XANES_MgO_O_K": {
-                curves: [
-                    { file: "MgO/XANES_O_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "MgO/XANES_O_K_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 535.45 },
-                    { file: "MgO/XANES_O_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
-                    { file: "MgO/XANES_O_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
-                ],
-                settings: { title: "O borde-K  shift=28eV", xlim: [530, 565], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                "plot-XANES_MgO_O_K": {
+                    curves: [
+                        { data: MgO_XANES_O_K_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: MgO_XANES_O_K_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 535.45 },
+                        { data: MgO_XANES_O_K_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
+                        { data: MgO_XANES_O_K_exp2,    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
+                    ],
+                    settings: { title: "O borde-K  shift=28eV", xlim: [530, 565], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            "plot-XANES_MgO_Mg_K": {
-                curves: [
-                    { file: "MgO/XANES_Mg_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "MgO/XANES_Mg_K_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 1307.21 },
-                    { file: "MgO/XANES_Mg_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
-                    { file: "MgO/XANES_Mg_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 },
-                    { file: "MgO/XANES_Mg_K_exp3.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve5 }
-                ],
-                settings: { title: "Mg borde-K  shift=52.5eV", xlim: [1300, 1335], ylim: [0, 1.2], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                "plot-XANES_MgO_Mg_K": {
+                    curves: [
+                        { data: MgO_XANES_Mg_K_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: MgO_XANES_Mg_K_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 1307.21 },
+                        { data: MgO_XANES_Mg_K_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
+                        { data: MgO_XANES_Mg_K_exp2,    mode: "line",    name: "Exp.",       color: PALETTE.curve4 },
+                        { data: MgO_XANES_Mg_K_exp3,    mode: "line",    name: "Exp.",       color: PALETTE.curve5 }
+                    ],
+                    settings: { title: "Mg borde-K  shift=52.5eV", xlim: [1300, 1335], ylim: [0, 1.2], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            // XANES CaO
-            "plot-XANES_CaO_Ca_L23": {
-                curves: [
-                    { file: "CaO/XANES_Ca_L23_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "CaO/XANES_Ca_L23_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 351.16 },
-                    { file: "CaO/XANES_Ca_L23_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "Ca borde-L₂₃  shift=24.4eV", xlim: [345, 354], ylim: [0, 1.7], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                // XANES CaO
+                "plot-XANES_CaO_Ca_L23": {
+                    curves: [
+                        { data: CaO_XANES_Ca_L23_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: CaO_XANES_Ca_L23_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 351.16 },
+                        { data: CaO_XANES_Ca_L23_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "Ca borde-L₂₃  shift=24.4eV", xlim: [345, 354], ylim: [0, 1.7], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            "plot-XANES_CaO_O_K": {
-                curves: [
-                    { file: "CaO/XANES_O_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "CaO/XANES_O_K_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 532.02 },
-                    { file: "CaO/XANES_O_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
-                    { file: "CaO/XANES_O_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
-                ],
-                settings: { title: "O borde-K  shift=25.9eV", xlim: [523, 560], ylim: [0, 1.1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                "plot-XANES_CaO_O_K": {
+                    curves: [
+                        { data: CaO_XANES_O_K_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: CaO_XANES_O_K_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 532.02 },
+                        { data: CaO_XANES_O_K_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
+                        { data: CaO_XANES_O_K_exp2,    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
+                    ],
+                    settings: { title: "O borde-K  shift=25.9eV", xlim: [523, 560], ylim: [0, 1.1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            "plot-XANES_CaO_Ca_K": {
-                curves: [
-                    { file: "CaO/XANES_Ca_K_EXC.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "CaO/XANES_Ca_K_Im.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 4033.36 },
-                    { file: "CaO/XANES_Ca_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "Ca borde-K  shift=95eV", xlim: [4022, 4160], ylim: [0, 0.38], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                "plot-XANES_CaO_Ca_K": {
+                    curves: [
+                        { data: CaO_XANES_Ca_K_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: CaO_XANES_Ca_K_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 4033.36 },
+                        { data: CaO_XANES_Ca_K_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "Ca borde-K  shift=95eV", xlim: [4022, 4160], ylim: [0, 0.38], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            // XANES ZnO
-            "plot-XANES_ZnO_O_K_ord": {
-                curves: [
-                    { file: "ZnO/XANES_O_K_EXC_xy.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "ZnO/XANES_O_K_Im_xy.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 530.57 },
-                    { file: "ZnO/XANES_O_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
-                    { file: "ZnO/XANES_O_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
-                ],
-                settings: { title: "O borde-K  shift=25.7eV pol.\u22A5", xlim: [526, 565], ylim: [0, 1.], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                // XANES ZnO
+                "plot-XANES_ZnO_O_K_ord": {
+                    curves: [
+                        { data: ZnO_XANES_O_K_EXC_xy,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: ZnO_XANES_O_K_Im_xy,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 530.57 },
+                        { data: ZnO_XANES_O_K_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
+                        { data: ZnO_XANES_O_K_exp2,    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
+                    ],
+                    settings: { title: "O borde-K  shift=25.7eV pol.\u22A5", xlim: [526, 565], ylim: [0, 1.], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            "plot-XANES_ZnO_O_K_extr": {
-                curves: [
-                    { file: "ZnO/XANES_O_K_EXC_z.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "ZnO/XANES_O_K_Im_z.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 530.57 },
-                    { file: "ZnO/XANES_O_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
-                    { file: "ZnO/XANES_O_K_exp2.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
-                ],
-                settings: { title: "O borde-K  shift=25.7eV pol.\u2225", xlim: [526, 565], ylim: [0, 1.], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                "plot-XANES_ZnO_O_K_extr": {
+                    curves: [
+                        { data: ZnO_XANES_O_K_EXC_z,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: ZnO_XANES_O_K_Im_z,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 530.57 },
+                        { data: ZnO_XANES_O_K_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 },
+                        { data: ZnO_XANES_O_K_exp2,    mode: "line",    name: "Exp.",       color: PALETTE.curve4 }
+                    ],
+                    settings: { title: "O borde-K  shift=25.7eV pol.\u2225", xlim: [526, 565], ylim: [0, 1.], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            "plot-XANES_ZnO_Zn_L23_ord": {
-                curves: [
-                    { file: "ZnO/XANES_Zn_L23_EXC_xy.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "ZnO/XANES_Zn_L23_Im_xy.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 1022.62 },
-                    { file: "ZnO/XANES_Zn_L23_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "Zn borde-L₂₃  shift=31.5eV pol.\u22A5", xlim: [1018, 1082], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                "plot-XANES_ZnO_Zn_L23_ord": {
+                    curves: [
+                        { data: ZnO_XANES_Zn_L23_EXC_xy,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: ZnO_XANES_Zn_L23_Im_xy,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 1022.62 },
+                        { data: ZnO_XANES_Zn_L23_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "Zn borde-L₂₃  shift=31.5eV pol.\u22A5", xlim: [1018, 1082], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            "plot-XANES_ZnO_Zn_L23_extr": {
-                curves: [
-                    { file: "ZnO/XANES_Zn_L23_EXC_z.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "ZnO/XANES_Zn_L23_Im_z.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 1022.62 },
-                    { file: "ZnO/XANES_Zn_L23_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "Zn borde-L₂₃  shift=31.5eV pol.\u2225", xlim: [1018, 1082], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                "plot-XANES_ZnO_Zn_L23_extr": {
+                    curves: [
+                        { data: ZnO_XANES_Zn_L23_EXC_z,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: ZnO_XANES_Zn_L23_Im_z,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 1022.62 },
+                        { data: ZnO_XANES_Zn_L23_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "Zn borde-L₂₃  shift=31.5eV pol.\u2225", xlim: [1018, 1082], ylim: [0, 1], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            "plot-XANES_ZnO_Zn_K_ord": {
-                curves: [
-                    { file: "ZnO/XANES_Zn_K_EXC_xy.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "ZnO/XANES_Zn_K_Im_xy.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 9660.09 },
-                    { file: "ZnO/XANES_Zn_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "Zn borde-K  shift=149.3eV pol.\u22A5", xlim: [9650, 9730], ylim: [0, 1.2], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                "plot-XANES_ZnO_Zn_K_ord": {
+                    curves: [
+                        { data: ZnO_XANES_Zn_K_EXC_xy,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: ZnO_XANES_Zn_K_Im_xy,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 9660.09 },
+                        { data: ZnO_XANES_Zn_K_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "Zn borde-K  shift=149.3eV pol.\u22A5", xlim: [9650, 9730], ylim: [0, 1.2], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
-            "plot-XANES_ZnO_Zn_K_extr": {
-                curves: [
-                    { file: "ZnO/XANES_Zn_K_EXC_z.dat",       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                    { file: "ZnO/XANES_Zn_K_Im_z.dat",        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 9660.09 },
-                    { file: "ZnO/XANES_Zn_K_exp1.dat",    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
-                ],
-                settings: { title: "Zn borde-K  shift=149.3eV pol.\u2225", xlim: [9650, 9730], ylim: [0, 1.2], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
-            },
+                "plot-XANES_ZnO_Zn_K_extr": {
+                    curves: [
+                        { data: ZnO_XANES_Zn_K_EXC_z,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
+                        { data: ZnO_XANES_Zn_K_Im_z,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 9660.09 },
+                        { data: ZnO_XANES_Zn_K_exp1,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                    ],
+                    settings: { title: "Zn borde-K  shift=149.3eV pol.\u2225", xlim: [9650, 9730], ylim: [0, 1.2], xlabel: "Energía [eV]", ylabel: "Intensidad [u. arb.]", showTicks: true }
+                },
 
 
-        };
+            };
 
         document.addEventListener("DOMContentLoaded", () => {
 
@@ -3300,8 +3281,15 @@
                     if (entry.isIntersecting && entry.target.dataset.loaded !== "true") {
                         const id = entry.target.id;
                         const spec = window.plotSpecs[id];
-                        loadMultiFilePlot(id, spec.curves, spec.settings);
-                        entry.target.dataset.loaded = "true";
+
+                        // SAFETY CHECK: Does the settings block exist?
+                        if (spec) {
+                            loadMultiFilePlot(id, spec.curves, spec.settings);
+                            entry.target.dataset.loaded = "true";
+                        } else {
+                            // THIS WILL PRINT THE EXACT ERROR IN YOUR CONSOLE
+                            console.error(`CRITICAL ERROR: HTML has <div id="${id}">, but window.plotSpecs["${id}"] is missing!`);
+                        }
                     }
                 });
             }, { threshold: 0.25 });
@@ -3311,25 +3299,42 @@
             /* -----------------------------------------
             2. Plot zoom modal
             ----------------------------------------- */
-            document.addEventListener("click", e => {
-                const box = e.target.closest(".plot-box");
-                if (!box) return;  // only plots enter here
+            // 1. Get references to the modal elements
+            const pltmodal = document.getElementById("plot-modal");
+            const modalContent = document.getElementById("plot-modal-content");
 
-                const modal = document.getElementById("plot-modal");
-                const content = document.getElementById("plot-modal-content");
-                const modalId = "modal-" + box.id;
+            // 2. Add click listeners to all plot containers
+            document.querySelectorAll(".plot-box").forEach(box => {
+                box.addEventListener("click", () => {
 
-                content.innerHTML = `<div id="${modalId}" style="width:100%;height:100%;"></div>`;
-                const spec = window.plotSpecs[box.id];
+                    // A. Show the modal
+                    pltmodal.classList.remove("hidden");
 
-                loadMultiFilePlot(modalId, spec.curves, spec.settings);
+                    // B. Get the ID of the clicked plot
+                    const sourceId = box.id;
+                    const originalDiv = document.getElementById(sourceId);
 
-                modal.classList.remove("hidden");
+                    // C. Clone the plot into the modal
+                    // (We re-plot it into the modal div so it adapts to the new large size)
+                    if (window.plotSpecs && window.plotSpecs[sourceId]) {
+                        const spec = window.plotSpecs[sourceId];
+
+                        // Use the same function but target the modal's internal div
+                        // Important: We might need to adjust fonts for the larger view
+                        loadMultiFilePlot("plot-modal-content", spec.curves, {
+                            ...spec.settings
+                        });
+                    }
+                });
             });
 
-            // close plot modal on click
-            document.getElementById("plot-modal").addEventListener("click", () => {
-                document.getElementById("plot-modal").classList.add("hidden");
+            // 3. Close modal when clicking outside the graph
+            pltmodal.addEventListener("click", (e) => {
+                if (e.target === pltmodal) {
+                    pltmodal.classList.add("hidden");
+                    // Optional: Purge the content to save memory
+                    Plotly.purge("plot-modal-content");
+                }
             });
 
             /* -----------------------------------------
