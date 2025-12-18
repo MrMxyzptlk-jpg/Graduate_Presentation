@@ -349,7 +349,7 @@
         .progress-bar { position: fixed; bottom: 0; left: 0; height: 4px; background: var(--border-color); width: 0%; transition: width 0.3s; z-index: 101; }
 
         .slide-footer { position: absolute; bottom: 20px; left: 70px; right: 70px; padding-top: 15px; display: flex; justify-content: space-between; opacity: 0.5; font-size: 0.9rem; }
-                .context-controls-overlay {
+        .context-controls-overlay {
             position: fixed;
             bottom: 70px;          /* above progress bar */
             right: 20px;           /* or left, your choice */
@@ -740,6 +740,160 @@
             margin-bottom: 6px;
             font-size: 1.4rem;
             line-height: 1.25;
+        }
+
+        /* Overlay PLOTS*/
+        .overlay-plot-container {
+            position: relative;
+            width: 520px;      /* match your plot size */
+            height: auto;
+            margin: 0 auto;
+        }
+
+        .plot {
+            width: 100%;
+            display: block;
+        }
+
+        .reference {
+            position: relative;
+            z-index: 1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .overlay.active {
+            opacity: 1.0; /* key for comparison */
+        }
+
+        /* Buttons container */
+        .overlay-controls {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        /* Base button */
+        .overlay-controls button {
+            background: var(--bg2-color);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+
+            padding: 10px 22px;
+            font-size: 1.6rem;
+            font-weight: 500;
+
+            border-radius: 10px;
+            cursor: pointer;
+
+            min-width: 120px;
+            text-align: center;
+
+            position: relative;      /* 🔑 */
+            z-index: 2;              /* 🔑 */
+
+            transition:
+                box-shadow 0.18s ease,
+                background 0.18s ease,
+                border-color 0.18s ease,
+                padding 0.18s ease;
+        }
+
+        /* Hover */
+        .overlay-controls button:hover {
+            box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+        }
+
+        /* Active overlay button — NO TRANSFORM */
+        .overlay-controls button.active {
+            background: var(--bg2-color);
+            color: var(--highlight2-color);
+            border-color: var(--border-color);
+            font-size: 1.6rem;
+
+            /* Visual emphasis WITHOUT layout break */
+            padding: 12px 26px;
+            box-shadow:
+                0 0 0 3px rgba(255,255,255,0.25),
+                0 10px 22px rgba(0,0,0,0.45);
+        }
+
+        /* Prevent focus outline weirdness */
+        .overlay-controls button:focus {
+            outline: none;
+        }
+
+        /* KS / GW mode containers */
+        .mode-container {
+            display: none;
+        }
+
+        .mode-container.active {
+            display: block;
+        }
+
+        /* Mode buttons */
+        .overlay-mode-controls {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .mode-btn {
+            background: var(--bg2-color);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 20px;
+            font-size: 1.9rem;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .mode-btn.active {
+            background: var(--bg2-color);
+            color: #4cd964;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.25);
+        }
+        /* Active overlay button — mode dependent text color */
+
+        /* KS mode */
+        .slide[data-mode="KS"] .overlay-controls button.active {
+            color: #4da6ff;
+        }
+
+        /* GW mode */
+        .slide[data-mode="GW"] .overlay-controls button.active {
+            color: #ff6b6b;
+        }
+
+        /* Rows inside overlay controls */
+        .overlay-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 6px 0;
+        }
+
+        /* Row labels */
+        .overlay-row-label {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--highlight2-color);
+            margin-right: 8px;
+            white-space: nowrap;
         }
 
 
@@ -1813,6 +1967,7 @@
             <h2>Funciones de Onda de Excitones: LiF</h2>
 
                 <div class="plot-grid-custom2" style="border-radius: 0;">
+                    <div id="plot-optical_LiF" class="plot-box nav-plot" style="height: 275px;"></div>
                     <div class="subfigure-row">
                         <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_LiF_1_bands" class="img-dark-mode1">
                         <img src="LiF/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_LiF_1_wf">
@@ -1839,11 +1994,14 @@
         <div class="slide-content">
             <h2>Funciones de Onda de Excitones: MgO</h2>
 
+            <div class="plot-grid-custom2" style="border-radius: 0;">
+                <div id="plot-optical_MgO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_MgO"></div>
                 <div class="subfigure-row">
                     <img src="MgO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_MgO_1_bands" class="img-dark-mode1">
                     <img src="MgO/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_MgO_1">
                     <video autoplay muted loop playsinline src="MgO/EXCITONS/optical/MgO_optical_1.mp4.mov" type="video/mov" >
                 </div>
+            </div>
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
@@ -1966,37 +2124,37 @@
     <!-- SLIDE ??: XANES Plots (Im) -->
     <div class="slide" id="slide-XANES"  data-show-back="true" data-back-target="slide-optical-Re"data-show-skip="true" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>Espectros XANES</h2>
+            <h2>XANES: Espectros </h2>
 
             <div style="height: 60%; margin: 0 auto;">
                 <div class="plot-grid-custom4">
                     <div id="LiF_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-LiF')">
                         <img src="LiF/LiF_structure.png" alt="Struct_LiF"style="height: 75%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
                     </div>
-                    <img src="LiF/thumbnail_Li_K.png" alt="thumbnail_Li_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
-                    <img src="LiF/thumbnail_F_K.png" alt="thumbnail_F_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="LiF/thumbnail_Li_K.png" alt="thumbnail_Li_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-LiF-Li_K'>
+                    <img src="LiF/thumbnail_F_K.png" alt="thumbnail_F_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-LiF-F_K'>
                     <div ></div>
 
                     <div id="MgO_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-MgO')">
                         <img src="MgO/MgO_structure.png" alt="Struct_MgO"style="height: 75%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
                     </div>
-                    <img src="MgO/thumbnail_Mg_K.png" alt="thumbnail_Mg_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
-                    <img src="MgO/thumbnail_O_K.png" alt="thumbnail_O_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
-                    <img src="MgO/thumbnail_Mg_L23.png" alt="thumbnail_Mg_L23" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="MgO/thumbnail_Mg_K.png" alt="thumbnail_Mg_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-MgO-Mg_K'>
+                    <img src="MgO/thumbnail_O_K.png" alt="thumbnail_O_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-MgO-O_K'>
+                    <img src="MgO/thumbnail_Mg_L23.png" alt="thumbnail_Mg_L23" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-MgO-Mg_L23'>
 
                     <div id="CaO_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-CaO')">
                         <img src="CaO/CaO_structure.png" alt="Struct_CaO" style="height: 75%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
                     </div>
-                    <img src="CaO/thumbnail_Ca_K.png" alt="thumbnail_Ca_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
-                    <img src="CaO/thumbnail_O_K.png" alt="thumbnail_O_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
-                    <img src="CaO/thumbnail_Ca_L23.png" alt="thumbnail_Ca_L23" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="CaO/thumbnail_Ca_K.png" alt="thumbnail_Ca_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-CaO-Ca_K'>
+                    <img src="CaO/thumbnail_O_K.png" alt="thumbnail_O_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-CaO-O_K'>
+                    <img src="CaO/thumbnail_Ca_L23.png" alt="thumbnail_Ca_L23" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-CaO-Ca_L23'>
 
                     <div id="ZnO_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-ZnO')">
                         <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO"style="height: 70%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
                     </div>
-                    <img src="ZnO/thumbnail_Zn_K_perp.png" alt="thumbnail_Zn_K_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
-                    <img src="ZnO/thumbnail_O_K_perp.png" alt="thumbnail_O_K_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
-                    <img src="ZnO/thumbnail_Zn_L23_perp.png" alt="thumbnail_Zn_L23_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="ZnO/thumbnail_Zn_K_perp.png" alt="thumbnail_Zn_K_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-ZnO-Zn_K'>
+                    <img src="ZnO/thumbnail_O_K_perp.png" alt="thumbnail_O_K_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-ZnO-O_K'>
+                    <img src="ZnO/thumbnail_Zn_L23_perp.png" alt="thumbnail_Zn_L23_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-ZnO-Zn_L23'>
                 </div>
             </div>
 
@@ -2004,14 +2162,41 @@
         </div>
     </div>
 
-    <!-- SLIDE ??: XANES Plots (Im) LiF -->
-    <div class="slide" id="slide-XANES-Im-LiF" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
+    <!-- SLIDE ??: XANES Plots (Im) LiF Li-K -->
+    <div class="slide" id="slide-XANES-Im-LiF-Li_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>Espectros XANES: LiF</h2>
+            <h2>XANES: LiF - Borde K del Li</h2>
+
+            <div class="plot-grid-custom2" style="border-radius: 0;">
+                <div id="plot-XANES_LiF_Li_K" class="plot-box" style="height: 275px;"></div>
+                <div class="subfigure-row">
+                    <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_LiF_1_bands" class="img-dark-mode1">
+                    <img src="LiF/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_LiF_1_wf">
+                    <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_1.mp4.mov" type="video/mov" >
+                </div>
+                <div class="subfigure-row">
+                    <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_LiF_2_bands" class="img-dark-mode1">
+                    <img src="LiF/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_LiF_2_wf">
+                    <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_2.mp4.mov" type="video/mov" >
+                </div>
+                <div class="subfigure-row">
+                    <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000003.OUT.png" alt="exciton_LiF_3_bands" class="img-dark-mode1">
+                    <img src="LiF/EXCITONS/optical/excitonWavefunction-000003-000001_iso.png" alt="exciton_LiF_3_wf">
+                    <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_3.mp4.mov" type="video/mov" >
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: XANES Plots (Im) LiF F-K -->
+    <div class="slide" id="slide-XANES-Im-LiF-Li_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
+        <div class="slide-content">
+            <h2>XANES: LiF - Borde K del F</h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
-                <div class="plot-grid-custom3">
-                    <div id="plot-XANES_LiF_Li_K" class="plot-box" style="height: 275px;"></div>
+                <div class="plot-grid-custom2">
                     <div id="plot-XANES_LiF_F_K" class="plot-box" style="height: 275px;"></div>
                 </div>
             </div>
@@ -2075,7 +2260,7 @@
     </div>
 
     <!-- SLIDE ??: Defects structure -->
-    <div class="slide" id="slide-defects-structure" data-ignore data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-conclusions">
+    <div class="slide" id="slide-defects-structure" data-ignore data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-overlay">
         <div class="slide-content">
             <h2>Defectos: Estructura Cristalina</h2>
 
@@ -2226,8 +2411,63 @@
         </div>
     </div>
 
+    <!-- SLIDE ??: Defects - LiF overlay -->
+    <div class="slide" id="slide-defects-overlay" data-mode="KS" data-show-back="true" data-back-target="slide-defects-structure" data-skip-target="slide-conclusions">
+        <div class="slide-content">
+            <h2>Defectos: LiF - Estructura Electrónica (KS) </h2>
+            <!-- Mode selector -->
+            <div class="overlay-mode-controls">
+                <button class="mode-btn active" onclick="toggleMode('KS')">KS</button>
+                <button class="mode-btn" onclick="toggleMode('GW')">GW</button>
+            </div>
+
+            <!-- KS container -->
+            <div class="overlay-plot-container mode-container active" data-mode="KS">
+                <img src="defect/images/LiF/prist/electStruct_prist_KS_v2_dark.png" class="plot reference">
+
+                <img src="defect/images/LiF/Li+/Li+-vac_KS_dark.png" class="plot overlay" id="KS_ov1">
+                <img src="defect/images/LiF/F-/F--vac_KS_dark.png" class="plot overlay" id="KS_ov2">
+                <img src="defect/images/LiF/Na/Na-doped_KS_dark.png" class="plot overlay" id="KS_ov3">
+                <img src="defect/images/LiF/Mg+/Mg+-doped_KS_dark.png" class="plot overlay" id="KS_ov4">
+                <img src="defect/images/LiF/Be+/Be+-doped_KS_dark.png" class="plot overlay" id="KS_ov5">
+            </div>
+
+            <!-- GW container -->
+            <div class="overlay-plot-container mode-container" data-mode="GW">
+                <img src="defect/images/LiF/prist/electStruct_prist_GW_v2_dark.png" class="plot reference">
+
+                <img src="defect/images/LiF/Li+/Li+-vac_GW_dark.png" class="plot overlay" id="GW_ov1">
+                <img src="defect/images/LiF/F-/F--vac_GW_dark.png" class="plot overlay" id="GW_ov2">
+                <img src="defect/images/LiF/Na/Na-doped_GW_dark.png" class="plot overlay" id="GW_ov3">
+                <img src="defect/images/LiF/Mg+/Mg+-doped_GW_dark.png" class="plot overlay" id="GW_ov4">
+                <img src="defect/images/LiF/Be+/Be+-doped_GW_dark.png" class="plot overlay" id="GW_ov5">
+            </div>
+
+            <div class="overlay-controls">
+
+                <!-- Vacancies row -->
+                <div class="overlay-row">
+                    <span class="overlay-row-label" style="font-size: 1.8rem;">Vacante:</span>
+                    <button data-ov="1" onclick="toggleOverlay(this)">Li\(^+\)</button>
+                    <button data-ov="2" onclick="toggleOverlay(this)">F\(^-\)</button>
+                </div>
+
+                <!-- Dopants row -->
+                <div class="overlay-row">
+                    <span class="overlay-row-label" style="font-size: 1.8rem;">Dopante:</span>
+                    <button data-ov="3" onclick="toggleOverlay(this)">Na</button>
+                    <button data-ov="4" onclick="toggleOverlay(this)">Mg\(^+\)</button>
+                    <button data-ov="5" onclick="toggleOverlay(this)">Be\(^+\)</button>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
     <!-- SLIDE ??: Conclusiones -->
-    <div class="slide" id="slide-conclusions" data-show-back="true" data-back-target="slide-defects-structure">
+    <div class="slide" id="slide-conclusions" data-show-back="true" data-back-target="slide-defects-overlay">
         <div class="slide-content">
             <h2>Conclusiones</h2>
 
@@ -2240,7 +2480,7 @@
                         <li data-popup="Las estructuras optimizadas con DFT/PBEsol reproducen los parámetros experimentales con desviaciones típicamente menores al 1%.">
                             Parámetros de red en excelente acuerdo experimental
                         </li>
-                        <li data-popup="Las correcciones G₀W₀ abren el gap electrónico respecto al nivel Kohn–Sham, actuando principalmente como un corrimiento rígido de las bandas de conducción.">
+                        <li data-popup="Las correcciones G₀W₀ abren el gap electrónico respecto al nivel Kohn-Sham, actuando principalmente como un corrimiento rígido de las bandas de conducción.">
                             G₀W₀ mejora sustancialmente la descripción del gap
                         </li>
                     </ul>
@@ -2250,7 +2490,7 @@
                 <div class="conclusion-block appear-step">
                     <h3>Óptica</h3>
                     <ul>
-                        <li data-popup="La inclusión explícita de la interacción electrón–hueco mediante la ecuación de Bethe–Salpeter es esencial para reproducir la forma espectral y el umbral óptico.">
+                        <li data-popup="La inclusión explícita de la interacción electrón-hueco mediante la ecuación de Bethe-Salpeter es esencial para reproducir la forma espectral y el umbral óptico.">
                             Excelente reproducción de la forma espectral
                         </li>
                         <li data-popup="Las energías de ligadura excitónica resultan sistemáticamente mayores que las experimentales, sugiriendo limitaciones en la descripción del apantallamiento.">
@@ -2564,113 +2804,112 @@
         const maxMaterialsStep = 4; // LiF..ZnO
 
         let conclusionsStep = 0;    // 0 = nothing shown
-        const maxConclusionsStep = 3; // 4 blocks → 0..3
+        const maxConclusionsStep = 4; // 4 blocks → 0..3
 
+        function nextSlide() {
+            const slide = slides[currentSlide];
+            const currentSlideId = slide.id;
+            const { isDetail, isOverview } = getSlideContext();
 
-function nextSlide() {
-    const slide = slides[currentSlide];
-    const currentSlideId = slide.id;
-    const { isDetail, isOverview } = getSlideContext();
+            /* ---------------------------------
+            SKIP / OVERVIEW (ABSOLUTE PRIORITY)
+            --------------------------------- */
+            if (isDetail || isOverview) {
+                const targetId = slide.dataset.skipTarget;
+                if (targetId) {
+                    goToSlideById(targetId);
+                    return;
+                }
+            }
 
-    /* ---------------------------------
-       SKIP / OVERVIEW (ABSOLUTE PRIORITY)
-    --------------------------------- */
-    if (isDetail || isOverview) {
-        const targetId = slide.dataset.skipTarget;
-        if (targetId) {
-            goToSlideById(targetId);
-            return;
+            /* ---------------------------------
+            SLIDE 1 (step-based)
+            --------------------------------- */
+            if (currentSlide === 0) {
+                if (slide1Step < 8) {
+                    slide1Step++;
+                    updateSlide1State(slide1Step);
+                    return;
+                }
+            }
+
+            /* ---------------------------------
+            MATERIALS SLIDE
+            --------------------------------- */
+            if (currentSlideId === 'slide-materials') {
+                if (materialsStep < maxMaterialsStep) {
+                    updateMaterialsStepInSlide(materialsStep);
+                    materialsStep++;
+                    return;
+                }
+                materialsStep = 0; // reset when leaving
+            }
+
+            /* ---------------------------------
+            CONCLUSIONS SLIDE
+            --------------------------------- */
+            if (currentSlideId === 'slide-conclusions') {
+                if (conclusionsStep < maxConclusionsStep) {
+                    updateConclusionsStep(conclusionsStep);
+                    conclusionsStep++;
+                    return;
+                }
+                conclusionsStep = 0; // reset when leaving
+            }
+
+            /* ---------------------------------
+            DEFAULT: NEXT SLIDE
+            --------------------------------- */
+            showSlide(currentSlide + 1);
         }
-    }
 
-    /* ---------------------------------
-       SLIDE 1 (step-based)
-    --------------------------------- */
-    if (currentSlide === 0) {
-        if (slide1Step < 8) {
-            slide1Step++;
-            updateSlide1State(slide1Step);
-            return;
+        function prevSlide() {
+            const slide = slides[currentSlide];
+            const currentSlideId = slide.id;
+            const { isDetail } = getSlideContext();
+
+            /* ---------------------------------
+            BACK TARGET (ABSOLUTE PRIORITY)
+            --------------------------------- */
+            if (isDetail) {
+                const backTarget = slide.dataset.backTarget;
+                if (backTarget) {
+                    goToSlideById(backTarget);
+                    return;
+                }
+            }
+
+            /* ---------------------------------
+            MATERIALS SLIDE (BACKWARD STEPS)
+            --------------------------------- */
+            if (currentSlideId === 'slide-materials') {
+                if (materialsStep > 1) {
+                    materialsStep--;
+                    updateMaterialsStepInSlide(materialsStep - 1);
+                    return;
+                } else if (materialsStep === 1) {
+                    materialsStep = 0;
+                    updateMaterialsStepInSlide(-1);
+                    return;
+                }
+            }
+
+            /* ---------------------------------
+            CONCLUSIONS SLIDE (BACKWARD STEPS)
+            --------------------------------- */
+            if (currentSlideId === 'slide-conclusions') {
+                if (conclusionsStep > 0) {
+                    conclusionsStep--;
+                    updateConclusionsStep(conclusionsStep - 1);
+                    return;
+                }
+            }
+
+            /* ---------------------------------
+            DEFAULT: PREVIOUS SLIDE
+            --------------------------------- */
+            showSlide(currentSlide - 1);
         }
-    }
-
-    /* ---------------------------------
-       MATERIALS SLIDE
-    --------------------------------- */
-    if (currentSlideId === 'slide-materials') {
-        if (materialsStep < maxMaterialsStep) {
-            updateMaterialsStepInSlide(materialsStep);
-            materialsStep++;
-            return;
-        }
-        materialsStep = 0; // reset when leaving
-    }
-
-    /* ---------------------------------
-       CONCLUSIONS SLIDE
-    --------------------------------- */
-    if (currentSlideId === 'slide-conclusions') {
-        if (conclusionsStep < maxConclusionsStep) {
-            updateConclusionsStep(conclusionsStep);
-            conclusionsStep++;
-            return;
-        }
-        conclusionsStep = 0; // reset when leaving
-    }
-
-    /* ---------------------------------
-       DEFAULT: NEXT SLIDE
-    --------------------------------- */
-    showSlide(currentSlide + 1);
-}
-
-function prevSlide() {
-    const slide = slides[currentSlide];
-    const currentSlideId = slide.id;
-    const { isDetail } = getSlideContext();
-
-    /* ---------------------------------
-       BACK TARGET (ABSOLUTE PRIORITY)
-    --------------------------------- */
-    if (isDetail) {
-        const backTarget = slide.dataset.backTarget;
-        if (backTarget) {
-            goToSlideById(backTarget);
-            return;
-        }
-    }
-
-    /* ---------------------------------
-       MATERIALS SLIDE (BACKWARD STEPS)
-    --------------------------------- */
-    if (currentSlideId === 'slide-materials') {
-        if (materialsStep > 1) {
-            materialsStep--;
-            updateMaterialsStepInSlide(materialsStep - 1);
-            return;
-        } else if (materialsStep === 1) {
-            materialsStep = 0;
-            updateMaterialsStepInSlide(-1);
-            return;
-        }
-    }
-
-    /* ---------------------------------
-       CONCLUSIONS SLIDE (BACKWARD STEPS)
-    --------------------------------- */
-    if (currentSlideId === 'slide-conclusions') {
-        if (conclusionsStep > 0) {
-            conclusionsStep--;
-            updateConclusionsStep(conclusionsStep - 1);
-            return;
-        }
-    }
-
-    /* ---------------------------------
-       DEFAULT: PREVIOUS SLIDE
-    --------------------------------- */
-    showSlide(currentSlide - 1);
-}
 
         function updateProgress() {
             const progress = ((currentSlide + 1) / slides.length) * 100;
@@ -4033,49 +4272,50 @@ function prevSlide() {
 
 
             };
-/* -----------------------------------------
-   LIST ITEM POPUPS (Materials + Conclusions)
------------------------------------------ */
 
-document.querySelectorAll('.material-block li, .conclusion-block li').forEach(li => {
-    li.addEventListener('mouseenter', () => {
+        /* -----------------------------------------
+        LIST ITEM POPUPS (Materials + Conclusions)
+        ----------------------------------------- */
 
-        // Only show popup if parent block is visible
-        const block = li.closest('.material-block, .conclusion-block');
-        if (!block || !block.classList.contains('active')) return;
+        document.querySelectorAll('.material-block li, .conclusion-block li').forEach(li => {
+            li.addEventListener('mouseenter', () => {
 
-        const content = li.getAttribute('data-popup');
-        if (!content) return;
+                // Only show popup if parent block is visible
+                const block = li.closest('.material-block, .conclusion-block');
+                if (!block || !block.classList.contains('active')) return;
 
-        const popupDiv = document.createElement('div');
-        popupDiv.className = 'material-popup';
-        popupDiv.textContent = content;
-        document.body.appendChild(popupDiv);
+                const content = li.getAttribute('data-popup');
+                if (!content) return;
 
-        const rect = li.getBoundingClientRect();
+                const popupDiv = document.createElement('div');
+                popupDiv.className = 'material-popup';
+                popupDiv.textContent = content;
+                document.body.appendChild(popupDiv);
 
-        let left = rect.right + 10 + window.scrollX;
-        let top  = rect.top + window.scrollY + rect.height / 2;
+                const rect = li.getBoundingClientRect();
 
-        // Prevent overflow → move left if needed
-        if (left + popupDiv.offsetWidth > window.innerWidth) {
-            left = rect.left - popupDiv.offsetWidth - 10 + window.scrollX;
-        }
+                let left = rect.right + 10 + window.scrollX;
+                let top  = rect.top + window.scrollY + rect.height / 2;
 
-        popupDiv.style.left = left + 'px';
-        popupDiv.style.top  = (top - popupDiv.offsetHeight / 2) + 'px';
+                // Prevent overflow → move left if needed
+                if (left + popupDiv.offsetWidth > window.innerWidth) {
+                    left = rect.left - popupDiv.offsetWidth - 10 + window.scrollX;
+                }
 
-        popupDiv.classList.add('show');
-        li._popupDiv = popupDiv;
-    });
+                popupDiv.style.left = left + 'px';
+                popupDiv.style.top  = (top - popupDiv.offsetHeight / 2) + 'px';
 
-    li.addEventListener('mouseleave', () => {
-        if (li._popupDiv) {
-            li._popupDiv.remove();
-            li._popupDiv = null;
-        }
-    });
-});
+                popupDiv.classList.add('show');
+                li._popupDiv = popupDiv;
+            });
+
+            li.addEventListener('mouseleave', () => {
+                if (li._popupDiv) {
+                    li._popupDiv.remove();
+                    li._popupDiv = null;
+                }
+            });
+        });
 
         /* --- 4. EXCITATION ANIMATION (Slide ?? - Parabolic) --- */
         const exCanvas = document.getElementById('excitationCanvas');
@@ -4684,6 +4924,56 @@ document.querySelectorAll('.material-block li, .conclusion-block li').forEach(li
         });
 
         window.addEventListener('load', () => { updateProgress(); });
+
+        function toggleOverlay(button) {
+            const index = button.dataset.ov;
+
+            // Which mode is active?
+            const activeMode = document.querySelector('.mode-container.active');
+            if (!activeMode) return;
+
+            const overlay = activeMode.querySelector(`#${activeMode.dataset.mode}_ov${index}`);
+            if (!overlay) return;
+
+            const isActive = overlay.classList.contains('active');
+
+            // Reset only inside active mode
+            activeMode.querySelectorAll('.overlay').forEach(o => o.classList.remove('active'));
+            document.querySelectorAll('.overlay-controls button')
+                .forEach(b => b.classList.remove('active'));
+
+            if (!isActive) {
+                overlay.classList.add('active');
+                button.classList.add('active');
+            }
+        }
+
+        function toggleMode(mode) {
+            const slide = document.getElementById('slide-defects-overlay');
+
+            // Switch containers
+            document.querySelectorAll('.mode-container').forEach(c => {
+                c.classList.toggle('active', c.dataset.mode === mode);
+            });
+
+            // Switch mode buttons
+            document.querySelectorAll('.mode-btn').forEach(b => {
+                b.classList.toggle('active', b.textContent === mode);
+            });
+
+            // Reset overlays
+            document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active'));
+            document.querySelectorAll('.overlay-controls button')
+                .forEach(b => b.classList.remove('active'));
+
+            // Update title
+            slide.querySelector('h2').textContent =
+                `Defectos: LiF - Estructura Electrónica (${mode})`;
+
+            // 🔑 Update mode for CSS styling
+            slide.dataset.mode = mode;
+        }
+
 
 
     </script>
