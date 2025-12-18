@@ -1901,11 +1901,11 @@
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom3">
-                    <div id="plot-optical_LiF" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_LiF"></div>
-                    <div id="plot-optical_MgO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_MgO"></div>
-                    <div id="plot-optical_CaO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_CaO"></div>
-                    <div id="plot-optical_ZnO_ord" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_ZnO"></div>
-                    <div id="plot-optical_ZnO_extr" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_ZnO"></div>
+                    <div id="plot-optical_LiF" data-plot-key="plot-optical_LiF" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_LiF"></div>
+                    <div id="plot-optical_MgO" data-plot-key="plot-optical_MgO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_MgO"></div>
+                    <div id="plot-optical_CaO" data-plot-key="plot-optical_CaO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_CaO"></div>
+                    <div id="plot-optical_ZnO_ord" data-plot-key="plot-optical_ZnO_ord" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_ZnO"></div>
+                    <div id="plot-optical_ZnO_extr" data-plot-key="plot-optical_ZnO_extr" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_ZnO"></div>
                     <!-- TABLE SLOT -->
                     <div class="plot-box table-slot" style="height: 275px;">
                         <div class="table-panel">
@@ -1913,7 +1913,7 @@
                             <caption> Energías de ligadura de excitones. </caption>
                             <thead>
                                 <tr>
-                                    <th class="group-header" colspan="4">\(E_{b}\) [meV]</th>
+                                    <th class="group-header" colspan="4">\(E_{b}\) [eV]</th>
                                 </tr>
                                 <tr>
                                     <th>Material</th>
@@ -1924,30 +1924,30 @@
                             <tbody>
                                 <tr>
                                     <td>LiF</td>
-                                    <td>1870</td>
-                                    <td>900 <span class="cite" data-cite="LiF_exciton"></span></td>
+                                    <td>1.870</td>
+                                    <td>0.9 <span class="cite" data-cite="LiF_exciton"></span></td>
                                 </tr>
                                 <tr>
                                     <td>MgO</td>
-                                    <td>510</td>
-                                    <td>80 <span class="cite" data-cite="MgO_paper"></span> </td>
+                                    <td>0.510</td>
+                                    <td>0.080 <span class="cite" data-cite="MgO_paper"></span> </td>
                                 </tr>
                                 <tr>
                                     <td>CaO</td>
-                                    <td>495</td>
-                                    <td>60 <span class="cite" data-cite="CaO_exciton"></span> </td>
+                                    <td>0.495</td>
+                                    <td>0.060 <span class="cite" data-cite="CaO_exciton"></span> </td>
                                 </tr>
                                 <tr>
                                     <td>ZnO</td>
                                     <td>
-                                        362 <br>
-                                        287 <br>
-                                        256
+                                        0.362 <br>
+                                        0.287 <br>
+                                        0.256
                                     </td>
                                     <td>
-                                        63.1   <span class="cite" data-cite="ZnO_exciton"></span><br>
-                                        50.4   <span class="cite" data-cite="ZnO_exciton"></span><br>
-                                        48.9   <span class="cite" data-cite="ZnO_exciton"></span>
+                                        0.0631   <span class="cite" data-cite="ZnO_exciton"></span><br>
+                                        0.0504   <span class="cite" data-cite="ZnO_exciton"></span><br>
+                                        0.0489   <span class="cite" data-cite="ZnO_exciton"></span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -1964,10 +1964,10 @@
     <!-- SLIDE ??: Excitons LiF -->
     <div class="slide" id="slide-Excitons_LiF" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
-            <h2>Funciones de Onda de Excitones: LiF</h2>
+            <h2>Espectros Ópticos: LiF - excitones</h2>
 
                 <div class="plot-grid-custom2" style="border-radius: 0;">
-                    <div id="plot-optical_LiF" class="plot-box nav-plot" style="height: 275px;"></div>
+                    <div id="plot-optical_LiF_detail" data-plot-key="plot-optical_LiF" class="plot-box nav-plot" style="height: 275px;"></div>
                     <div class="subfigure-row">
                         <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_LiF_1_bands" class="img-dark-mode1">
                         <img src="LiF/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_LiF_1_wf">
@@ -1992,10 +1992,10 @@
     <!-- SLIDE ??: Excitons MgO -->
     <div class="slide" id="slide-Excitons_MgO" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
-            <h2>Funciones de Onda de Excitones: MgO</h2>
+            <h2>Espectros Ópticos: MgO - excitones</h2>
 
             <div class="plot-grid-custom2" style="border-radius: 0;">
-                <div id="plot-optical_MgO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_MgO"></div>
+                <div id="plot-optical_MgO_detail" data-plot-key="plot-optical_MgO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_MgO"></div>
                 <div class="subfigure-row">
                     <img src="MgO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_MgO_1_bands" class="img-dark-mode1">
                     <img src="MgO/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_MgO_1">
@@ -2010,9 +2010,11 @@
     <!-- SLIDE ??: Excitons CaO -->
     <div class="slide" id="slide-Excitons_CaO" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
-            <h2>Funciones de Onda de Excitones: CaO</h2>
+            <h2>Espectros Ópticos: CaO - excitones</h2>
 
                 <div class="plot-grid-custom2" no-round>
+                    <div id="plot-optical_CaO_detail" data-plot-key="plot-optical_CaO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_CaO"></div>
+                    <div></div>
                     <div class="subfigure-row">
                         <img src="CaO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_CaO_1_bands" class="img-dark-mode1">
                         <img src="CaO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_CaO_1_wf">
@@ -2032,7 +2034,7 @@
     <!-- SLIDE ??: Excitons ZnO -->
     <div class="slide" id="slide-Excitons_ZnO" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
-            <h2>Funciones de Onda de Excitones: ZnO</h2>
+            <h2>Espectros Ópticos: ZnO - excitones</h2>
 
                 <div class="plot-grid-custom2">
                     <div class="subfigure-row">
@@ -2068,11 +2070,11 @@
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom3">
-                    <div id="plot-optical_LiF_Re" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_MgO_Re" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_CaO_Re" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_ZnO_Re_ord" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_ZnO_Re_extr" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-optical_LiF_Re" data-plot-key="plot-optical_LiF_Re" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-optical_MgO_Re" data-plot-key="plot-optical_MgO_Re" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-optical_CaO_Re" data-plot-key="plot-optical_CaO_Re" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-optical_ZnO_Re_ord" data-plot-key="plot-optical_ZnO_Re_ord" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-optical_ZnO_Re_extr" data-plot-key="plot-optical_ZnO_Re_extr" class="plot-box" style="height: 275px;"></div>
                     <!-- TABLE SLOT -->
                     <div class="plot-box table-slot" style="height: 275px;">
                         <div class="table-panel">
@@ -2127,12 +2129,19 @@
             <h2>XANES: Espectros </h2>
 
             <div style="height: 60%; margin: 0 auto;">
-                <div class="plot-grid-custom4">
-                    <div id="LiF_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-LiF')">
-                        <img src="LiF/LiF_structure.png" alt="Struct_LiF"style="height: 75%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                <div class="plot-grid-custom4" style="gap: 3px">
+                    <div class="row-with-captions">
+                        <h3>LiF</h3>
+                        <img src="LiF/LiF_structure.png" alt="Struct_LiF"style="height: 75%;background-color: var(--bg-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-LiF'>
                     </div>
-                    <img src="LiF/thumbnail_Li_K.png" alt="thumbnail_Li_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-LiF-Li_K'>
-                    <img src="LiF/thumbnail_F_K.png" alt="thumbnail_F_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-LiF-F_K'>
+                    <div class="row-with-captions">
+                        <h3>Li-K</h3>
+                        <img src="LiF/thumbnail_Li_K.png" alt="thumbnail_Li_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-LiF-Li_K'>
+                    </div>
+                    <div class="row-with-captions">
+                        <h3>F-K</h3>
+                        <img src="LiF/thumbnail_F_K.png" alt="thumbnail_F_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);"  data-target-slide='slide-XANES-Im-LiF-F_K'>
+                    </div>
                     <div ></div>
 
                     <div id="MgO_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-MgO')">
@@ -2168,21 +2177,21 @@
             <h2>XANES: LiF - Borde K del Li</h2>
 
             <div class="plot-grid-custom2" style="border-radius: 0;">
-                <div id="plot-XANES_LiF_Li_K" class="plot-box" style="height: 275px;"></div>
+                <div id="plot-XANES_LiF_Li_K" data-plot-key="plot-XANES_LiF_Li_K" class="plot-box" style="height: 275px;"></div>
                 <div class="subfigure-row">
-                    <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_LiF_1_bands" class="img-dark-mode1">
-                    <img src="LiF/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_LiF_1_wf">
-                    <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_1.mp4.mov" type="video/mov" >
+                    <img src="LiF/EXCITONS/Li-K/excitonWavefunction-000002-iso.png" alt="exciton_Li_1_bands" class="img-dark-mode1">
+                    <img src="LiF/EXCITONS/Li-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_Li_1_wf" class="img-dark-mode1">
+                    <video autoplay muted loop playsinline src="" type="video/mov" >
                 </div>
                 <div class="subfigure-row">
-                    <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_LiF_2_bands" class="img-dark-mode1">
-                    <img src="LiF/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_LiF_2_wf">
-                    <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_2.mp4.mov" type="video/mov" >
+                    <img src="LiF/EXCITONS/Li-K/excitonWavefunction-000003-iso.png" alt="exciton_Li_2_bands" class="img-dark-mode1">
+                    <img src="LiF/EXCITONS/Li-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000003.OUT.png" alt="exciton_Li_2_wf" class="img-dark-mode1">
+                    <video autoplay muted loop playsinline src="" type="video/mov" >
                 </div>
                 <div class="subfigure-row">
-                    <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000003.OUT.png" alt="exciton_LiF_3_bands" class="img-dark-mode1">
-                    <img src="LiF/EXCITONS/optical/excitonWavefunction-000003-000001_iso.png" alt="exciton_LiF_3_wf">
-                    <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_3.mp4.mov" type="video/mov" >
+                    <img src="LiF/EXCITONS/Li-K/excitonWavefunction-000004-iso.png" alt="exciton_Li_3_bands" class="img-dark-mode1">
+                    <img src="LiF/EXCITONS/Li-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000004.OUT.png" alt="exciton_Li_3_wf" class="img-dark-mode1">
+                    <video autoplay muted loop playsinline src="" type="video/mov" >
                 </div>
             </div>
 
@@ -2191,13 +2200,28 @@
     </div>
 
     <!-- SLIDE ??: XANES Plots (Im) LiF F-K -->
-    <div class="slide" id="slide-XANES-Im-LiF-Li_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
+    <div class="slide" id="slide-XANES-Im-LiF-F_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
             <h2>XANES: LiF - Borde K del F</h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom2">
-                    <div id="plot-XANES_LiF_F_K" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_LiF_F_K" data-plot-key="plot-XANES_LiF_F_K" class="plot-box" style="height: 275px;"></div>
+                    <div class="subfigure-row">
+                        <img src="LiF/EXCITONS/F-K/excitonWavefunction-000004-iso.png" alt="exciton_F_1_bands" class="img-dark-mode1">
+                        <img src="LiF/EXCITONS/F-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000004.OUT.png" alt="exciton_F_1_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="LiF/EXCITONS/F-K/excitonWavefunction-000007-iso.png" alt="exciton_F_2_bands" class="img-dark-mode1">
+                        <img src="LiF/EXCITONS/F-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000007.OUT.png" alt="exciton_F_2_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="LiF/EXCITONS/F-K/excitonWavefunction-000008-iso.png" alt="exciton_F_3_bands" class="img-dark-mode1">
+                        <img src="LiF/EXCITONS/F-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000008.OUT.png" alt="exciton_F_3_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
                 </div>
             </div>
 
@@ -2222,6 +2246,96 @@
         </div>
     </div>
 
+    <!-- SLIDE ??: XANES Plots (Im) MgO Mg-K -->
+    <div class="slide" id="slide-XANES-Im-MgO-Mg_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
+        <div class="slide-content">
+            <h2>Espectros XANES: MgO</h2>
+
+            <div style="width: 95%; height: 70%; margin: 0 auto;">
+                <div class="plot-grid-custom2">
+                    <div id="plot-XANES_MgO_Mg_K" data-plot-key="plot-XANES_MgO_Mg_K" class="plot-box" style="height: 275px;"></div>
+                    <div class="subfigure-row">
+                        <img src="MgO/EXCITONS/Mg-K/excitonWavefunction-000008-iso.png" alt="exciton_Mg_K_1_bands" class="img-dark-mode1">
+                        <img src="MgO/EXCITONS/Mg-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000008.OUT.png" alt="exciton_Mg_K_1_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="MgO/EXCITONS/Mg-K/excitonWavefunction-000028-iso.png" alt="exciton_Mg_K_1_bands" class="img-dark-mode1">
+                        <img src="MgO/EXCITONS/Mg-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000028.OUT.png" alt="exciton_Mg_K_2_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: XANES Plots (Im) MgO O-K -->
+    <div class="slide" id="slide-XANES-Im-MgO-O_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
+        <div class="slide-content">
+            <h2>Espectros XANES: MgO</h2>
+
+            <div style="width: 95%; height: 70%; margin: 0 auto;">
+                <div class="plot-grid-custom2">
+                    <div id="plot-XANES_MgO_O_K" data-plot-key="plot-XANES_MgO_O_K" class="plot-box" style="height: 275px;"></div>
+                    <div class="subfigure-row">
+                        <img src="MgO/EXCITONS/O-K/excitonWavefunction-000010-iso.png" alt="exciton_O_K_1_bands" class="img-dark-mode1">
+                        <img src="MgO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000010.OUT.png" alt="exciton_O_K_1_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="MgO/EXCITONS/O-K/excitonWavefunction-000044-iso.png" alt="exciton_O_K_2_bands" class="img-dark-mode1">
+                        <img src="MgO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000044.OUT.png" alt="exciton_O_K_2_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="MgO/EXCITONS/O-K/excitonWavefunction-000218-iso.png" alt="exciton_O_K_3_bands" class="img-dark-mode1">
+                        <img src="MgO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000218.OUT.png" alt="exciton_O_K_3_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: XANES Plots (Im) MgO Mg-L23 -->
+    <div class="slide" id="slide-XANES-Im-MgO-Mg_L23" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
+        <div class="slide-content">
+            <h2>Espectros XANES: MgO</h2>
+
+            <div style="width: 95%; height: 70%; margin: 0 auto;">
+                <div class="plot-grid-custom2">
+                    <div id="plot-XANES_MgO_Mg_L23" data-plot-key="plot-XANES_MgO_Mg_L23" class="plot-box" style="height: 275px;"></div>
+                    <div class="subfigure-row">
+                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000001-000001_iso.png" alt="exciton_Mg_L23_1_bands" class="img-dark-mode1">
+                        <img src="MgO/EXCITONS/Mg-L23/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_Mg_L23_1_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000001-000004_iso.png" alt="exciton_Mg_L23_2_bands" class="img-dark-mode1">
+                        <img src="MgO/EXCITONS/Mg-L23/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000004.OUT.png" alt="exciton_Mg_L23_2_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000001-000046_iso.png" alt="exciton_Mg_L23_3_bands" class="img-dark-mode1">
+                        <img src="MgO/EXCITONS/Mg-L23/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000046.OUT.png" alt="exciton_Mg_L23_3_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000001-000186_iso.png" alt="exciton_Mg_L23_4_bands" class="img-dark-mode1">
+                        <img src="MgO/EXCITONS/Mg-L23/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000186.OUT.png" alt="exciton_Mg_L23_4_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
     <!-- SLIDE ??: XANES Plots (Im) CaO -->
     <div class="slide" id="slide-XANES-Im-CaO" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
@@ -2232,6 +2346,71 @@
                     <div id="plot-XANES_CaO_Ca_L23" class="plot-box" style="height: 275px;"></div>
                     <div id="plot-XANES_CaO_O_K" class="plot-box" style="height: 275px;"></div>
                     <div id="plot-XANES_CaO_Ca_K" class="plot-box" style="height: 275px;"></div>
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: XANES Plots (Im) CaO Ca-K-->
+    <div class="slide" id="slide-XANES-Im-CaO-Ca_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
+        <div class="slide-content">
+            <h2>Espectros XANES: CaO</h2>
+
+            <div style="width: 95%; height: 70%; margin: 0 auto;">
+                <div class="plot-grid-custom2">
+                    <div id="plot-XANES_CaO_Ca_L23" class="plot-box" style="height: 275px;"></div>
+                    <div class="subfigure-row">
+                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-000212-iso.png" alt="exciton_Ca_K_1_bands" class="img-dark-mode1">
+                        <img src="CaO/EXCITONS/Ca-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000212.OUT.png" alt="exciton_Ca_K_1_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-001542-iso.png" alt="exciton_Ca_K_2_bands" class="img-dark-mode1">
+                        <img src="CaO/EXCITONS/Ca-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA001542.OUT.png" alt="exciton_Ca_K_2_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-001884-full.png" alt="exciton_Ca_K_3_bands" class="img-dark-mode1">
+                        <img src="CaO/EXCITONS/Ca-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA001884.OUT.png" alt="exciton_Ca_K_3_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-002198-iso.png" alt="exciton_Ca_K_4_bands" class="img-dark-mode1">
+                        <img src="CaO/EXCITONS/Ca-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA002198.OUT.png" alt="exciton_Ca_K_4_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: XANES Plots (Im) CaO O-K -->
+    <div class="slide" id="slide-XANES-Im-CaO-O_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
+        <div class="slide-content">
+            <h2>Espectros XANES: CaO</h2>
+
+            <div style="width: 95%; height: 70%; margin: 0 auto;">
+                <div class="plot-grid-custom2">
+                    <div id="plot-XANES_CaO_O_K" class="plot-box" style="height: 275px;"></div>
+                    <div class="subfigure-row">
+                        <img src="CaO/EXCITONS/O-K/excitonWavefunction-000024-iso.png" alt="exciton_O_K_1_bands" class="img-dark-mode1">
+                        <img src="CaO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000024.OUT.png" alt="exciton_O_K_1_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="CaO/EXCITONS/O-K/excitonWavefunction-000078-iso.png" alt="exciton_O_K_2_bands" class="img-dark-mode1">
+                        <img src="CaO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000078.OUT.png" alt="exciton_O_K_2_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="CaO/EXCITONS/O-K/excitonWavefunction-000214-iso.png" alt="exciton_O_K_3_bands" class="img-dark-mode1">
+                        <img src="CaO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000214.OUT.png" alt="exciton_O_K_3_wf">
+                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                    </div>
                 </div>
             </div>
 
@@ -2716,27 +2895,35 @@
         /* --- ROBUST STATE MACHINE --- */
         function updateSlide1State(step) {
             const titleLayer = document.getElementById('layer-title');
-            const workLayer = document.getElementById('layer-workflow');
+            const workLayer  = document.getElementById('layer-workflow');
             const bandsLayer = document.getElementById('layer-static-bands');
             const steps = document.querySelectorAll('.step-text');
 
             // Reset everything
             steps.forEach(s => s.classList.remove('active'));
 
-            // Manage Layer Visibility
             titleLayer.classList.add('hidden');
             workLayer.classList.add('hidden');
             bandsLayer.classList.add('hidden');
 
-            // Animation Handling for Slide 1
-            if(anims.expSetup) { cancelAnimationFrame(anims.expSetup); anims.expSetup = null; }
+            if (anims.expSetup) {
+                cancelAnimationFrame(anims.expSetup);
+                anims.expSetup = null;
+            }
 
+            // ✅ HARD GUARD
+            if (step === -1) {
+                titleLayer.classList.remove('hidden');
+                return;
+            }
+
+            // Layer visibility
             if (step >= 2 && step <= 4) {
                 workLayer.classList.remove('hidden');
-                initExpSetupAnim(); // Start Experimental Animation
+                initExpSetupAnim();
             } else if (step === 6) {
                 bandsLayer.classList.remove('hidden');
-                drawStaticBands(); // Draw when visible
+                drawStaticBands();
             } else {
                 titleLayer.classList.remove('hidden');
             }
@@ -2909,6 +3096,21 @@
             DEFAULT: PREVIOUS SLIDE
             --------------------------------- */
             showSlide(currentSlide - 1);
+            /* ---------------------------------
+            SLIDE 1 (BACKWARD STEPS)
+            --------------------------------- */
+            if (currentSlide === 0) {
+                if (slide1Step > 0) {
+                    slide1Step--;
+                    updateSlide1State(slide1Step);
+                    return;
+                } else if (slide1Step === 0) {
+                    slide1Step = -1;
+                    updateSlide1State(-1);
+                    return;
+                }
+            }
+
         }
 
         function updateProgress() {
@@ -4584,23 +4786,27 @@
         document.addEventListener("DOMContentLoaded", () => {
 
             /* -----------------------------------------
-            1. Lazy-load plots (your original code)
+            1. Lazy-load plots (FIXED & CLEAN)
             ----------------------------------------- */
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting && entry.target.dataset.loaded !== "true") {
-                        const id = entry.target.id;
-                        const spec = window.plotSpecs[id];
 
-                        // SAFETY CHECK: Does the settings block exist?
-                        if (spec) {
-                            loadMultiFilePlot(id, spec.curves, spec.settings);
-                            entry.target.dataset.loaded = "true";
-                        } else {
-                            // THIS WILL PRINT THE EXACT ERROR IN YOUR CONSOLE
-                            console.error(`CRITICAL ERROR: HTML has <div id="${id}">, but window.plotSpecs["${id}"] is missing!`);
-                        }
+                    if (!entry.isIntersecting) return;
+                    if (entry.target.dataset.loaded === "true") return;
+
+                    const containerId = entry.target.id;
+                    const plotKey = entry.target.dataset.plotKey;
+                    const spec = window.plotSpecs?.[plotKey];
+
+                    if (!spec) {
+                        console.error(
+                            `CRITICAL ERROR: <div id="${containerId}"> has data-plot-key="${plotKey}", but window.plotSpecs["${plotKey}"] is missing!`
+                        );
+                        return;
                     }
+
+                    loadMultiFilePlot(containerId, spec.curves, spec.settings);
+                    entry.target.dataset.loaded = "true";
                 });
             }, { threshold: 0.25 });
 
@@ -4609,40 +4815,29 @@
             /* -----------------------------------------
             2. Plot zoom modal
             ----------------------------------------- */
-            // 1. Get references to the modal elements
             const pltmodal = document.getElementById("plot-modal");
             const modalContent = document.getElementById("plot-modal-content");
 
-            // 2. Add click listeners to all plot containers
             document.querySelectorAll(".plot-box").forEach(box => {
                 box.addEventListener("click", () => {
 
-                    // A. Show the modal
                     pltmodal.classList.remove("hidden");
 
-                    // B. Get the ID of the clicked plot
-                    const sourceId = box.id;
-                    const originalDiv = document.getElementById(sourceId);
+                    const plotKey = box.dataset.plotKey;
+                    if (!plotKey) return;
 
-                    // C. Clone the plot into the modal
-                    // (We re-plot it into the modal div so it adapts to the new large size)
-                    if (window.plotSpecs && window.plotSpecs[sourceId]) {
-                        const spec = window.plotSpecs[sourceId];
+                    const spec = window.plotSpecs[plotKey];
+                    if (!spec) return;
 
-                        // Use the same function but target the modal's internal div
-                        // Important: We might need to adjust fonts for the larger view
-                        loadMultiFilePlot("plot-modal-content", spec.curves, {
-                            ...spec.settings
-                        });
-                    }
+                    loadMultiFilePlot("plot-modal-content", spec.curves, {
+                        ...spec.settings
+                    });
                 });
             });
 
-            // 3. Close modal when clicking outside the graph
             pltmodal.addEventListener("click", (e) => {
                 if (e.target === pltmodal) {
                     pltmodal.classList.add("hidden");
-                    // Optional: Purge the content to save memory
                     Plotly.purge("plot-modal-content");
                 }
             });
@@ -4650,30 +4845,24 @@
             /* -----------------------------------------
             SHIFT + CLICK → NAVIGATE TO DETAIL SLIDE
             ----------------------------------------- */
-
             document.querySelectorAll(".plot-box").forEach(box => {
                 box.addEventListener("click", e => {
 
-                    // Only intercept Shift+Click
                     if (!e.shiftKey) return;
 
-                    // Stop zoom, modals, everything else
                     e.preventDefault();
                     e.stopPropagation();
 
                     const targetId = box.dataset.targetSlide;
                     if (!targetId) return;
 
-                    // Remember where we came from
                     lastOverviewSlide = currentSlide;
-
-                    // Navigate
                     goToSlideById(targetId);
 
-                }, true); // 👈 capture phase is CRUCIAL
+                }, true); // capture phase
             });
 
-            /* -----------------------------------------
+/* -----------------------------------------
             3. Image zoom modal (GLOBAL, layout-agnostic)
             ----------------------------------------- */
             const modal = document.getElementById("mediaZoomModal");
@@ -4906,6 +5095,7 @@
             }, true);
 
         });
+
 
         let resizeTimer;
         window.addEventListener('resize', () => {
