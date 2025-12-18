@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
-    <script src="presentation_data.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" defer ></script>
+    <script src="presentation_data.js" ></script>
 
     <style>
         :root {
@@ -36,6 +36,7 @@
                 --arrow-color: #A5158C;
 
             /* Particles & Physics (For CSS use) */
+                --lattice-color: #666666;
                 --particle-photon: #ffffaa;
                 --particle-electron: #4d4dff;
                 --particle-ion: #ff4d4d;
@@ -56,6 +57,8 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0; visibility: hidden; transition: opacity 0.5s ease-in-out;
             display: flex; justify-content: center; align-items: center; z-index: 1;
+            /* Add this to hint the browser to promote this to a GPU layer */
+            will-change: opacity, visibility;
         }
 
         .slide.active { opacity: 1; visibility: visible; z-index: 2; }
@@ -138,10 +141,26 @@
             padding: 4px;
         }
 
+        /* Helper to span 2 rows */
+        .span-row-2 {
+            grid-row: span 2;
+
+            /* IMPORTANT: Override the default max-height
+            so the image actually expands to fill both rows */
+            height: 100% !important;
+            max-height: none !important;
+        }
+
+        /* Helper to span the full width (4 columns) */
+        .span-full { grid-column: 1 / -1; }
+
         .plot-grid-custom2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 18px;
+
+            /* THIS Fills gaps automatically */
+            grid-auto-flow: dense;
 
             width: fit-content;    /* shrink to content width */
             margin: 0 auto;        /* center the grid horizontally */
@@ -155,7 +174,7 @@
             object-fit: contain;
             border-radius: 6px;
             border: 1px solid var(--border-color);
-            background: #ffffff;
+            background: var(--bg2-color);
             padding: 4px;
         }
 
@@ -323,9 +342,36 @@
         .controls-overlay { position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; gap: 10px; opacity: 0.3; transition: opacity 0.3s; }
         .controls-overlay:hover { opacity: 1; }
         .nav-btn { background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 15px; border-radius: 6px; cursor: pointer; }
+        .nav-plot { cursor: zoom-in; }
+        .nav-plot img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
+
         .progress-bar { position: fixed; bottom: 0; left: 0; height: 4px; background: var(--border-color); width: 0%; transition: width 0.3s; z-index: 101; }
 
         .slide-footer { position: absolute; bottom: 20px; left: 70px; right: 70px; padding-top: 15px; display: flex; justify-content: space-between; opacity: 0.5; font-size: 0.9rem; }
+                .context-controls-overlay {
+            position: fixed;
+            bottom: 70px;          /* above progress bar */
+            right: 20px;           /* or left, your choice */
+            display: none;         /* hidden by default */
+            z-index: 1000;
+        }
+        .context-controls-overlay .nav-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+        }
+        .back-btn { left: 20px; }
+        .skip-btn { right: 20px; }
+
+        .plot-thumb {
+            width: 160px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s;
+        }
+        .plot-thumb:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
 
         /* Fix flex → grid collapse */
         .slide-content { min-width: 0; }
@@ -397,12 +443,12 @@
         .credit-roll {
             position: absolute;
             width: 100%;
-            top: 70%;
+            top: 90%;
             transform: translateY(-50%);
             text-align: center;
-            animation: creditScroll 30s linear forwards;
+            animation: creditScroll 40s linear forwards;
             animation-delay: 0.2s;
-            animation-timing-function: ease-in-out;
+            /*animation-timing-function: ease-in-out;*/
         }
 
         /* Animation */
@@ -411,7 +457,7 @@
                 transform: translateY(-50%);
             }
             100% {
-                transform: translateY(-250%);
+                transform: translateY(-348%);
             }
         }
 
@@ -1138,7 +1184,7 @@
                 <div class="two-column">
                    <!-- ELECTRON PROPAGATION -->
                     <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
-                        <h3 style="color: var(--accent-main); text-align:center;">Propagación de Electrón (G<sup>&gt;</sup>)</h3>
+                        <h3 style="color: var(--highlight2-color); text-align:center;">Propagación de Electrón (G<sup>&gt;</sup>)</h3>
                         <div class="media-container">
                             <div class="anim-wrapper" >
                                 <canvas id="greenElectronCanvas"></canvas>
@@ -1148,7 +1194,7 @@
 
                     <!-- HOLE PROPAGATION -->
                     <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
-                        <h3 style="color: var(--accent-purple); text-align:center;">Propagación de Hueco (G<sup>&lt;</sup>)</h3>
+                        <h3 style="color: var(--highlight2-color); text-align:center;">Propagación de Hueco (G<sup>&lt;</sup>)</h3>
                         <div class="media-container">
                             <div class="anim-wrapper">
                                 <canvas id="greenHoleCanvas"></canvas>
@@ -1181,7 +1227,7 @@
                 <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
                     <h3 style="color: var(--accent-purple); text-align:center;">Extra electrón (repulsión)</h3>
                     <div class="media-container" style="flex: 1;  max-height: 300px;">
-                        <div style="position: absolute; top: 10px; left: 10px; color: var(--text-secondary); font-size: 14px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 4px;">Extra Electrón (Repulsión)</div>
+                        <div style="position: absolute; top: 10px; left: 10px; color: var(--text-secondary); font-size: 14px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 4px;"></div>
                         <canvas id="screenElectronCanvas"></canvas>
                     </div>
                 </div>
@@ -1248,7 +1294,7 @@
     <!-- SLIDE 5: BSE - Intro -->
     <div class="slide" data-ignore id="slide-BSE-intro">
         <div class="slide-content">
-            <h2>La Ecuación de <span class="highlight">Bethe-Salpeter</span></h2>
+            <h2>BSE: La Ecuación de <span class="highlight">Bethe-Salpeter</span></h2>
             <div class="two-column" style="grid-template-columns: 40% 60%;">
                 <div>
                     <p>Para describir excitaciones neutras, debemos tratar el electrón y el hueco como un par acoplado. Se resuelve un sistema efectivo con:</p>
@@ -1277,35 +1323,70 @@
         </div>
     </div>
 
-    <!-- SLIDE ??: Materials -->
+    <!-- SLIDE 5: Excitons types -->
+    <div class="slide" data-ignore id="slide-excitons-type">
+        <div class="slide-content">
+            <h2>BSE: tipos de excitones</h2>
+                <div class="two-column">
+                    <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
+                            <h3 style="color: var(--highlight2-color); text-align:center;">Frenkel</h3>
+                            <div class="media-container" style="width: 50%; margin: 0 auto;">
+                                <canvas id="frenkelCanvas"></canvas>
+                            </div>
+                            <p>Fuertemente ligado <br> Localizado <br> \( E_b \sim 1eV\)<p>
+                    </div>
+                    <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
+                        <h3 style="color: var(--highlight2-color); text-align:center;">Wannier-Mott</h3>
+                        <div class="media-container" style="width: 50%; margin: 0 auto;">
+                                <canvas id="wannierCanvas"></canvas>
+                        </div>
+                        <p>Débilmente ligado <br> Deslocalizado <br> \( E_b \sim 0.1eV\)<p>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Materials Aplications -->
     <div class="slide" data-ignore id="slide-materials">
         <div class="slide-content">
             <h2>Materiales</h2>
 
-            <div class="two-row-wrapper">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: fit-content; margin: 0 auto; ">
 
                 <!-- Row 1 -->
-                <div class="row-with-captions">
+                <div>
                     <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem; text-align: right;">LiF</div>
-
-                    <div class="plot-grid-custom2" style="background-color: var(--bg-color);">
-                        <img src="LiF/LiF_structure.png" alt="Struct_LiF"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
-                        <img src="MgO/MgO_structure.png" alt="Struct_MgO"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
-                    </div>
-
+                    <ul>
+                        <li>Aplicación</li>
+                        <li>Aplicación</li>
+                        <li>Aplicación</li>
+                    </ul>
+                </div>
+                <div>
                     <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem; text-align: left;">MgO</div>
+                    <ul>
+                        <li>Aplicación</li>
+                        <li>Aplicación</li>
+                        <li>Aplicación</li>
+                    </ul>
                 </div>
 
                 <!-- Row 2 -->
-                <div class="row-with-captions">
+                <div>
                     <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem;">CaO</div>
-
-                    <div class="plot-grid-custom2">
-                        <img src="CaO/CaO_structure.png" alt="Struct_CaO" style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
-                        <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO" style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
-                    </div>
-
+                    <ul>
+                        <li>Aplicación</li>
+                        <li>Aplicación</li>
+                        <li>Aplicación</li>
+                    </ul>
+                </div>
+                <div>
                     <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">ZnO</div>
+                    <ul>
+                        <li>Aplicación</li>
+                        <li>Aplicación</li>
+                        <li>Aplicación</li>
+                    </ul>
                 </div>
 
             </div>
@@ -1315,33 +1396,47 @@
         </div>
     </div>
 
-    <!-- SLIDE ??: Groundstate Tables -->
-    <div class="slide" data-ignore id="slide-groundstate-tables">
+    <!-- SLIDE ??: Materials Overview -->
+    <div class="slide" data-ignore id="slide-materialsNew">
         <div class="slide-content">
-            <h2>Estructura Electrónica</h2>
+            <h2>Estructura</h2>
 
-
-            <table class="thesis-table">
-                <caption>
-                    Parámetros de red calculados, comparados con los experimentales <span class="cite" data-cite="lattice_constants"></span>.
-                </caption>
-                <thead>
-                    <tr>
-                        <th>Material</th>
-                        <th>a [Å] (KS)</th>
-                        <th>c/a (KS)</th>
-                        <th>a [Å] (Exp.)</th>
-                        <th>c/a (Exp.)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>  <td>LiF</td>  <td>4.006</td>  <td>1</td>      <td>3.960</td>  <td>1</td>      </tr>
-                    <tr>  <td>MgO</td>  <td>4.218</td>  <td>1</td>      <td>4.186</td>  <td>1</td>      </tr>
-                    <tr>  <td>CaO</td>  <td>4.768</td>  <td>1</td>      <td>4.787</td>  <td>1</td>      </tr>
-                    <tr>  <td>ZnO</td>  <td>3.233</td>  <td>5.220</td>  <td>3.275</td>  <td>5.247</td>  </tr>
-                </tbody>
-            </table>
-
+            <div style="width: 95%; height: 70%; margin: 0 auto;">
+            <div class="plot-grid-custom4">
+                    <h3>LiF: sal de roca</h3>
+                    <h3>MgO: sal de roca</h3>
+                    <h3>CaO: sal de roca</h3>
+                    <h3>ZnO: wurtzita hexagonal</h3>
+                    <img src="LiF/LiF_structure.png" alt="Struct_LiF">
+                    <img src="MgO/MgO_structure.png" alt="Struct_MgO">
+                    <img src="CaO/CaO_structure.png" alt="Struct_CaO">
+                    <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO">
+                    <div class="plot-box table-slot span-full" style="height: 260px; width:30%; margin: auto;">
+                        <div class="table-panel">
+                        <table class="thesis-table compact">
+                        <caption>
+                            Parámetros de red calculados, comparados con los experimentales <span class="cite" data-cite="lattice_constants"></span>.
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>a [Å] (KS)</th>
+                                <th>c/a (KS)</th>
+                                <th>a [Å] (Exp.)</th>
+                                <th>c/a (Exp.)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>  <td>LiF</td>  <td>4.006</td>  <td>1</td>      <td>3.960</td>  <td>1</td>      </tr>
+                            <tr>  <td>MgO</td>  <td>4.218</td>  <td>1</td>      <td>4.186</td>  <td>1</td>      </tr>
+                            <tr>  <td>CaO</td>  <td>4.768</td>  <td>1</td>      <td>4.787</td>  <td>1</td>      </tr>
+                            <tr>  <td>ZnO</td>  <td>3.233</td>  <td>5.220</td>  <td>3.275</td>  <td>5.247</td>  </tr>
+                        </tbody>
+                        </table>
+                        </div>
+                    </div>
+            </div>
+            </div>
 
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
@@ -1349,9 +1444,9 @@
     </div>
 
     <!-- SLIDE ??: Electronic Structure -->
-    <div class="slide" data-ignore id="slide-electStruct">
+    <div class="slide" data-ignore id="slide-electStruct" data-show-skip="true" data-skip-target="slide-groundstate-tables">
         <div class="slide-content">
-            <h2>Estructura Electrónica</h2>
+            <h2>Estructura Electrónica: Bandas y DOS</h2>
 
         <div class="two-row-wrapper">
 
@@ -1360,8 +1455,8 @@
                 <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem;">LiF</div>
 
                 <div class="plot-grid-custom2">
-                    <img src="LiF/PROJECTED/bands-dos.png" alt="electStruct_LiF" class="img-dark-mode2">
-                    <img src="MgO/PROJECTED/bands-dos.png" alt="electStruct_MgO" class="img-dark-mode2">
+                    <img src="LiF/PROJECTED/bands-dos.png" class="nav-plot" alt="electStruct_LiF" data-target-slide="slide-projections-LiF">
+                    <img src="MgO/PROJECTED/bands-dos.png" class="nav-plot" alt="electStruct_MgO" data-target-slide="slide-projections-MgO">
                 </div>
 
                 <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">MgO</div>
@@ -1372,8 +1467,8 @@
                 <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem;">CaO</div>
 
                 <div class="plot-grid-custom2">
-                    <img src="CaO/PROJECTED/bands-dos.png" alt="electStruct_CaO" class="img-dark-mode2">
-                    <img src="ZnO/PROJECTED/bands-dos.png" alt="electStruct_ZnO" class="img-dark-mode2">
+                    <img src="CaO/PROJECTED/bands-dos.png" class="nav-plot" alt="electStruct_CaO" data-target-slide="slide-projections-CaO">
+                    <img src="ZnO/PROJECTED/bands-dos.png" class="nav-plot" alt="electStruct_ZnO" data-target-slide="slide-projections-ZnO">
                 </div>
 
                 <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">ZnO</div>
@@ -1386,54 +1481,151 @@
         </div>
     </div>
 
-    <!-- SLIDE ??: Groundstate Tables -->
-    <div class="slide" data-ignore id="slide-groundstate-tables">
+    <!-- SLIDE ??: Projections LiF -->
+    <div class="slide" id="slide-projections-LiF" data-show-back="true" data-back-target="slide-electStruct" data-skip-target="slide-groundstate-tables">
         <div class="slide-content">
-            <h2>Estructura Electrónica</h2>
+            <h2>Estructura Electrónica: Bandas y DOS - LiF</h2>
 
+                <div class="subfigure-row"style="height: 250px;">
+                    <h3>Li    </h3>
+                    <img src="LiF/PROJECTED/bands_Li_s_dark.png" alt="bands_Li_s_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/bands_Li_p_dark.png" alt="bands_Li_p_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/bands_Li_d_dark.png" alt="bands_Li_d_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/LiF_Li-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>F     </h3>
+                    <img src="LiF/PROJECTED/bands_F_s_dark.png" alt="bands_F_s_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/bands_F_p_dark.png" alt="bands_F_p_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/bands_F_d_dark.png" alt="bands_F_d_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/LiF_F-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
 
-            <table class="thesis-table">
-                <caption>
-                    Energías de gap calculadas, comparadas con las experimentales.
-                </caption>
-                <thead>
-                    <tr>
-                        <th class="group-header" colspan="4">\(E_{gap}\) [eV]</th>
-                    </tr>
-                    <tr>
-                        <th>Material</th>
-                        <th>KS</th>
-                        <th>KS + G<sub>0</sub>W<sub>0</sub></th>
-                        <th>Exp.</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>LiF (\(\Gamma - \Gamma\))</td>
-                        <td>9.07</td>
-                        <td>13.63</td>
-                        <td>13.7-14.2 <span class="cite" data-cite="LiF_bandgap_1"></span><span class="cite" data-cite="LiF_bandgap_2"></span></td>
-                    </tr>
-                    <tr>
-                        <td>MgO (\(\Gamma - \Gamma\))</td>
-                        <td>4.6</td>
-                        <td>7.29</td>
-                        <td>7.77-7.83 <span class="cite" data-cite="MgO_paper"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
-                    </tr>
-                    <tr>
-                        <td>CaO (\(X - X\))</td>
-                        <td>3.5</td>
-                        <td>6.02</td>
-                        <td>6.88-7.09 <span class="cite" data-cite="CaO_bandgap_2"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
-                    </tr>
-                    <tr>
-                        <td>ZnO (\(\Gamma - \Gamma\))</td>
-                        <td>0.72</td>
-                        <td>2.27</td>
-                        <td>3.4 <span class="cite" data-cite="ZnO_bandgap_1"></span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Projections MgO -->
+    <div class="slide" id="slide-projections-MgO" data-show-back="true" data-back-target="slide-electStruct" data-skip-target="slide-groundstate-tables">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: Bandas y DOS - MgO</h2>
+
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>Mg    </h3>
+                    <img src="MgO/PROJECTED/bands_Mg_s_dark.png" alt="bands_Mg_s_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/bands_Mg_p_dark.png" alt="bands_Mg_p_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/bands_Mg_d_dark.png" alt="bands_Mg_d_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/MgO_Mg-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>O     </h3>
+                    <img src="MgO/PROJECTED/bands_O_s_dark.png" alt="bands_O_s_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/bands_O_p_dark.png" alt="bands_O_p_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/bands_O_d_dark.png" alt="bands_O_d_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/MgO_O-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Projections CaO -->
+    <div class="slide" id="slide-projections-CaO" data-show-back="true" data-back-target="slide-electStruct" data-skip-target="slide-groundstate-tables">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: Bandas y DOS - CaO</h2>
+
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>Ca    </h3>
+                    <img src="CaO/PROJECTED/bands_Ca_s_dark.png" alt="bands_Ca_s_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/bands_Ca_p_dark.png" alt="bands_Ca_p_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/bands_Ca_d_dark.png" alt="bands_Ca_d_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/CaO_Ca-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>O     </h3>
+                    <img src="CaO/PROJECTED/bands_O_s_dark.png" alt="bands_O_s_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/bands_O_p_dark.png" alt="bands_O_p_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/bands_O_d_dark.png" alt="bands_O_d_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/CaO_O-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Projections ZnO -->
+    <div class="slide" id="slide-projections-ZnO" data-show-back="true" data-back-target="slide-electStruct" data-skip-target="slide-groundstate-tables">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: Bandas y DOS - ZnO</h2>
+
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>Zn    </h3>
+                    <img src="ZnO/PROJECTED/bands_Zn_s_dark.png" alt="bands_Zn_s_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/bands_Zn_p_dark.png" alt="bands_Zn_p_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/bands_Zn_d_dark.png" alt="bands_Zn_d_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/ZnO_Zn-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>O     </h3>
+                    <img src="ZnO/PROJECTED/bands_O_s_dark.png" alt="bands_O_s_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/bands_O_p_dark.png" alt="bands_O_p_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/bands_O_d_dark.png" alt="bands_O_d_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/ZnO_O-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Electronic Structure Tables -->
+    <div class="slide" data-ignore id="slide-groundstate-tables" data-show-back="true" data-back-target="slide-electStruct">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: Gaps</h2>
+
+            <div style="display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                <table class="thesis-table">
+                    <caption>
+                        Energías de gap calculadas, comparadas con las experimentales.
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th class="group-header" colspan="4">\(E_{gap}\) [eV]</th>
+                        </tr>
+                        <tr>
+                            <th>Material</th>
+                            <th>KS</th>
+                            <th>KS + G<sub>0</sub>W<sub>0</sub></th>
+                            <th>Exp.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>LiF \(\left(\Gamma - \Gamma\right)\)</td>
+                            <td>9.07</td>
+                            <td>13.63</td>
+                            <td>13.7-14.2 <span class="cite" data-cite="LiF_bandgap_1"></span><span class="cite" data-cite="LiF_bandgap_2"></span></td>
+                        </tr>
+                        <tr>
+                            <td>MgO \(\left(\Gamma - \Gamma\right)\)</td>
+                            <td>4.6</td>
+                            <td>7.29</td>
+                            <td>7.77-7.83 <span class="cite" data-cite="MgO_paper"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
+                        </tr>
+                        <tr>
+                            <td>CaO \(\left(X - X\right)\)</td>
+                            <td>3.5</td>
+                            <td>6.02</td>
+                            <td>6.88-7.09 <span class="cite" data-cite="CaO_bandgap_2"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
+                        </tr>
+                        <tr>
+                            <td>ZnO \(\left(\Gamma - \Gamma\right)\)</td>
+                            <td>0.72</td>
+                            <td>2.27</td>
+                            <td>3.4 <span class="cite" data-cite="ZnO_bandgap_1"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
@@ -1441,17 +1633,17 @@
     </div>
 
     <!-- SLIDE ??: Optical Plots (Im) -->
-    <div class="slide" data-ignore id="slide-optical-Im">
+    <div class="slide" data-ignore id="slide-optical-Im" data-show-skip="true" data-skip-target="slide-optical-Re">
         <div class="slide-content">
             <h2>Espectros Ópticos: Absorción</h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom3">
-                    <div id="plot-optical_LiF" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_MgO" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_CaO" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_ZnO_ord" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_ZnO_extr" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-optical_LiF" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_LiF"></div>
+                    <div id="plot-optical_MgO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_MgO"></div>
+                    <div id="plot-optical_CaO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_CaO"></div>
+                    <div id="plot-optical_ZnO_ord" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_ZnO"></div>
+                    <div id="plot-optical_ZnO_extr" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_ZnO"></div>
                     <!-- TABLE SLOT -->
                     <div class="plot-box table-slot" style="height: 275px;">
                         <div class="table-panel">
@@ -1508,42 +1700,41 @@
     </div>
 
     <!-- SLIDE ??: Excitons LiF -->
-    <div class="slide" id="slide-Excitons_LiF">
+    <div class="slide" id="slide-Excitons_LiF" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
             <h2>Funciones de Onda de Excitones: LiF</h2>
 
                 <div class="plot-grid-custom2" style="border-radius: 0;">
                     <div class="subfigure-row">
                         <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_LiF_1_bands" class="img-dark-mode1">
-                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_LiF_1_wf" class="img-dark-mode2">
-                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_1.mp4" type="video/mp4" class="img-dark-mode2" >
+                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_LiF_1_wf">
+                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_1.mp4.mov" type="video/mov" >
                     </div>
                     <div class="subfigure-row">
                         <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_LiF_2_bands" class="img-dark-mode1">
-                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_LiF_2_wf" class="img-dark-mode2">
-                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_2.mp4" type="video/mp4" class="img-dark-mode2" >
+                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_LiF_2_wf">
+                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_2.mp4.mov" type="video/mov" >
                     </div>
                     <div class="subfigure-row">
                         <img src="LiF/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000003.OUT.png" alt="exciton_LiF_3_bands" class="img-dark-mode1">
-                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000003-000001_iso.png" alt="exciton_LiF_3_wf" class="img-dark-mode2">
-                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_3.mp4" type="video/mp4" class="img-dark-mode2" >
+                        <img src="LiF/EXCITONS/optical/excitonWavefunction-000003-000001_iso.png" alt="exciton_LiF_3_wf">
+                        <video autoplay muted loop playsinline src="LiF/EXCITONS/optical/LiF_optical_3.mp4.mov" type="video/mov" >
                     </div>
                 </div>
-
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
     <!-- SLIDE ??: Excitons MgO -->
-    <div class="slide" id="slide-Excitons_MgO">
+    <div class="slide" id="slide-Excitons_MgO" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
             <h2>Funciones de Onda de Excitones: MgO</h2>
 
                 <div class="subfigure-row">
                     <img src="MgO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_MgO_1_bands" class="img-dark-mode1">
-                    <img src="MgO/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_MgO_1" class="img-dark-mode2">
-                    <video autoplay muted loop playsinline src="MgO/EXCITONS/optical/MgO_optical_1.mp4" type="video/mp4" class="img-dark-mode2" >
+                    <img src="MgO/EXCITONS/optical/excitonWavefunction-000001-000001_iso.png" alt="exciton_MgO_1">
+                    <video autoplay muted loop playsinline src="MgO/EXCITONS/optical/MgO_optical_1.mp4.mov" type="video/mov" >
                 </div>
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
@@ -1551,51 +1742,61 @@
     </div>
 
     <!-- SLIDE ??: Excitons CaO -->
-    <div class="slide" id="slide-Excitons_CaO">
+    <div class="slide" id="slide-Excitons_CaO" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
             <h2>Funciones de Onda de Excitones: CaO</h2>
 
                 <div class="plot-grid-custom2" no-round>
                     <div class="subfigure-row">
                         <img src="CaO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_CaO_1_bands" class="img-dark-mode1">
-                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_CaO_1_wf" class="img-dark-mode2">
-                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_2.mp4" type="video/mp4" class="img-dark-mode2" >
+                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_CaO_1_wf">
+                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_2.mp4.mov" type="video/mov" >
                     </div>
                     <div class="subfigure-row">
                         <img src="CaO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000005.OUT.png" alt="exciton_CaO_2_bands" class="img-dark-mode1">
-                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000005-000001_iso.png" alt="exciton_CaO_2_wf" class="img-dark-mode2">
-                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_5.mp4" type="video/mp4"  class="img-dark-mode2">
+                        <img src="CaO/EXCITONS/optical/excitonWavefunction-000002-000005_iso.png" alt="exciton_CaO_2_wf">
+                        <video autoplay muted loop playsinline src="CaO/EXCITONS/optical/CaO_optical_5.mp4.mov" type="video/mov" >
                     </div>
                 </div>
-
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
     <!-- SLIDE ??: Excitons ZnO -->
-    <div class="slide" id="slide-Excitons_ZnO">
+    <div class="slide" id="slide-Excitons_ZnO" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
             <h2>Funciones de Onda de Excitones: ZnO</h2>
 
                 <div class="plot-grid-custom2">
                     <div class="subfigure-row">
                         <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
-                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_ZnO_1_wf" class="img-dark-mode2">
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000001_iso.png" alt="exciton_ZnO_1_wf">
+                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_1.mp4.mov" type="video/mov" >
                     </div>
                     <div class="subfigure-row">
-                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_2_bands" class="img-dark-mode1">
-                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000006_iso.png" alt="exciton_ZnO_2_wf" class="img-dark-mode2">
+                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000002_iso.png" alt="exciton_ZnO_1_wf">
+                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_2.mp4.mov" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000003_iso.png" alt="exciton_ZnO_1_wf">
+                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_3.mp4.mov" type="video/mov" >
+                    </div>
+                    <div class="subfigure-row">
+                        <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000004_iso.png" alt="exciton_ZnO_1_wf">
+                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_4.mp4.mov" type="video/mov" >
                     </div>
                 </div>
-
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
     <!-- SLIDE ??: Optical Plots (Re) -->
-    <div class="slide" data-ignore id="slide-optical-Re">
+    <div class="slide" data-ignore id="slide-optical-Re" data-show-back="true" data-back-target="slide-optical-Im">
         <div class="slide-content">
             <h2>Espectros Ópticos: Dispersión</h2>
 
@@ -1654,8 +1855,49 @@
         </div>
     </div>
 
+    <!-- SLIDE ??: XANES Plots (Im) -->
+    <div class="slide" id="slide-XANES" data-show-skip="true" data-skip-target="slide-conclusions">
+        <div class="slide-content">
+            <h2>Espectros XANES</h2>
+
+            <div style="height: 60%; margin: 0 auto;">
+                <div class="plot-grid-custom4">
+                    <div id="LiF_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-LiF')">
+                        <img src="LiF/LiF_structure.png" alt="Struct_LiF"style="height: 75%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    </div>
+                    <img src="LiF/thumbnail_Li_K.png" alt="thumbnail_Li_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="LiF/thumbnail_F_K.png" alt="thumbnail_F_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <div ></div>
+
+                    <div id="MgO_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-MgO')">
+                        <img src="MgO/MgO_structure.png" alt="Struct_MgO"style="height: 75%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    </div>
+                    <img src="MgO/thumbnail_Mg_K.png" alt="thumbnail_Mg_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="MgO/thumbnail_O_K.png" alt="thumbnail_O_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="MgO/thumbnail_Mg_L23.png" alt="thumbnail_Mg_L23" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+
+                    <div id="CaO_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-CaO')">
+                        <img src="CaO/CaO_structure.png" alt="Struct_CaO" style="height: 75%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    </div>
+                    <img src="CaO/thumbnail_Ca_K.png" alt="thumbnail_Ca_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="CaO/thumbnail_O_K.png" alt="thumbnail_O_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="CaO/thumbnail_Ca_L23.png" alt="thumbnail_Ca_L23" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+
+                    <div id="ZnO_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-ZnO')">
+                        <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO"style="height: 70%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    </div>
+                    <img src="ZnO/thumbnail_Zn_K_perp.png" alt="thumbnail_Zn_K_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="ZnO/thumbnail_O_K_perp.png" alt="thumbnail_O_K_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="ZnO/thumbnail_Zn_L23_perp.png" alt="thumbnail_Zn_L23_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                </div>
+            </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
     <!-- SLIDE ??: XANES Plots (Im) LiF -->
-    <div class="slide" id="slide-XANES-Im-LiF">
+    <div class="slide" id="slide-XANES-Im-LiF" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-conclusions">
         <div class="slide-content">
             <h2>Espectros XANES: LiF</h2>
 
@@ -1671,7 +1913,7 @@
     </div>
 
     <!-- SLIDE ??: XANES Plots (Im) MgO -->
-    <div class="slide" id="slide-XANES-Im-MgO">
+    <div class="slide" id="slide-XANES-Im-MgO" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-conclusions">
         <div class="slide-content">
             <h2>Espectros XANES: MgO</h2>
 
@@ -1688,7 +1930,7 @@
     </div>
 
     <!-- SLIDE ??: XANES Plots (Im) CaO -->
-    <div class="slide" id="slide-XANES-Im-CaO">
+    <div class="slide" id="slide-XANES-Im-CaO" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-conclusions">
         <div class="slide-content">
             <h2>Espectros XANES: CaO</h2>
 
@@ -1705,7 +1947,7 @@
     </div>
 
     <!-- SLIDE ??: XANES Plots (Im) ZnO -->
-    <div class="slide" id="slide-XANES-Im-ZnO">
+    <div class="slide" id="slide-XANES-Im-ZnO" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-conclusions">
         <div class="slide-content">
             <h2>Espectros XANES: ZnO</h2>
 
@@ -1724,9 +1966,8 @@
         </div>
     </div>
 
-
     <!-- SLIDE ??: CONCLUSIONS -->
-    <div class="slide">
+    <div class="slide" id="slide-conclusions" data-show-back="true" data-back-target="slide-XANES">
         <div class="slide-content" style="text-align: center; justify-content: center;">
             <h2>Conclusiones</h2>
             <ul style="text-align: left; width: 60%; margin: 0 auto;">
@@ -1741,7 +1982,7 @@
     <div class="slide" id="slide-acknowledgements">
         <div class="slide-content credit-slide">
 
-            <h2>Acknowledgements</h2>
+            <h2>Agradecimientos</h2>
 
             <div class="credit-viewport">
                 <div class="credit-roll">
@@ -1805,6 +2046,7 @@
     </div>
     <div class="progress-bar" id="progressBar"></div>
 
+
     <script>
 
         // Ignoring slides
@@ -1832,6 +2074,7 @@
             curve4: css("--curve4-color"),
             curve5: css("--curve5-color"),
 
+            lattice: css("--lattice-color"),       // Yellow
             photon: css("--particle-photon"),       // Yellow
             electron: css("--particle-electron"),     // Blue
             ion: css("--particle-ion"),          // Reds
@@ -1853,6 +2096,7 @@
 
         /* --- SCENE MANAGER LOGIC --- */
         let currentSlide = 0;
+        let lastOverviewSlide = null;
 
         // Slide 1 State Tracker
         // -1: Intro, 0..7: Steps
@@ -1862,18 +2106,35 @@
         const progressBar = document.getElementById('progressBar');
 
         // Animation frames trackers
-        let anims = {
+        const anims = {
             expSetup: null,
             mbDft: null,
             KS: null,
             excitation: null,
             screenE: null,
-            greenE: null
+            greenE: null,
+            exciton: null
+        };
+
+        const animState = {
+            expSetup: null,
+            mbDft: null,
+            KS: null,
+            excitation: null,
+            screenE: null,
+            greenE: null,
+            exciton: null
         };
 
         function showSlide(index) {
             if (index < 0) index = 0;
             if (index >= slides.length) index = slides.length - 1;
+
+            // Save overview when leaving it
+            if (!slides[currentSlide].dataset.showBack &&
+                slides[index].dataset.showBack === "true") {
+                lastOverviewSlide = currentSlide;
+            }
 
             slides.forEach(slide => slide.classList.remove('active'));
             slides[index].classList.add('active');
@@ -1882,6 +2143,8 @@
 
             // Stop All
             Object.keys(anims).forEach(k => { if(anims[k]) cancelAnimationFrame(anims[k]); anims[k]=null; });
+            // 🔑 RESET STATES
+            Object.keys(animState).forEach(k => animState[k] = false);
 
             // Start Specific
             if (slides[index].id === 'slide1') {
@@ -1893,6 +2156,7 @@
             else if (slides[index].id === 'slide-DFT-intro2') initKSAnim();
             else if (slides[index].id === 'slide-GW-green') initGreensAnim();
             else if (slides[index].id === 'slide-GW-intro') initScreeningBox('screenElectronCanvas', 'electron');
+            else if (slides[index].id === 'slide-BSE-theory') init_excitons();
         }
 
         /* --- ROBUST STATE MACHINE --- */
@@ -1948,16 +2212,53 @@
         }
 
         function nextSlide() {
+            const slide = slides[currentSlide];
+            const { isDetail, isOverview } = getSlideContext();
+
+            // DETAIL or OVERVIEW → skip section
+            if (isDetail || isOverview) {
+                const targetId = slide.dataset.skipTarget;
+                if (targetId) {
+                    goToSlideById(targetId);
+                    return;
+                }
+            }
+
+            // 🔁 fallback to normal behavior
             if (currentSlide === 0) {
-                if (slide1Step < 8) { slide1Step++; updateSlide1State(slide1Step); }
-                else { showSlide(currentSlide + 1); }
-            } else { showSlide(currentSlide + 1); }
+                if (slide1Step < 8) {
+                    slide1Step++;
+                    updateSlide1State(slide1Step);
+                } else {
+                    showSlide(currentSlide + 1);
+                }
+            } else {
+                showSlide(currentSlide + 1);
+            }
         }
 
         function prevSlide() {
+            const slide = slides[currentSlide];
+            const { isDetail } = getSlideContext();
+
+            // DETAIL → go back to overview
+            if (isDetail) {
+                const targetId = slide.dataset.backTarget;
+                if (targetId) {
+                    goToSlideById(targetId);
+                    return;
+                }
+            }
+
+            // 🔁 fallback to normal behavior
             if (currentSlide === 0) {
-                if (slide1Step > -1) { slide1Step--; updateSlide1State(slide1Step); }
-            } else { showSlide(currentSlide - 1); }
+                if (slide1Step > -1) {
+                    slide1Step--;
+                    updateSlide1State(slide1Step);
+                }
+            } else {
+                showSlide(currentSlide - 1);
+            }
         }
 
         function updateProgress() {
@@ -1977,6 +2278,16 @@
             slides[currentSlide].classList.add("active");
         }
 
+        function getSlideContext() {
+            const slide = slides[currentSlide];
+
+            return {
+                isDetail: slide.dataset.showBack === "true",
+                isOverview: slide.dataset.showSkip === "true" &&
+                            slide.dataset.showBack !== "true"
+            };
+        }
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
             if (e.key === 'ArrowLeft') prevSlide();
@@ -1984,6 +2295,17 @@
             if (e.key === "Home") goToSlide(0);
             if (e.key === "End")  goToSlide(slides.length - 1);
             });
+
+        // Slide Jumping Mechanics
+        function openDetail(targetSlideId) {
+            lastOverviewSlide = currentSlide;
+            goToSlideById(targetSlideId);
+        }
+
+        function goToSlideById(id) {
+            const index = [...slides].findIndex(s => s.id === id);
+            if (index !== -1) showSlide(index);
+        }
 
         /* --- NEW: EXPERIMENTAL SETUP ANIMATION (Slide 1) --- */
         function initExpSetupAnim() {
@@ -2106,6 +2428,9 @@
 
         /* --- 1. MANY-BODY vs DFT ANIMATION (Slide 2) --- */
         function initMbDftAnim() {
+            if (animState.mbDft) return;
+            animState.mbDft = true;
+
             const canvas = document.getElementById('mbDftCanvas');
             const ctx = canvas.getContext('2d');
             const container = canvas.parentElement;
@@ -2126,6 +2451,8 @@
             let time = 0;
 
             function animate() {
+                if (!animState.mbDft) return;
+
                 // Resize if needed
                 if (canvas.width !== container.clientWidth || canvas.height !== container.clientHeight) {
                     canvas.width = container.clientWidth;
@@ -2219,8 +2546,16 @@
             animate();
         }
 
+        function stopMbDftAnim() {
+            animState.mbDft = false;
+            if (anims.mbDft) cancelAnimationFrame(anims.mbDft);
+        }
+
         /* --- 2. MANY-BODY vs KOHN-SHAM ANIMATION (Slide ?) --- */
         function initKSAnim() {
+            if (animState.KS) return;
+            animState.KS = true;
+
             let initialized = false;
             const canvas = document.getElementById('KSCanvas');
             const ctx = canvas.getContext('2d');
@@ -2308,6 +2643,8 @@
             }
 
             function animate() {
+                if (!animState.KS) return;
+
                 if (canvas.width !== container.clientWidth || canvas.height !== container.clientHeight) {
                     canvas.width = container.clientWidth; canvas.height = container.clientHeight;
                 }
@@ -2388,6 +2725,11 @@
                 anims.KS = requestAnimationFrame(animate);
             }
             animate();
+        }
+
+        function stopKSAnim() {
+            animState.KS = false;
+            if (anims.KS) cancelAnimationFrame(anims.KS);
         }
 
         function drawBandgapFigure() {
@@ -2521,6 +2863,9 @@
 
         /* --- NEW: GREEN'S FUNCTION ANIMATION (Electron forward, Hole backward) --- */
         function initGreensAnim() {
+            if (animState.greens) return;
+            animState.greens = true;
+
             const cE = document.getElementById('greenElectronCanvas');
             const cH = document.getElementById('greenHoleCanvas');
             const ctxE = cE.getContext('2d');
@@ -2575,6 +2920,8 @@
             }
 
             function animate() {
+                if (!animState.greens) return;
+
                 // Resize if needed
                 if (cE.width !== contE.clientWidth) {
                     cE.width = contE.clientWidth;
@@ -2712,6 +3059,11 @@
             }
 
             animate();
+        }
+
+        function stopGreensAnim() {
+            animState.greens = false;
+            if (anims.greenE) cancelAnimationFrame(anims.greenE);
         }
 
         /* --- ANIMATION 2: GW SCREENING (ELECTRON ONLY) --- */
@@ -2903,7 +3255,7 @@
                         name: spec.name,
                         line: { width: 1, color: spec.color },
                         hoverinfo: "skip",
-                        connectgaps: false
+                        connectgaps: false,showlegend: false
                     };
                 } else if (spec.mode === "line") {
                     trace = {
@@ -3047,11 +3399,9 @@
                 // Optical Im
                 "plot-optical_LiF": {
                     curves: [
-                        { data: LiF_optical_EXC,       mode: "impulse", name: "|Osc.Str.|",  color: PALETTE.curve2 },
-                        { data: LiF_optical_Im,        mode: "line",    name: "G₀W₀ + BSE", color: PALETTE.curve1, xline: 14.66 },
-                        { data: LiF_optical_exp_Im,    mode: "line",    name: "Exp.",       color: PALETTE.curve3 }
+                        { data: LiF_optical_Im,        mode: "line",    name: "", color: PALETTE.curve1, xline: 14.66 }
                     ],
-                    settings: { title: "LiF  shift=0.9eV", xlim: [10, 30], ylim: [0, 9], xlabel: "Energía [eV]", ylabel: "Im(ε)", showTicks: true }
+                    settings: { title: "", xlim: [10, 30], ylim: [0, 9], xlabel: "Energía", ylabel: "Intensidad", showTicks: false }
                 },
 
                 "plot-optical_MgO": {
@@ -3271,6 +3621,270 @@
 
             };
 
+        /* --- 4. EXCITATION ANIMATION (Slide ?? - Parabolic) --- */
+        const exCanvas = document.getElementById('excitationCanvas');
+        const exCtx = exCanvas.getContext('2d');
+        let width, height, exTime=0, phase='incoming', photonX=-100, electronY=0, electronX=0;
+        const bands = { vbTop: 0, cbBottom: 0, centerX: 0 };
+
+        function resizeExcitation() {
+            const wrapper = exCanvas.parentElement;
+            if(!wrapper) return;
+            width = exCanvas.width = wrapper.clientWidth; height = exCanvas.height = wrapper.clientHeight;
+            bands.vbTop = height * 0.7; bands.cbBottom = height * 0.3; bands.centerX = width / 2;
+            if (phase === 'incoming') { electronY = bands.vbTop; electronX = bands.centerX; }
+            animateExcitation();
+        }
+
+        function drawParabolicBands() {
+            exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 3;
+            const kMax = 400;
+
+            // CB (Up)
+            exCtx.beginPath();
+            for (let k = -kMax; k <= kMax; k++) {
+                const x = bands.centerX + k;
+                const y = bands.cbBottom - (k*k)/2500;
+                if (k === -kMax) exCtx.moveTo(x, y); else exCtx.lineTo(x, y);
+            }
+            exCtx.stroke();
+
+            // VB (Down)
+            exCtx.beginPath();
+            for (let k = -kMax; k <= kMax; k++) {
+                const x = bands.centerX + k;
+                const y = bands.vbTop + (k*k)/2500;
+                if (k === -kMax) exCtx.moveTo(x, y); else exCtx.lineTo(x, y);
+            }
+            exCtx.stroke();
+        }
+
+        function drawPhoton(x, y) {
+            exCtx.beginPath(); exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 3;
+            for (let i = 0; i < 80; i++) {
+                const px = x - i; const py = y + Math.sin((x - i) * 0.2 - exTime * 0.2) * 8;
+                if (i === 0) exCtx.moveTo(px, py); else exCtx.lineTo(px, py);
+            }
+            exCtx.stroke(); exCtx.fillStyle = PALETTE.curve1; exCtx.beginPath();
+            exCtx.arc(x, y + Math.sin(x * 0.2 - exTime * 0.2) * 8, 3, 0, Math.PI*2); exCtx.fill();
+        }
+
+        function drawElectron(x, y) {
+            const grad = exCtx.createRadialGradient(x, y, 2, x, y, 15);
+            grad.addColorStop(0, '#ffffff'); grad.addColorStop(0.4, PALETTE.curve1); grad.addColorStop(1, 'rgba(222, 255, 154, 0)');
+            exCtx.fillStyle = grad; exCtx.beginPath(); exCtx.arc(x, y, 15, 0, Math.PI*2); exCtx.fill();
+            exCtx.fillStyle = '#fff'; exCtx.beginPath(); exCtx.arc(x, y, 4, 0, Math.PI*2); exCtx.fill();
+        }
+
+        function drawHole(x, y) {
+            exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 2;
+            exCtx.beginPath(); exCtx.arc(x, y, 8, 0, Math.PI*2); exCtx.stroke();
+            exCtx.fillStyle = '#000'; exCtx.fill();
+            //exCtx.beginPath(); exCtx.moveTo(x-4, y); exCtx.lineTo(x+4, y); exCtx.moveTo(x, y-4); exCtx.lineTo(x, y+4); exCtx.stroke();
+        }
+
+        function drawInteraction(ex, ey, hx, hy) {
+            exCtx.setLineDash([5, 5]); exCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            exCtx.beginPath(); exCtx.moveTo(ex, ey); exCtx.lineTo(hx, hy); exCtx.stroke(); exCtx.setLineDash([]);
+        }
+
+        function animateExcitation() {
+            exCtx.clearRect(0, 0, width, height); drawParabolicBands();
+
+            // Positions
+            const targetY = bands.cbBottom + 0; // Slightly above bottom for visual
+            const startY = bands.vbTop - 0;     // Slightly below top
+
+            if (phase === 'incoming') {
+                drawElectron(electronX, startY); photonX += 6; drawPhoton(photonX, startY);
+                if (photonX >= electronX) phase = 'transition';
+            } else if (phase === 'transition') {
+                drawHole(electronX, startY); const speed = (electronY - targetY) * 0.08;
+                electronY -= Math.max(speed, 1.0); drawElectron(electronX, electronY);
+                if (electronY <= targetY) { electronY = targetY; phase = 'bound'; }
+            } else if (phase === 'bound') {
+                drawHole(electronX, startY); drawElectron(electronX, targetY + Math.sin(exTime*0.05)*3);
+                drawInteraction(electronX, targetY, electronX, startY);
+                exCtx.fillStyle = PALETTE.text; exCtx.font = 'bold 20px Urbanist'; exCtx.textAlign = 'center';
+                exCtx.fillText("Excitón", bands.centerX + 100, height/2 ); exCtx.textAlign = 'left';
+            }
+            exTime++;
+            anims.excitation = requestAnimationFrame(animateExcitation);
+        }
+
+        function resetAnim() {
+            if(anims.excitation) cancelAnimationFrame(anims.excitation);
+            phase = 'incoming'; photonX = -100; resizeExcitation();
+        }
+
+        /* --- 5. EXCITONS type --- */
+        function init_excitons() {
+
+            // Safety check to prevent animation buildup
+            if (window.anims) {
+                if (window.anims.frenkel) cancelAnimationFrame(window.anims.frenkel);
+                if (window.anims.wannier) cancelAnimationFrame(window.anims.wannier);
+            } else {
+                window.anims = {};
+            }
+
+            function initFrenkel() {
+                const canvas = document.getElementById('frenkelCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                let time = 0;
+
+                const rows = 7, cols = 7;
+
+                function resize() {
+                    width = canvas.width = canvas.parentElement.clientWidth;
+                    height = canvas.height = canvas.parentElement.clientHeight;
+                }
+                window.addEventListener('resize', resize);
+                resize();
+
+                function animate() {
+                    ctx.clearRect(0, 0, width, height);
+
+                    const spacing = width / (cols + 1);
+                    const startX = spacing;
+                    const startY = height / 2 - ((rows - 1) * spacing) / 2;
+
+                    // Draw Lattice
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            const x = startX + c * spacing;
+                            const y = startY + r * spacing;
+
+                            ctx.beginPath();
+                            ctx.arc(x, y, 6, 0, Math.PI * 2);
+                            ctx.fillStyle = PALETTE.lattice;
+                            ctx.fill();
+                        }
+                    }
+
+                    // Exciton Center (Snapped to lattice point [3,3])
+                    // Using integer '3' instead of '3.5' puts it exactly on the atom
+                    const centerCol = 3;
+                    const centerRow = 3;
+                    const cx = startX + centerCol * spacing;
+                    const cy = startY + centerRow * spacing;
+
+                    // Hole
+                    ctx.beginPath(); ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+                    ctx.fillStyle = PALETTE.ion;
+                    ctx.shadowBlur = 10; ctx.shadowColor = PALETTE.ion;
+                    ctx.fill(); ctx.shadowBlur = 0;
+
+                    // Electron (Tight Orbit)
+                    const radius = 18;
+                    const ex = cx + Math.cos(time * 0.1) * radius;
+                    const ey = cy + Math.sin(time * 0.1) * radius;
+
+                    // Wavefunction Cloud
+                    const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, radius + 15);
+                    grad.addColorStop(0, "rgba(77, 77, 255, 0.0)");
+                    grad.addColorStop(0.6, "rgba(77, 77, 255, 0.2)");
+                    grad.addColorStop(1, "rgba(77, 77, 255, 0)");
+
+                    ctx.beginPath(); ctx.arc(cx, cy, radius + 15, 0, Math.PI * 2);
+                    ctx.fillStyle = grad; ctx.fill();
+
+                    // Electron Particle
+                    ctx.beginPath(); ctx.arc(ex, ey, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = PALETTE.electron; ctx.fill();
+
+                    // Connection
+                    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey);
+                    ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.setLineDash([2, 2]); ctx.stroke(); ctx.setLineDash([]);
+
+                    time++;
+                    window.anims.frenkel = requestAnimationFrame(animate);
+                }
+                animate();
+            }
+
+            function initWannier() {
+                const canvas = document.getElementById('wannierCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                let time = 0;
+
+                const rows = 7, cols = 7;
+
+                function resize() {
+                    width = canvas.width = canvas.parentElement.clientWidth;
+                    height = canvas.height = canvas.parentElement.clientHeight;
+                }
+                window.addEventListener('resize', resize);
+                resize();
+
+                function animate() {
+                    ctx.clearRect(0, 0, width, height);
+
+                    const spacing = width / (cols + 1);
+                    const startX = spacing;
+                    const startY = height / 2 - ((rows - 1) * spacing) / 2;
+
+                    // Draw Lattice
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            const x = startX + c * spacing;
+                            const y = startY + r * spacing;
+
+                            ctx.beginPath();
+                            ctx.arc(x, y, 6, 0, Math.PI * 2);
+                            ctx.fillStyle = PALETTE.lattice;
+                            ctx.fill();
+                        }
+                    }
+
+                    // Exciton Center (Snapped to lattice point [3,3])
+                    // Matched to the same grid logic as Frenkel
+                    const centerCol = 3;
+                    const centerRow = 3;
+                    const cx = startX + centerCol * spacing;
+                    const cy = startY + centerRow * spacing;
+
+                    // Hole
+                    ctx.beginPath(); ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+                    ctx.fillStyle = PALETTE.ion;
+                    ctx.shadowBlur = 15; ctx.shadowColor = PALETTE.ion;
+                    ctx.fill(); ctx.shadowBlur = 0;
+
+                    // Electron (Large Orbit)
+                    const radius = 100;
+                    const ex = cx + Math.cos(time * 0.05) * radius;
+                    const ey = cy + Math.sin(time * 0.05) * radius;
+
+                    // Electron Wavefunction Cloud
+                    const grad = ctx.createRadialGradient(cx, cy, 20, cx, cy, radius + 20);
+                    grad.addColorStop(0, "rgba(77, 77, 255, 0.0)");
+                    grad.addColorStop(0.8, "rgba(77, 77, 255, 0.15)");
+                    grad.addColorStop(1, "rgba(77, 77, 255, 0)");
+                    ctx.beginPath(); ctx.arc(cx, cy, radius + 20, 0, Math.PI * 2);
+                    ctx.fillStyle = grad; ctx.fill();
+
+                    // Electron Particle
+                    ctx.beginPath(); ctx.arc(ex, ey, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = PALETTE.electron; ctx.fill();
+
+                    // Field lines (faint)
+                    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey);
+                    ctx.strokeStyle = "rgba(77, 77, 255, 0.2)"; ctx.lineWidth = 1; ctx.stroke();
+
+                    time++;
+                    window.anims.wannier = requestAnimationFrame(animate);
+                }
+                animate();
+            }
+
+            initFrenkel();
+            initWannier();
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
 
             /* -----------------------------------------
@@ -3338,6 +3952,32 @@
             });
 
             /* -----------------------------------------
+            SHIFT + CLICK → NAVIGATE TO DETAIL SLIDE
+            ----------------------------------------- */
+
+            document.querySelectorAll(".plot-box").forEach(box => {
+                box.addEventListener("click", e => {
+
+                    // Only intercept Shift+Click
+                    if (!e.shiftKey) return;
+
+                    // Stop zoom, modals, everything else
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const targetId = box.dataset.targetSlide;
+                    if (!targetId) return;
+
+                    // Remember where we came from
+                    lastOverviewSlide = currentSlide;
+
+                    // Navigate
+                    goToSlideById(targetId);
+
+                }, true); // 👈 capture phase is CRUCIAL
+            });
+
+            /* -----------------------------------------
             3. Image zoom modal (GLOBAL, layout-agnostic)
             ----------------------------------------- */
             const modal = document.getElementById("mediaZoomModal");
@@ -3365,44 +4005,52 @@
                 if (!img) return;
                 if (img.closest(".no-zoom")) return;
 
+                /* ================================
+                SHIFT + CLICK → NAVIGATE
+                ================================ */
+                if (e.shiftKey) {
+                    const navBox = img.closest("[data-target-slide]");
+                    if (!navBox) return;
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    lastOverviewSlide = currentSlide;
+                    goToSlideById(navBox.dataset.targetSlide);
+                    return; // 🔑 do NOT open zoom
+                }
+
+                /* ================================
+                NORMAL CLICK → IMAGE ZOOM
+                ================================ */
                 e.stopPropagation();
 
                 modalImg.src = img.src;
                 modalImg.style.display = "block";
                 modalVideo.style.display = "none";
 
-                // Check which mode the image is using
                 const isMode1 = img.classList.contains("img-dark-mode1");
                 const isMode2 = img.classList.contains("img-dark-mode2");
 
                 if (isMode1 || isMode2) {
+                    let defaults = isMode1
+                        ? { hue: "180deg", sat: "6", bright: "0.7", con: "1.6" }
+                        : { hue: "180deg", sat: "1.5", bright: "1.0", con: "1.1" };
 
-                    let defaults;
-
-                    if (isMode1) {
-                        // PRESET 1: "Blue Fix" (High Saturation, Darker)
-                        defaults = { hue: "180deg", sat: "6", bright: "0.7", con: "1.6" };
-                    } else {
-                        // PRESET 2: "Standard" (Softer, Normal Brightness)
-                        defaults = { hue: "180deg", sat: "1.5", bright: "1.0", con: "1.1" };
-                    }
-
-                    // Apply overrides if data attributes exist, otherwise use selected defaults
                     const hue = img.dataset.hue || defaults.hue;
                     const sat = img.dataset.sat || defaults.sat;
                     const bright = img.dataset.bright || defaults.bright;
                     const con = img.dataset.con || defaults.con;
 
-                    // Apply filter
-                    modalImg.style.filter = `invert(0.88) hue-rotate(${hue}) saturate(${sat}) brightness(${bright}) contrast(${con})`;
-
+                    modalImg.style.filter =
+                        `invert(0.88) hue-rotate(${hue}) saturate(${sat}) brightness(${bright}) contrast(${con})`;
                 } else {
-                    // Normal Image
                     modalImg.style.filter = "none";
                 }
 
                 modal.style.display = "flex";
             });
+
 
             /* ----------------------------
             VIDEO ZOOM (Dual Presets)
@@ -3563,107 +4211,22 @@
 
         });
 
-        /* --- 4. EXCITATION ANIMATION (Slide ?? - Parabolic) --- */
-        const exCanvas = document.getElementById('excitationCanvas');
-        const exCtx = exCanvas.getContext('2d');
-        let width, height, exTime=0, phase='incoming', photonX=-100, electronY=0, electronX=0;
-        const bands = { vbTop: 0, cbBottom: 0, centerX: 0 };
-
-        function resizeExcitation() {
-            const wrapper = exCanvas.parentElement;
-            if(!wrapper) return;
-            width = exCanvas.width = wrapper.clientWidth; height = exCanvas.height = wrapper.clientHeight;
-            bands.vbTop = height * 0.7; bands.cbBottom = height * 0.3; bands.centerX = width / 2;
-            if (phase === 'incoming') { electronY = bands.vbTop; electronX = bands.centerX; }
-            animateExcitation();
-        }
-
-        function drawParabolicBands() {
-            exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 3;
-            const kMax = 400;
-
-            // CB (Up)
-            exCtx.beginPath();
-            for (let k = -kMax; k <= kMax; k++) {
-                const x = bands.centerX + k;
-                const y = bands.cbBottom - (k*k)/2500;
-                if (k === -kMax) exCtx.moveTo(x, y); else exCtx.lineTo(x, y);
-            }
-            exCtx.stroke();
-
-            // VB (Down)
-            exCtx.beginPath();
-            for (let k = -kMax; k <= kMax; k++) {
-                const x = bands.centerX + k;
-                const y = bands.vbTop + (k*k)/2500;
-                if (k === -kMax) exCtx.moveTo(x, y); else exCtx.lineTo(x, y);
-            }
-            exCtx.stroke();
-        }
-
-        function drawPhoton(x, y) {
-            exCtx.beginPath(); exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 3;
-            for (let i = 0; i < 80; i++) {
-                const px = x - i; const py = y + Math.sin((x - i) * 0.2 - exTime * 0.2) * 8;
-                if (i === 0) exCtx.moveTo(px, py); else exCtx.lineTo(px, py);
-            }
-            exCtx.stroke(); exCtx.fillStyle = PALETTE.curve1; exCtx.beginPath();
-            exCtx.arc(x, y + Math.sin(x * 0.2 - exTime * 0.2) * 8, 3, 0, Math.PI*2); exCtx.fill();
-        }
-
-        function drawElectron(x, y) {
-            const grad = exCtx.createRadialGradient(x, y, 2, x, y, 15);
-            grad.addColorStop(0, '#ffffff'); grad.addColorStop(0.4, PALETTE.curve1); grad.addColorStop(1, 'rgba(222, 255, 154, 0)');
-            exCtx.fillStyle = grad; exCtx.beginPath(); exCtx.arc(x, y, 15, 0, Math.PI*2); exCtx.fill();
-            exCtx.fillStyle = '#fff'; exCtx.beginPath(); exCtx.arc(x, y, 4, 0, Math.PI*2); exCtx.fill();
-        }
-
-        function drawHole(x, y) {
-            exCtx.strokeStyle = PALETTE.curve1; exCtx.lineWidth = 2;
-            exCtx.beginPath(); exCtx.arc(x, y, 8, 0, Math.PI*2); exCtx.stroke();
-            exCtx.fillStyle = '#000'; exCtx.fill();
-            //exCtx.beginPath(); exCtx.moveTo(x-4, y); exCtx.lineTo(x+4, y); exCtx.moveTo(x, y-4); exCtx.lineTo(x, y+4); exCtx.stroke();
-        }
-
-        function drawInteraction(ex, ey, hx, hy) {
-            exCtx.setLineDash([5, 5]); exCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-            exCtx.beginPath(); exCtx.moveTo(ex, ey); exCtx.lineTo(hx, hy); exCtx.stroke(); exCtx.setLineDash([]);
-        }
-
-        function animateExcitation() {
-            exCtx.clearRect(0, 0, width, height); drawParabolicBands();
-
-            // Positions
-            const targetY = bands.cbBottom + 0; // Slightly above bottom for visual
-            const startY = bands.vbTop - 0;     // Slightly below top
-
-            if (phase === 'incoming') {
-                drawElectron(electronX, startY); photonX += 6; drawPhoton(photonX, startY);
-                if (photonX >= electronX) phase = 'transition';
-            } else if (phase === 'transition') {
-                drawHole(electronX, startY); const speed = (electronY - targetY) * 0.08;
-                electronY -= Math.max(speed, 1.0); drawElectron(electronX, electronY);
-                if (electronY <= targetY) { electronY = targetY; phase = 'bound'; }
-            } else if (phase === 'bound') {
-                drawHole(electronX, startY); drawElectron(electronX, targetY + Math.sin(exTime*0.05)*3);
-                drawInteraction(electronX, targetY, electronX, startY);
-                exCtx.fillStyle = PALETTE.text; exCtx.font = 'bold 20px Urbanist'; exCtx.textAlign = 'center';
-                exCtx.fillText("Excitón", bands.centerX + 100, height/2 ); exCtx.textAlign = 'left';
-            }
-            exTime++;
-            anims.excitation = requestAnimationFrame(animateExcitation);
-        }
-
-        function resetAnim() {
-            if(anims.excitation) cancelAnimationFrame(anims.excitation);
-            phase = 'incoming'; photonX = -100; resizeExcitation();
-        }
-
+        let resizeTimer;
         window.addEventListener('resize', () => {
-            if(currentSlide === 1) initMbDftAnim();
-            if(currentSlide === 2) initGreensAnim(); // NEW Slide index
-            if(currentSlide === 3) resizeExcitation();
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+            // Get the ID of the slide we just switched to
+            const activeSlideId = slides[currentSlide].id;
+
+            // Trigger animations based on ID
+            if (activeSlideId === 'slide-DFT-intro1') initMbDftAnim();
+            if (activeSlideId === 'slide-GW-green')   initGreensAnim();
+            if (activeSlideId === 'slide-BSE-theory') init_excitons();
+
+            if (currentSlide === 3) resizeExcitation();
+        }, 200);
         });
+
         window.addEventListener('load', () => { updateProgress(); });
 
 

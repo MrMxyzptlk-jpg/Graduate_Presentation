@@ -36,6 +36,7 @@
                 --arrow-color: #A5158C;
 
             /* Particles & Physics (For CSS use) */
+                --lattice-color: #666666;
                 --particle-photon: #ffffaa;
                 --particle-electron: #4d4dff;
                 --particle-ion: #ff4d4d;
@@ -140,10 +141,26 @@
             padding: 4px;
         }
 
+        /* Helper to span 2 rows */
+        .span-row-2 {
+            grid-row: span 2;
+
+            /* IMPORTANT: Override the default max-height
+            so the image actually expands to fill both rows */
+            height: 100% !important;
+            max-height: none !important;
+        }
+
+        /* Helper to span the full width (4 columns) */
+        .span-full { grid-column: 1 / -1; }
+
         .plot-grid-custom2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 18px;
+
+            /* THIS Fills gaps automatically */
+            grid-auto-flow: dense;
 
             width: fit-content;    /* shrink to content width */
             margin: 0 auto;        /* center the grid horizontally */
@@ -157,7 +174,7 @@
             object-fit: contain;
             border-radius: 6px;
             border: 1px solid var(--border-color);
-            background: #ffffff;
+            background: var(--bg2-color);
             padding: 4px;
         }
 
@@ -229,6 +246,7 @@
         span.highlight { color: var(--highlight1-color); }
 
         .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; height: 100%; align-items: center; }
+        .three-column { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 60px; height: 100%; align-items: center; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 30px; }
         .tile { background: var(--bg-color); padding: 30px; border-radius: 12px; border: 1px solid var(--border-color); }
         .tile i { font-size: 2rem; color: var(--highlight1-color); margin-bottom: 15px; }
@@ -325,9 +343,24 @@
         .controls-overlay { position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; gap: 10px; opacity: 0.3; transition: opacity 0.3s; }
         .controls-overlay:hover { opacity: 1; }
         .nav-btn { background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 15px; border-radius: 6px; cursor: pointer; }
+        .nav-plot { cursor: zoom-in; }
+        .nav-plot img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
+
         .progress-bar { position: fixed; bottom: 0; left: 0; height: 4px; background: var(--border-color); width: 0%; transition: width 0.3s; z-index: 101; }
 
         .slide-footer { position: absolute; bottom: 20px; left: 70px; right: 70px; padding-top: 15px; display: flex; justify-content: space-between; opacity: 0.5; font-size: 0.9rem; }
+                .context-controls-overlay {
+            position: fixed;
+            bottom: 70px;          /* above progress bar */
+            right: 20px;           /* or left, your choice */
+            display: none;         /* hidden by default */
+            z-index: 1000;
+        }
+        .context-controls-overlay .nav-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+        }
         .back-btn { left: 20px; }
         .skip-btn { right: 20px; }
 
@@ -611,6 +644,104 @@
             */
             filter: invert(0.88) hue-rotate(180deg) saturate(6) brightness(0.8) contrast(1.6);
         }
+
+        /* -----------------------------------------
+        MATERIALS SLIDE
+        ----------------------------------------- */
+        .material-block {
+            background: var(--bg2-color);
+            border-radius: 10px;
+
+            /* smaller padding than conclusions */
+            padding: 8px 8px;
+
+            /* lighter shadow */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+            /* appear animation */
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+
+            /* keep original sizing behavior */
+            font-size: 1.4rem;
+            line-height: 1.25;
+        }
+        .material-block.active {
+            opacity: 1;
+        }
+        .material-block.dimmed {
+            opacity: 0.5;
+        }
+
+        .material-block ul li {
+            position: relative;
+            margin: 0.3rem 0;
+            cursor: pointer;
+        }
+
+        /* Only JS popups now */
+        .material-popup {
+            position: absolute;
+            background-color: var(--bg2-color);
+            color: #fff;
+            padding: 0.5rem 0.8rem;
+            border-radius: 5px;
+            font-size: 1.7rem;
+            max-width: 300px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .material-popup.show {
+            opacity: 1;
+        }
+        /* -----------------------------------------
+        CONCLUSIONS SLIDE
+        ----------------------------------------- */
+
+        .conclusions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .conclusion-block {
+            background: var(--bg2-color);
+            border-radius: 14px;
+            padding: 18px 22px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .conclusion-block.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .conclusion-block h3 {
+            margin-bottom: 10px;
+            color: var(--highlight2-color);
+            font-size: 1.6rem;
+        }
+
+        .conclusion-block ul {
+            margin: 0;
+            padding-left: 1.2em;
+        }
+
+        .conclusion-block li {
+            margin-bottom: 6px;
+            font-size: 1.4rem;
+            line-height: 1.25;
+        }
+
 
     </style>
 </head>
@@ -1152,7 +1283,7 @@
                 <div class="two-column">
                    <!-- ELECTRON PROPAGATION -->
                     <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
-                        <h3 style="color: var(--accent-main); text-align:center;">Propagación de Electrón (G<sup>&gt;</sup>)</h3>
+                        <h3 style="color: var(--highlight2-color); text-align:center;">Propagación de Electrón (G<sup>&gt;</sup>)</h3>
                         <div class="media-container">
                             <div class="anim-wrapper" >
                                 <canvas id="greenElectronCanvas"></canvas>
@@ -1162,7 +1293,7 @@
 
                     <!-- HOLE PROPAGATION -->
                     <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
-                        <h3 style="color: var(--accent-purple); text-align:center;">Propagación de Hueco (G<sup>&lt;</sup>)</h3>
+                        <h3 style="color: var(--highlight2-color); text-align:center;">Propagación de Hueco (G<sup>&lt;</sup>)</h3>
                         <div class="media-container">
                             <div class="anim-wrapper">
                                 <canvas id="greenHoleCanvas"></canvas>
@@ -1262,7 +1393,7 @@
     <!-- SLIDE 5: BSE - Intro -->
     <div class="slide" data-ignore id="slide-BSE-intro">
         <div class="slide-content">
-            <h2>La Ecuación de <span class="highlight">Bethe-Salpeter</span></h2>
+            <h2>BSE: La Ecuación de <span class="highlight">Bethe-Salpeter</span></h2>
             <div class="two-column" style="grid-template-columns: 40% 60%;">
                 <div>
                     <p>Para describir excitaciones neutras, debemos tratar el electrón y el hueco como un par acoplado. Se resuelve un sistema efectivo con:</p>
@@ -1291,37 +1422,128 @@
         </div>
     </div>
 
-    <!-- SLIDE ??: Materials -->
+    <div class="slide" data-ignore id="slide-excitons-type">
+        <div class="slide-content">
+            <h2>BSE: tipos de excitones</h2>
+
+            <div class="three-column">
+
+                <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
+                        <img src="E_binding.png" alt="Binding Energy Plot" style="height: auto; object-fit: contain; max-height: 300px; border-radius: 12px; border: 1px solid var(--border-color)">
+                        <p>\( E_b = E_{gap} - E_{exc}\)</p>
+                </div>
+
+                <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
+                        <h3 style="color: var(--highlight2-color); text-align:center;">Frenkel</h3>
+                        <div class="media-container" style="margin: 0 auto;">
+                            <canvas id="frenkelCanvas"></canvas>
+                        </div>
+                        <p>Fuertemente ligado <br> Localizado <br> \( E_b \sim 1eV\)</p>
+                </div>
+
+                <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
+                    <h3 style="color: var(--highlight2-color); text-align:center;">Wannier-Mott</h3>
+                    <div class="media-container" style="margin: 0 auto;">
+                            <canvas id="wannierCanvas"></canvas>
+                    </div>
+                    <p>Débilmente ligado <br> Deslocalizado <br> \( E_b \sim 0.1eV\)</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Materials Applications -->
     <div class="slide" data-ignore id="slide-materials">
         <div class="slide-content">
-            <h2>Materiales</h2>
+            <h2>Materiales: Aplicaciones</h2>
 
-            <div class="two-row-wrapper">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: fit-content; margin: 0 auto; ">
 
                 <!-- Row 1 -->
-                <div class="row-with-captions">
+                <div id="mat-LiF" class="material-block">
                     <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem; text-align: right;">LiF</div>
+                    <ul>
+                        <li data-popup="Gracias a su amplio rango de transparencia, se usa en sistemas láser excimer y óptica ultravioleta.">Óptica UV y sistemas láser excimer</li>
+                        <li data-popup="Material resistente a radiación y con alto contenido de Li, ideal para detectores de neutrones y dosímetros.">Detección de neutrones y dosimetría radiológica</li>
+                        <li data-popup="Cristales LiF:Mg,Ti se usan ampliamente para dosimetría termoluminiscente en radiología y física de radiación.">Monitoreo de radiación con cristales termoluminiscentes</li>
+                    </ul>
+                </div>
 
-                    <div class="plot-grid-custom2" style="background-color: var(--bg-color);">
-                        <img src="LiF/LiF_structure.png" alt="Struct_LiF"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
-                        <img src="MgO/MgO_structure.png" alt="Struct_MgO"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
-                    </div>
-
+                <div id="mat-MgO" class="material-block">
                     <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem; text-align: left;">MgO</div>
+                    <ul>
+                        <li data-popup="Amplio uso como material refractario y alta resistencia térmica en aceros y hornos.">Material refractario y resistencia térmica</li>
+                        <li data-popup="Soporte de catalizadores y aditivos, mejora la actividad y la resistencia al envenenamiento por coque.">Soporte de catalizadores y aditivos</li>
+                        <li data-popup="Adsorbente ambiental, substrato para heteroestructuras epitaxiales y nanomateriales.">Adsorbente ambiental y substrato en heteroestructuras</li>
+                    </ul>
                 </div>
 
                 <!-- Row 2 -->
-                <div class="row-with-captions">
+                <div id="mat-CaO" class="material-block">
                     <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem;">CaO</div>
-
-                    <div class="plot-grid-custom2">
-                        <img src="CaO/CaO_structure.png" alt="Struct_CaO" style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
-                        <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO" style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
-                    </div>
-
-                    <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">ZnO</div>
+                    <ul>
+                        <li>Producción de acero y cemento</li>
+                        <li data-popup="Captura de CO₂ y neutralización de ácidos.">Tecnologías ambientales</li>
+                        <li data-popup="Regulación de acidez en productos industriales y alimentarios.">Aditivo alimentario</li>
+                    </ul>
                 </div>
 
+                <div id="mat-ZnO" class="material-block">
+                    <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">ZnO</div>
+                    <ul>
+                        <li>Dispositivos optoelectrónicos y conductores transparentes</li>
+                        <li>LEDs UV, diodos y láseres</li>
+                        <li>Aplicaciones biomédicas</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Materials structure -->
+    <div class="slide" data-ignore id="slide-materials-structure">
+        <div class="slide-content">
+            <h2>Estructura Cristalina</h2>
+
+            <div style="width: 95%; height: 70%; margin: 0 auto;">
+            <div class="plot-grid-custom4">
+                    <h3>LiF: sal de roca</h3>
+                    <h3>MgO: sal de roca</h3>
+                    <h3>CaO: sal de roca</h3>
+                    <h3>ZnO: wurtzita hexagonal</h3>
+                    <img src="LiF/LiF_structure.png" alt="Struct_LiF">
+                    <img src="MgO/MgO_structure.png" alt="Struct_MgO">
+                    <img src="CaO/CaO_structure.png" alt="Struct_CaO">
+                    <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO">
+                    <div class="plot-box table-slot span-full" style="height: 250px; width:30%; margin: auto;">
+                        <div class="table-panel">
+                        <table class="thesis-table compact">
+                        <caption>
+                            Parámetros de red calculados, comparados con los experimentales <span class="cite" data-cite="lattice_constants"></span>.
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>a [Å] (KS)</th>
+                                <th>c/a (KS)</th>
+                                <th>a [Å] (Exp.)</th>
+                                <th>c/a (Exp.)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>  <td>LiF</td>  <td>4.006</td>  <td>1</td>      <td>3.960</td>  <td>1</td>      </tr>
+                            <tr>  <td>MgO</td>  <td>4.218</td>  <td>1</td>      <td>4.186</td>  <td>1</td>      </tr>
+                            <tr>  <td>CaO</td>  <td>4.768</td>  <td>1</td>      <td>4.787</td>  <td>1</td>      </tr>
+                            <tr>  <td>ZnO</td>  <td>3.233</td>  <td>5.220</td>  <td>3.275</td>  <td>5.247</td>  </tr>
+                        </tbody>
+                        </table>
+                        </div>
+                    </div>
+            </div>
             </div>
 
 
@@ -1329,43 +1551,10 @@
         </div>
     </div>
 
-    <!-- SLIDE ??: Groundstate Tables -->
-    <div class="slide" data-ignore id="slide-groundstate-tables">
-        <div class="slide-content">
-            <h2>Estructura Electrónica</h2>
-
-
-            <table class="thesis-table">
-                <caption>
-                    Parámetros de red calculados, comparados con los experimentales <span class="cite" data-cite="lattice_constants"></span>.
-                </caption>
-                <thead>
-                    <tr>
-                        <th>Material</th>
-                        <th>a [Å] (KS)</th>
-                        <th>c/a (KS)</th>
-                        <th>a [Å] (Exp.)</th>
-                        <th>c/a (Exp.)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>  <td>LiF</td>  <td>4.006</td>  <td>1</td>      <td>3.960</td>  <td>1</td>      </tr>
-                    <tr>  <td>MgO</td>  <td>4.218</td>  <td>1</td>      <td>4.186</td>  <td>1</td>      </tr>
-                    <tr>  <td>CaO</td>  <td>4.768</td>  <td>1</td>      <td>4.787</td>  <td>1</td>      </tr>
-                    <tr>  <td>ZnO</td>  <td>3.233</td>  <td>5.220</td>  <td>3.275</td>  <td>5.247</td>  </tr>
-                </tbody>
-            </table>
-
-
-
-            <div class="slide-footer"><span></span><span>?? / 12</span></div>
-        </div>
-    </div>
-
     <!-- SLIDE ??: Electronic Structure -->
-    <div class="slide" data-ignore id="slide-electStruct">
+    <div class="slide" data-ignore id="slide-electStruct" data-show-skip="true" data-skip-target="slide-groundstate-tables">
         <div class="slide-content">
-            <h2>Estructura Electrónica</h2>
+            <h2>Estructura Electrónica: Bandas y DOS</h2>
 
         <div class="two-row-wrapper">
 
@@ -1374,8 +1563,8 @@
                 <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem;">LiF</div>
 
                 <div class="plot-grid-custom2">
-                    <img src="LiF/PROJECTED/bands-dos.png" alt="electStruct_LiF" class="img-dark-mode2">
-                    <img src="MgO/PROJECTED/bands-dos.png" alt="electStruct_MgO" class="img-dark-mode2">
+                    <img src="LiF/PROJECTED/bands-dos.png" class="nav-plot" alt="electStruct_LiF" data-target-slide="slide-projections-LiF">
+                    <img src="MgO/PROJECTED/bands-dos.png" class="nav-plot" alt="electStruct_MgO" data-target-slide="slide-projections-MgO">
                 </div>
 
                 <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">MgO</div>
@@ -1386,8 +1575,8 @@
                 <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem;">CaO</div>
 
                 <div class="plot-grid-custom2">
-                    <img src="CaO/PROJECTED/bands-dos.png" alt="electStruct_CaO" class="img-dark-mode2">
-                    <img src="ZnO/PROJECTED/bands-dos.png" alt="electStruct_ZnO" class="img-dark-mode2">
+                    <img src="CaO/PROJECTED/bands-dos.png" class="nav-plot" alt="electStruct_CaO" data-target-slide="slide-projections-CaO">
+                    <img src="ZnO/PROJECTED/bands-dos.png" class="nav-plot" alt="electStruct_ZnO" data-target-slide="slide-projections-ZnO">
                 </div>
 
                 <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">ZnO</div>
@@ -1400,54 +1589,151 @@
         </div>
     </div>
 
-    <!-- SLIDE ??: Groundstate Tables -->
-    <div class="slide" data-ignore id="slide-groundstate-tables">
+    <!-- SLIDE ??: Projections LiF -->
+    <div class="slide" id="slide-projections-LiF" data-show-back="true" data-back-target="slide-electStruct" data-skip-target="slide-groundstate-tables">
         <div class="slide-content">
-            <h2>Estructura Electrónica</h2>
+            <h2>Estructura Electrónica: Bandas y DOS - LiF</h2>
 
+                <div class="subfigure-row"style="height: 250px;">
+                    <h3>Li    </h3>
+                    <img src="LiF/PROJECTED/bands_Li_s_dark.png" alt="bands_Li_s_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/bands_Li_p_dark.png" alt="bands_Li_p_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/bands_Li_d_dark.png" alt="bands_Li_d_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/LiF_Li-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>F     </h3>
+                    <img src="LiF/PROJECTED/bands_F_s_dark.png" alt="bands_F_s_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/bands_F_p_dark.png" alt="bands_F_p_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/bands_F_d_dark.png" alt="bands_F_d_dark" style="height: 100%;">
+                    <img src="LiF/PROJECTED/LiF_F-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
 
-            <table class="thesis-table">
-                <caption>
-                    Energías de gap calculadas, comparadas con las experimentales.
-                </caption>
-                <thead>
-                    <tr>
-                        <th class="group-header" colspan="4">\(E_{gap}\) [eV]</th>
-                    </tr>
-                    <tr>
-                        <th>Material</th>
-                        <th>KS</th>
-                        <th>KS + G<sub>0</sub>W<sub>0</sub></th>
-                        <th>Exp.</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>LiF \(\left(\Gamma - \Gamma\right)\)</td>
-                        <td>9.07</td>
-                        <td>13.63</td>
-                        <td>13.7-14.2 <span class="cite" data-cite="LiF_bandgap_1"></span><span class="cite" data-cite="LiF_bandgap_2"></span></td>
-                    </tr>
-                    <tr>
-                        <td>MgO \(\left(\Gamma - \Gamma\right)\)</td>
-                        <td>4.6</td>
-                        <td>7.29</td>
-                        <td>7.77-7.83 <span class="cite" data-cite="MgO_paper"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
-                    </tr>
-                    <tr>
-                        <td>CaO \(\left(X - X\right)\)</td>
-                        <td>3.5</td>
-                        <td>6.02</td>
-                        <td>6.88-7.09 <span class="cite" data-cite="CaO_bandgap_2"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
-                    </tr>
-                    <tr>
-                        <td>ZnO \(\left(\Gamma - \Gamma\right)\)</td>
-                        <td>0.72</td>
-                        <td>2.27</td>
-                        <td>3.4 <span class="cite" data-cite="ZnO_bandgap_1"></span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Projections MgO -->
+    <div class="slide" id="slide-projections-MgO" data-show-back="true" data-back-target="slide-electStruct" data-skip-target="slide-groundstate-tables">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: Bandas y DOS - MgO</h2>
+
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>Mg    </h3>
+                    <img src="MgO/PROJECTED/bands_Mg_s_dark.png" alt="bands_Mg_s_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/bands_Mg_p_dark.png" alt="bands_Mg_p_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/bands_Mg_d_dark.png" alt="bands_Mg_d_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/MgO_Mg-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>O     </h3>
+                    <img src="MgO/PROJECTED/bands_O_s_dark.png" alt="bands_O_s_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/bands_O_p_dark.png" alt="bands_O_p_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/bands_O_d_dark.png" alt="bands_O_d_dark" style="height: 100%;">
+                    <img src="MgO/PROJECTED/MgO_O-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Projections CaO -->
+    <div class="slide" id="slide-projections-CaO" data-show-back="true" data-back-target="slide-electStruct" data-skip-target="slide-groundstate-tables">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: Bandas y DOS - CaO</h2>
+
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>Ca    </h3>
+                    <img src="CaO/PROJECTED/bands_Ca_s_dark.png" alt="bands_Ca_s_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/bands_Ca_p_dark.png" alt="bands_Ca_p_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/bands_Ca_d_dark.png" alt="bands_Ca_d_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/CaO_Ca-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>O     </h3>
+                    <img src="CaO/PROJECTED/bands_O_s_dark.png" alt="bands_O_s_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/bands_O_p_dark.png" alt="bands_O_p_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/bands_O_d_dark.png" alt="bands_O_d_dark" style="height: 100%;">
+                    <img src="CaO/PROJECTED/CaO_O-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Projections ZnO -->
+    <div class="slide" id="slide-projections-ZnO" data-show-back="true" data-back-target="slide-electStruct" data-skip-target="slide-groundstate-tables">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: Bandas y DOS - ZnO</h2>
+
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>Zn    </h3>
+                    <img src="ZnO/PROJECTED/bands_Zn_s_dark.png" alt="bands_Zn_s_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/bands_Zn_p_dark.png" alt="bands_Zn_p_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/bands_Zn_d_dark.png" alt="bands_Zn_d_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/ZnO_Zn-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+                <div class="subfigure-row" style="height: 250px;">
+                    <h3>O     </h3>
+                    <img src="ZnO/PROJECTED/bands_O_s_dark.png" alt="bands_O_s_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/bands_O_p_dark.png" alt="bands_O_p_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/bands_O_d_dark.png" alt="bands_O_d_dark" style="height: 100%;">
+                    <img src="ZnO/PROJECTED/ZnO_O-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Electronic Structure Tables -->
+    <div class="slide" data-ignore id="slide-groundstate-tables" data-show-back="true" data-back-target="slide-electStruct">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: Gaps</h2>
+
+            <div style="display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                <table class="thesis-table">
+                    <caption>
+                        Energías de gap calculadas, comparadas con las experimentales.
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th class="group-header" colspan="4">\(E_{gap}\) [eV]</th>
+                        </tr>
+                        <tr>
+                            <th>Material</th>
+                            <th>KS</th>
+                            <th>KS + G<sub>0</sub>W<sub>0</sub></th>
+                            <th>Exp.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>LiF \(\left(\Gamma - \Gamma\right)\)</td>
+                            <td>9.07</td>
+                            <td>13.63</td>
+                            <td>13.7-14.2 <span class="cite" data-cite="LiF_bandgap_1"></span><span class="cite" data-cite="LiF_bandgap_2"></span></td>
+                        </tr>
+                        <tr>
+                            <td>MgO \(\left(\Gamma - \Gamma\right)\)</td>
+                            <td>4.6</td>
+                            <td>7.29</td>
+                            <td>7.77-7.83 <span class="cite" data-cite="MgO_paper"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
+                        </tr>
+                        <tr>
+                            <td>CaO \(\left(X - X\right)\)</td>
+                            <td>3.5</td>
+                            <td>6.02</td>
+                            <td>6.88-7.09 <span class="cite" data-cite="CaO_bandgap_2"></span><span class="cite" data-cite="MgO_CaO_bandgap"></span></td>
+                        </tr>
+                        <tr>
+                            <td>ZnO \(\left(\Gamma - \Gamma\right)\)</td>
+                            <td>0.72</td>
+                            <td>2.27</td>
+                            <td>3.4 <span class="cite" data-cite="ZnO_bandgap_1"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
 
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
@@ -1455,17 +1741,17 @@
     </div>
 
     <!-- SLIDE ??: Optical Plots (Im) -->
-    <div class="slide" data-ignore id="slide-optical-Im">
+    <div class="slide" data-ignore id="slide-optical-Im" data-show-skip="true" data-skip-target="slide-optical-Re">
         <div class="slide-content">
             <h2>Espectros Ópticos: Absorción</h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom3">
-                    <div id="plot-optical_LiF" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_MgO" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_CaO" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_ZnO_ord" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-optical_ZnO_extr" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-optical_LiF" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_LiF"></div>
+                    <div id="plot-optical_MgO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_MgO"></div>
+                    <div id="plot-optical_CaO" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_CaO"></div>
+                    <div id="plot-optical_ZnO_ord" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_ZnO"></div>
+                    <div id="plot-optical_ZnO_extr" class="plot-box nav-plot" style="height: 275px;" data-target-slide="slide-Excitons_ZnO"></div>
                     <!-- TABLE SLOT -->
                     <div class="plot-box table-slot" style="height: 275px;">
                         <div class="table-panel">
@@ -1522,7 +1808,7 @@
     </div>
 
     <!-- SLIDE ??: Excitons LiF -->
-    <div class="slide" id="slide-Excitons_LiF">
+    <div class="slide" id="slide-Excitons_LiF" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
             <h2>Funciones de Onda de Excitones: LiF</h2>
 
@@ -1544,13 +1830,12 @@
                     </div>
                 </div>
 
-
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
     <!-- SLIDE ??: Excitons MgO -->
-    <div class="slide" id="slide-Excitons_MgO">
+    <div class="slide" id="slide-Excitons_MgO" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
             <h2>Funciones de Onda de Excitones: MgO</h2>
 
@@ -1565,7 +1850,7 @@
     </div>
 
     <!-- SLIDE ??: Excitons CaO -->
-    <div class="slide" id="slide-Excitons_CaO">
+    <div class="slide" id="slide-Excitons_CaO" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
             <h2>Funciones de Onda de Excitones: CaO</h2>
 
@@ -1582,13 +1867,12 @@
                     </div>
                 </div>
 
-
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
     <!-- SLIDE ??: Excitons ZnO -->
-    <div class="slide" id="slide-Excitons_ZnO">
+    <div class="slide" id="slide-Excitons_ZnO" data-show-back="true" data-back-target="slide-optical-Im" data-skip-target="slide-optical-Re">
         <div class="slide-content">
             <h2>Funciones de Onda de Excitones: ZnO</h2>
 
@@ -1615,13 +1899,12 @@
                     </div>
                 </div>
 
-
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
     <!-- SLIDE ??: Optical Plots (Re) -->
-    <div class="slide" data-ignore id="slide-optical-Re">
+    <div class="slide" data-ignore id="slide-optical-Re" data-show-back="true" data-back-target="slide-optical-Im">
         <div class="slide-content">
             <h2>Espectros Ópticos: Dispersión</h2>
 
@@ -1635,79 +1918,94 @@
                     <!-- TABLE SLOT -->
                     <div class="plot-box table-slot" style="height: 275px;">
                         <div class="table-panel">
-                        <table class="thesis-table compact">
-                            <caption>Constantes dieléctricas electrónicas estáticas macroscópicas \(\varepsilon_\infty\) </caption>
-                            <thead>
-                                <tr>
-                                    <th class="group-header" colspan="4">\(\varepsilon_\infty\)</th>
-                                </tr>
-                                <tr>
-                                    <th>Material</th>
-                                    <th>\(G_0W_0\) + BSE</th>
-                                    <th>Exp.</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>LiF</td>
-                                    <td>1.81</td>
-                                    <td>1.96 <span class="cite" data-cite="LiF_ZnO_epsInf"></span></td>
-                                </tr>
-                                <tr>
-                                    <td>MgO</td>
-                                    <td>2.87</td>
-                                    <td>2.944 <span class="cite" data-cite="dielectric_constants"></span> - 2.95 <span class="cite" data-cite="MgO_paper"></span></td>
-                                </tr>
-                                <tr>
-                                    <td>CaO</td>
-                                    <td>3.02</td>
-                                    <td>3.27 <span class="cite" data-cite="dielectric_constants"></span> - 3.33 </span><span class="cite" data-cite="CaO_epsInf"></span></td>
-                                </tr>
-                                <tr>
-                                    <td>ZnO</td>
-                                    <td>3.74 \(\left(\perp\right)\) - 3.77 \(\left(\parallel\right)\)</td>
-                                    <td>3.70 \(\left(\perp\right)\) - 3.75 \(\left(\parallel\right)\) <span class="cite" data-cite="dielectric_constants"></span></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <table class="thesis-table compact">
+                                <caption>Constantes dieléctricas electrónicas estáticas macroscópicas \(\varepsilon_\infty\) </caption>
+                                <thead>
+                                    <tr>
+                                        <th class="group-header" colspan="4">\(\varepsilon_\infty\)</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Material</th>
+                                        <th>\(G_0W_0\) + BSE</th>
+                                        <th>Exp.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>LiF</td>
+                                        <td>1.81</td>
+                                        <td>1.96 <span class="cite" data-cite="LiF_ZnO_epsInf"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>MgO</td>
+                                        <td>2.87</td>
+                                        <td>2.944 <span class="cite" data-cite="dielectric_constants"></span> - 2.95 <span class="cite" data-cite="MgO_paper"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>CaO</td>
+                                        <td>3.02</td>
+                                        <td>3.27 <span class="cite" data-cite="dielectric_constants"></span> - 3.33 </span><span class="cite" data-cite="CaO_epsInf"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>ZnO</td>
+                                        <td>3.74 \(\left(\perp\right)\) - 3.77 \(\left(\parallel\right)\)</td>
+                                        <td>3.70 \(\left(\perp\right)\) - 3.75 \(\left(\parallel\right)\) <span class="cite" data-cite="dielectric_constants"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-                </div>
+            </div>
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
     <!-- SLIDE ??: XANES Plots (Im) -->
-    <div class="slide" id="slide-XANES">
+    <div class="slide" id="slide-XANES"  data-show-back="true" data-back-target="slide-optical-Re"data-show-skip="true" data-skip-target="slide-defects-structure">
         <div class="slide-content">
             <h2>Espectros XANES</h2>
 
-            <div style="width: 95%; height: 70%; margin: 0 auto;">
+            <div style="height: 60%; margin: 0 auto;">
                 <div class="plot-grid-custom4">
-                    <div id="LiF_button" class="plot-thumb no-zoom" style="height: 275px;" onclick="openDetail('slide-XANES-Im-LiF')">
-                        <img src="LiF/LiF_structure.png" alt="Struct_LiF"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    <div id="LiF_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-LiF')">
+                        <img src="LiF/LiF_structure.png" alt="Struct_LiF"style="height: 75%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
                     </div>
-                    <div id="MgO_button" class="plot-thumb no-zoom" style="height: 275px;" onclick="openDetail('slide-XANES-Im-MgO')">
-                        <img src="MgO/MgO_structure.png" alt="Struct_MgO"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    <img src="LiF/thumbnail_Li_K.png" alt="thumbnail_Li_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="LiF/thumbnail_F_K.png" alt="thumbnail_F_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <div ></div>
+
+                    <div id="MgO_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-MgO')">
+                        <img src="MgO/MgO_structure.png" alt="Struct_MgO"style="height: 75%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
                     </div>
-                    <div id="CaO_button" class="plot-thumb no-zoom" style="height: 275px;" onclick="openDetail('slide-XANES-Im-CaO')">
-                        <img src="CaO/CaO_structure.png" alt="Struct_CaO" style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    <img src="MgO/thumbnail_Mg_K.png" alt="thumbnail_Mg_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="MgO/thumbnail_O_K.png" alt="thumbnail_O_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="MgO/thumbnail_Mg_L23.png" alt="thumbnail_Mg_L23" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+
+                    <div id="CaO_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-CaO')">
+                        <img src="CaO/CaO_structure.png" alt="Struct_CaO" style="height: 75%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
                     </div>
-                    <div id="ZnO_button" class="plot-thumb no-zoom" style="height: 275px;" onclick="openDetail('slide-XANES-Im-ZnO')">
-                        <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO"style="background-color: var(--bg-color); border: 2px solid var(--border-color);">
+                    <img src="CaO/thumbnail_Ca_K.png" alt="thumbnail_Ca_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="CaO/thumbnail_O_K.png" alt="thumbnail_O_K" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="CaO/thumbnail_Ca_L23.png" alt="thumbnail_Ca_L23" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+
+                    <div id="ZnO_button" class="plot-thumb no-zoom" onclick="openDetail('slide-XANES-Im-ZnO')">
+                        <img src="ZnO/ZnO_structure.png" alt="Struct_ZnO"style="height: 70%;background-color: var(--bg-color); border: 2px solid var(--border-color);">
                     </div>
+                    <img src="ZnO/thumbnail_Zn_K_perp.png" alt="thumbnail_Zn_K_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="ZnO/thumbnail_O_K_perp.png" alt="thumbnail_O_K_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
+                    <img src="ZnO/thumbnail_Zn_L23_perp.png" alt="thumbnail_Zn_L23_perp" style="height: 75%; width: 80%; background-color: var(--bg2-color); border: 2px solid var(--border-color);">
                 </div>
             </div>
-            <button class="nav-btn skip-btn" style="width: 100px;" onclick="openDetail('slide-conclusions')"> ⏭ </button>
+
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
     <!-- SLIDE ??: XANES Plots (Im) LiF -->
-    <div class="slide" id="slide-XANES-Im-LiF">
+    <div class="slide" id="slide-XANES-Im-LiF" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
             <h2>Espectros XANES: LiF</h2>
 
@@ -1717,13 +2015,13 @@
                     <div id="plot-XANES_LiF_F_K" class="plot-box" style="height: 275px;"></div>
                 </div>
             </div>
-            <button class="nav-btn back-btn" style="width: 100px;" onclick="goBackToOverview()">⬅ </button>
+
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
     <!-- SLIDE ??: XANES Plots (Im) MgO -->
-    <div class="slide" id="slide-XANES-Im-MgO">
+    <div class="slide" id="slide-XANES-Im-MgO" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
             <h2>Espectros XANES: MgO</h2>
 
@@ -1735,13 +2033,12 @@
                 </div>
             </div>
 
-            <button class="nav-btn back-btn" style="width: 100px;" onclick="goBackToOverview()">⬅ </button>
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
     <!-- SLIDE ??: XANES Plots (Im) CaO -->
-    <div class="slide" id="slide-XANES-Im-CaO">
+    <div class="slide" id="slide-XANES-Im-CaO" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
             <h2>Espectros XANES: CaO</h2>
 
@@ -1753,13 +2050,12 @@
                 </div>
             </div>
 
-            <button class="nav-btn back-btn" style="width: 100px;" onclick="goBackToOverview()">⬅ </button>
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
     <!-- SLIDE ??: XANES Plots (Im) ZnO -->
-    <div class="slide" id="slide-XANES-Im-ZnO">
+    <div class="slide" id="slide-XANES-Im-ZnO" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
             <h2>Espectros XANES: ZnO</h2>
 
@@ -1774,23 +2070,227 @@
                 </div>
             </div>
 
-            <button class="nav-btn back-btn" style="width: 100px;" onclick="goBackToOverview()">⬅ </button>
             <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
 
+    <!-- SLIDE ??: Defects structure -->
+    <div class="slide" id="slide-defects-structure" data-ignore data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-conclusions">
+        <div class="slide-content">
+            <h2>Defectos: Estructura Cristalina</h2>
 
-    <!-- SLIDE ??: CONCLUSIONS -->
-    <div class="slide" id="slide-conclusions">
-        <div class="slide-content" style="text-align: center; justify-content: center;">
-            <h2>Conclusiones</h2>
-            <ul style="text-align: left; width: 60%; margin: 0 auto;">
-                <li>Metodología Validada: All-Electron DFT + \(G_0W_0\) + BSE funciona robustamente.</li>
-                <li>Excitones Clave: Explican las características pre-borde.</li>
-                <li>Diversidad Material: Escala desde LiF hasta ZnO.</li>
-            </ul>
+            <div style="width: 95%; height: 70%; margin: 0 auto;">
+                <div class="plot-grid-custom4">
+                    <h3> LiF </h3>
+                    <h3> Vacante: Li</h3>
+                    <h3> Vacante: F</h3>
+                    <h3> Dopante: Na</h3>
+                    <img src="defect/images/LiF/LiF_prist.png" alt="Struct_LiF_prist" data-target-slide='slide-defects-LiF-prist'>
+                    <img src="defect/images/LiF/LiF_Li-vac.png" alt="Struct_LiF_Li-vac" data-target-slide='slide-defects-LiF-Li'>
+                    <img src="defect/images/LiF/LiF_F-vac.png" alt="Struct_LiF_F-vac" data-target-slide='slide-defects-LiF-F'>
+                    <img src="defect/images/LiF/LiF-Na.png" alt="Struct_LiF-Na" data-target-slide='slide-defects-LiF-Na'>
+                    <h3> Dopante: Mg</h3>
+                    <h3> Dopante: Be</h3>
+                    <h3> ZnO</h3>
+                    <h3> Dopante: Mn</h3>
+                    <img src="defect/images/LiF/LiF-Mg.png" alt="Struct_LiF-Mg" data-target-slide='slide-defects-LiF-Mg'>
+                    <img src="defect/images/LiF/LiF-Be.png" alt="Struct_LiF-Be" data-target-slide='slide-defects-LiF-Be'>
+
+                    <img src="defect/images/ZnO/ZnO_prist.png" alt="Struct_ZnO_prist" data-target-slide='slide-defects-ZnO-prist'>
+                    <img src="defect/images/ZnO/ZnO_Mn-doped.png" alt="Struct_ZnO_Mn-doped" data-target-slide='slide-defects-ZnO-Mn'>
+
+                </div>
+            </div>
+
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
         </div>
     </div>
+
+    <!-- SLIDE ??: Defects - LiF prist-->
+    <div class="slide" id="slide-defects-LiF-prist" data-show-back="true" data-back-target="slide-defects-structure" data-skip-target="slide-conclusions">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: LiF </h2>
+
+                <div class="plot-grid-custom2">
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/prist/electStruct_prist_KS_dark.png" alt="bands_LiF_prist_dark" style="height: 100%;">
+                    </div>
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/prist/electStruct_prist_GW_dark.png" alt="bands_LiF_prist_dark" style="height: 100%;">
+                    </div>
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Defects - LiF Li -->
+    <div class="slide" id="slide-defects-LiF-Li" data-show-back="true" data-back-target="slide-defects-structure" data-skip-target="slide-conclusions">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: LiF - Li vacante</h2>
+
+                <div class="plot-grid-custom2">
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/Li-vac_KS_dark.png" alt="Li_vac_KS_dark" style="height: 100%;">
+                    </div>
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/Li+/Li+-vac_KS_dark.png" alt="Li+_vac_KS_dark" style="height: 100%;">
+                    </div>
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/Li+/Li+-vac_Gw_dark.png" alt="Li+vac_Gw_dark" style="height: 100%;">
+                    </div>
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Defects - LiF F -->
+    <div class="slide" id="slide-defects-LiF-F" data-show-back="true" data-back-target="slide-defects-structure" data-skip-target="slide-conclusions">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: LiF - F vacante</h2>
+
+                <div class="plot-grid-custom2">
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/F-vac_KS_dark.png" alt="F_vac_KS_dark" style="height: 100%;">
+                    </div>
+                    <div></div>
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/F-/F--vac_KS_dark.png" alt="F-_vac_KS_dark" style="height: 100%;">
+                    </div>
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/F-/F--vac_Gw_dark.png" alt="F-vac_GW_dark" style="height: 100%;">
+                    </div>
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Defects - LiF Na -->
+    <div class="slide" id="slide-defects-LiF-Na" data-show-back="true" data-back-target="slide-defects-structure" data-skip-target="slide-conclusions">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: LiF - dopante Na </h2>
+
+                <div class="plot-grid-custom2">
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/Na/Na-doped_KS_dark.png" alt="Na_vac_KS_dark" style="height: 100%;">
+                    </div>
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/Na/Na-doped_GW_dark.png" alt="Na_vac_GW_dark" style="height: 100%;">
+                    </div>
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Defects - LiF Mg -->
+    <div class="slide" id="slide-defects-LiF-Mg" data-show-back="true" data-back-target="slide-defects-structure" data-skip-target="slide-conclusions">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: LiF - dopante Mg </h2>
+
+                <div class="plot-grid-custom2">
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/Mg-doped_KS_dark.png" alt="Mg_vac_KS_dark" style="height: 100%;">
+                    </div>
+                    <div></div>
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/Mg+/Mg+-doped_KS_dark.png" alt="Mg+_vac_GW_dark" style="height: 100%;">
+                    </div>
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/Mg+/Mg+-doped_GW_dark.png" alt="Mg+_vac_GW_dark" style="height: 100%;">
+                    </div>
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Defects - LiF Be -->
+    <div class="slide" id="slide-defects-LiF-Be" data-show-back="true" data-back-target="slide-defects-structure" data-skip-target="slide-conclusions">
+        <div class="slide-content">
+            <h2>Estructura Electrónica: LiF - dopante Be\(^+\) </h2>
+
+                <div class="plot-grid-custom2">
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/Be+/Be+-doped_KS_dark.png" alt="Be+_vac_GW_dark" style="height: 100%;">
+                    </div>
+                    <div class="subfigure-row"style="height: 250px;">
+                        <img src="defect/images/LiF/Be+/Be+-doped_GW_dark.png" alt="Be+_vac_GW_dark" style="height: 100%;">
+                    </div>
+                </div>
+
+            <div class="slide-footer"><span></span><span>?? / 12</span></div>
+        </div>
+    </div>
+
+    <!-- SLIDE ??: Conclusiones -->
+    <div class="slide" id="slide-conclusions" data-show-back="true" data-back-target="slide-defects-structure">
+        <div class="slide-content">
+            <h2>Conclusiones</h2>
+
+            <div class="conclusions-grid">
+
+                <!-- Estado fundamental -->
+                <div class="conclusion-block appear-step active">
+                    <h3>Estado fundamental</h3>
+                    <ul>
+                        <li data-popup="Las estructuras optimizadas con DFT/PBEsol reproducen los parámetros experimentales con desviaciones típicamente menores al 1%.">
+                            Parámetros de red en excelente acuerdo experimental
+                        </li>
+                        <li data-popup="Las correcciones G₀W₀ abren el gap electrónico respecto al nivel Kohn–Sham, actuando principalmente como un corrimiento rígido de las bandas de conducción.">
+                            G₀W₀ mejora sustancialmente la descripción del gap
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Óptica -->
+                <div class="conclusion-block appear-step">
+                    <h3>Óptica</h3>
+                    <ul>
+                        <li data-popup="La inclusión explícita de la interacción electrón–hueco mediante la ecuación de Bethe–Salpeter es esencial para reproducir la forma espectral y el umbral óptico.">
+                            Excelente reproducción de la forma espectral
+                        </li>
+                        <li data-popup="Las energías de ligadura excitónica resultan sistemáticamente mayores que las experimentales, sugiriendo limitaciones en la descripción del apantallamiento.">
+                            Ligera sobrestimación de la ligadura excitónica
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- XANES -->
+                <div class="conclusion-block appear-step">
+                    <h3>XANES</h3>
+                    <ul>
+                        <li data-popup="La BSE describe con gran precisión el umbral de absorción y los picos excitónicos de core en aislantes y semiconductores.">
+                            Umbral y picos excitónicos bien reproducidos
+                        </li>
+                        <li data-popup="Persisten discrepancias de intensidad relativa en materiales con fuerte carácter d, como CaO y ZnO.">
+                            Limitaciones en sistemas con estados d dominantes
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Defectos -->
+                <div class="conclusion-block appear-step">
+                    <h3>Defectos</h3>
+                    <ul>
+                        <li data-popup="La introducción de defectos genera estados localizados dentro del gap o cruzando el nivel de Fermi.">
+                            Estados electrónicos localizados inducidos por defectos
+                        </li>
+                        <li data-popup="El estudio abre el camino a aplicar GW y BSE en sistemas defectivos cargados, un desafío computacional relevante.">
+                            Base sólida para estudios excitónicos futuros
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="slide-footer"><span></span><span>12 / 12</span></div>
+        </div>
+    </div>
+
 
     <!-- SLIDE: Acknowledgements -->
     <div class="slide" id="slide-acknowledgements">
@@ -1860,6 +2360,7 @@
     </div>
     <div class="progress-bar" id="progressBar"></div>
 
+
     <script>
 
         // Ignoring slides
@@ -1887,6 +2388,7 @@
             curve4: css("--curve4-color"),
             curve5: css("--curve5-color"),
 
+            lattice: css("--lattice-color"),       // Yellow
             photon: css("--particle-photon"),       // Yellow
             electron: css("--particle-electron"),     // Blue
             ion: css("--particle-ion"),          // Reds
@@ -1924,7 +2426,8 @@
             KS: null,
             excitation: null,
             screenE: null,
-            greenE: null
+            greenE: null,
+            exciton: null
         };
 
         const animState = {
@@ -1933,12 +2436,19 @@
             KS: null,
             excitation: null,
             screenE: null,
-            greenE: null
+            greenE: null,
+            exciton: null
         };
 
         function showSlide(index) {
             if (index < 0) index = 0;
             if (index >= slides.length) index = slides.length - 1;
+
+            // Save overview when leaving it
+            if (!slides[currentSlide].dataset.showBack &&
+                slides[index].dataset.showBack === "true") {
+                lastOverviewSlide = currentSlide;
+            }
 
             slides.forEach(slide => slide.classList.remove('active'));
             slides[index].classList.add('active');
@@ -1960,6 +2470,7 @@
             else if (slides[index].id === 'slide-DFT-intro2') initKSAnim();
             else if (slides[index].id === 'slide-GW-green') initGreensAnim();
             else if (slides[index].id === 'slide-GW-intro') initScreeningBox('screenElectronCanvas', 'electron');
+            else if (slides[index].id === 'slide-excitons-type') init_excitons();
         }
 
         /* --- ROBUST STATE MACHINE --- */
@@ -2014,18 +2525,152 @@
             else if (step === 8) document.getElementById('step-8').classList.add('active');
         }
 
-        function nextSlide() {
-            if (currentSlide === 0) {
-                if (slide1Step < 8) { slide1Step++; updateSlide1State(slide1Step); }
-                else { showSlide(currentSlide + 1); }
-            } else { showSlide(currentSlide + 1); }
+        // Updated updateMaterialsStepInSlide to handle -1 (nothing shown)
+        function updateMaterialsStepInSlide(step) {
+            const materialOrder = ['mat-LiF', 'mat-MgO', 'mat-CaO', 'mat-ZnO'];
+            materialOrder.forEach((id, index) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (step === -1) {
+                    el.classList.remove('active');
+                    el.classList.remove('dimmed');
+                } else if (index === step) {
+                    el.classList.add('active');
+                    el.classList.remove('dimmed');
+                } else if (index < step) {
+                    el.classList.add('dimmed');
+                    el.classList.remove('active');
+                } else {
+                    el.classList.remove('active');
+                    el.classList.remove('dimmed');
+                }
+            });
         }
 
-        function prevSlide() {
-            if (currentSlide === 0) {
-                if (slide1Step > -1) { slide1Step--; updateSlide1State(slide1Step); }
-            } else { showSlide(currentSlide - 1); }
+        // Conclusions: appear progressively, no dimming
+        function updateConclusionsStep(step) {
+            const blocks = document.querySelectorAll('#slide-conclusions .conclusion-block');
+
+            blocks.forEach((block, i) => {
+                if (step === -1) {
+                    block.classList.remove('active');
+                } else {
+                    block.classList.toggle('active', i <= step);
+                }
+            });
         }
+
+        let materialsStep = 0;       // 0 = nothing shown
+        const maxMaterialsStep = 4; // LiF..ZnO
+
+        let conclusionsStep = 0;    // 0 = nothing shown
+        const maxConclusionsStep = 3; // 4 blocks → 0..3
+
+
+function nextSlide() {
+    const slide = slides[currentSlide];
+    const currentSlideId = slide.id;
+    const { isDetail, isOverview } = getSlideContext();
+
+    /* ---------------------------------
+       SKIP / OVERVIEW (ABSOLUTE PRIORITY)
+    --------------------------------- */
+    if (isDetail || isOverview) {
+        const targetId = slide.dataset.skipTarget;
+        if (targetId) {
+            goToSlideById(targetId);
+            return;
+        }
+    }
+
+    /* ---------------------------------
+       SLIDE 1 (step-based)
+    --------------------------------- */
+    if (currentSlide === 0) {
+        if (slide1Step < 8) {
+            slide1Step++;
+            updateSlide1State(slide1Step);
+            return;
+        }
+    }
+
+    /* ---------------------------------
+       MATERIALS SLIDE
+    --------------------------------- */
+    if (currentSlideId === 'slide-materials') {
+        if (materialsStep < maxMaterialsStep) {
+            updateMaterialsStepInSlide(materialsStep);
+            materialsStep++;
+            return;
+        }
+        materialsStep = 0; // reset when leaving
+    }
+
+    /* ---------------------------------
+       CONCLUSIONS SLIDE
+    --------------------------------- */
+    if (currentSlideId === 'slide-conclusions') {
+        if (conclusionsStep < maxConclusionsStep) {
+            updateConclusionsStep(conclusionsStep);
+            conclusionsStep++;
+            return;
+        }
+        conclusionsStep = 0; // reset when leaving
+    }
+
+    /* ---------------------------------
+       DEFAULT: NEXT SLIDE
+    --------------------------------- */
+    showSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+    const slide = slides[currentSlide];
+    const currentSlideId = slide.id;
+    const { isDetail } = getSlideContext();
+
+    /* ---------------------------------
+       BACK TARGET (ABSOLUTE PRIORITY)
+    --------------------------------- */
+    if (isDetail) {
+        const backTarget = slide.dataset.backTarget;
+        if (backTarget) {
+            goToSlideById(backTarget);
+            return;
+        }
+    }
+
+    /* ---------------------------------
+       MATERIALS SLIDE (BACKWARD STEPS)
+    --------------------------------- */
+    if (currentSlideId === 'slide-materials') {
+        if (materialsStep > 1) {
+            materialsStep--;
+            updateMaterialsStepInSlide(materialsStep - 1);
+            return;
+        } else if (materialsStep === 1) {
+            materialsStep = 0;
+            updateMaterialsStepInSlide(-1);
+            return;
+        }
+    }
+
+    /* ---------------------------------
+       CONCLUSIONS SLIDE (BACKWARD STEPS)
+    --------------------------------- */
+    if (currentSlideId === 'slide-conclusions') {
+        if (conclusionsStep > 0) {
+            conclusionsStep--;
+            updateConclusionsStep(conclusionsStep - 1);
+            return;
+        }
+    }
+
+    /* ---------------------------------
+       DEFAULT: PREVIOUS SLIDE
+    --------------------------------- */
+    showSlide(currentSlide - 1);
+}
 
         function updateProgress() {
             const progress = ((currentSlide + 1) / slides.length) * 100;
@@ -2042,6 +2687,16 @@
             slides[currentSlide].classList.remove("active");
             currentSlide = index;
             slides[currentSlide].classList.add("active");
+        }
+
+        function getSlideContext() {
+            const slide = slides[currentSlide];
+
+            return {
+                isDetail: slide.dataset.showBack === "true",
+                isOverview: slide.dataset.showSkip === "true" &&
+                            slide.dataset.showBack !== "true"
+            };
         }
 
         document.addEventListener('keydown', (e) => {
@@ -2061,12 +2716,6 @@
         function goToSlideById(id) {
             const index = [...slides].findIndex(s => s.id === id);
             if (index !== -1) showSlide(index);
-        }
-
-        function goBackToOverview() {
-            if (lastOverviewSlide !== null) {
-                showSlide(lastOverviewSlide);
-            }
         }
 
         /* --- NEW: EXPERIMENTAL SETUP ANIMATION (Slide 1) --- */
@@ -3384,6 +4033,49 @@
 
 
             };
+/* -----------------------------------------
+   LIST ITEM POPUPS (Materials + Conclusions)
+----------------------------------------- */
+
+document.querySelectorAll('.material-block li, .conclusion-block li').forEach(li => {
+    li.addEventListener('mouseenter', () => {
+
+        // Only show popup if parent block is visible
+        const block = li.closest('.material-block, .conclusion-block');
+        if (!block || !block.classList.contains('active')) return;
+
+        const content = li.getAttribute('data-popup');
+        if (!content) return;
+
+        const popupDiv = document.createElement('div');
+        popupDiv.className = 'material-popup';
+        popupDiv.textContent = content;
+        document.body.appendChild(popupDiv);
+
+        const rect = li.getBoundingClientRect();
+
+        let left = rect.right + 10 + window.scrollX;
+        let top  = rect.top + window.scrollY + rect.height / 2;
+
+        // Prevent overflow → move left if needed
+        if (left + popupDiv.offsetWidth > window.innerWidth) {
+            left = rect.left - popupDiv.offsetWidth - 10 + window.scrollX;
+        }
+
+        popupDiv.style.left = left + 'px';
+        popupDiv.style.top  = (top - popupDiv.offsetHeight / 2) + 'px';
+
+        popupDiv.classList.add('show');
+        li._popupDiv = popupDiv;
+    });
+
+    li.addEventListener('mouseleave', () => {
+        if (li._popupDiv) {
+            li._popupDiv.remove();
+            li._popupDiv = null;
+        }
+    });
+});
 
         /* --- 4. EXCITATION ANIMATION (Slide ?? - Parabolic) --- */
         const exCanvas = document.getElementById('excitationCanvas');
@@ -3481,6 +4173,174 @@
             phase = 'incoming'; photonX = -100; resizeExcitation();
         }
 
+        /* --- 5. EXCITONS type --- */
+        function init_excitons() {
+
+            // Safety check to prevent animation buildup
+            if (window.anims) {
+                if (window.anims.frenkel) cancelAnimationFrame(window.anims.frenkel);
+                if (window.anims.wannier) cancelAnimationFrame(window.anims.wannier);
+            } else {
+                window.anims = {};
+            }
+
+            function initFrenkel() {
+                const canvas = document.getElementById('frenkelCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                let time = 0;
+
+                const rows = 7, cols = 7;
+
+                function resize() {
+                    width = canvas.width = canvas.parentElement.clientWidth;
+                    height = canvas.height = canvas.parentElement.clientHeight;
+                }
+                window.addEventListener('resize', resize);
+                resize();
+
+                function animate() {
+                    ctx.clearRect(0, 0, width, height);
+
+                    const spacing = width / (cols + 1);
+                    const startX = spacing;
+                    const startY = height / 2 - ((rows - 1) * spacing) / 2;
+
+                    // Draw Lattice
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            const x = startX + c * spacing;
+                            const y = startY + r * spacing;
+
+                            ctx.beginPath();
+                            ctx.arc(x, y, 6, 0, Math.PI * 2);
+                            ctx.fillStyle = PALETTE.lattice;
+                            ctx.fill();
+                        }
+                    }
+
+                    // Exciton Center (Snapped to lattice point [3,3])
+                    // Using integer '3' instead of '3.5' puts it exactly on the atom
+                    const centerCol = 3;
+                    const centerRow = 3;
+                    const cx = startX + centerCol * spacing;
+                    const cy = startY + centerRow * spacing;
+
+                    // Hole
+                    ctx.beginPath(); ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+                    ctx.fillStyle = PALETTE.ion;
+                    ctx.shadowBlur = 10; ctx.shadowColor = PALETTE.ion;
+                    ctx.fill(); ctx.shadowBlur = 0;
+
+                    // Electron (Tight Orbit)
+                    const radius = 18;
+                    const ex = cx + Math.cos(time * 0.1) * radius;
+                    const ey = cy + Math.sin(time * 0.1) * radius;
+
+                    // Wavefunction Cloud
+                    const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, radius + 15);
+                    grad.addColorStop(0, "rgba(77, 77, 255, 0.0)");
+                    grad.addColorStop(0.6, "rgba(77, 77, 255, 0.2)");
+                    grad.addColorStop(1, "rgba(77, 77, 255, 0)");
+
+                    ctx.beginPath(); ctx.arc(cx, cy, radius + 15, 0, Math.PI * 2);
+                    ctx.fillStyle = grad; ctx.fill();
+
+                    // Electron Particle
+                    ctx.beginPath(); ctx.arc(ex, ey, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = PALETTE.electron; ctx.fill();
+
+                    // Connection
+                    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey);
+                    ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.setLineDash([2, 2]); ctx.stroke(); ctx.setLineDash([]);
+
+                    time++;
+                    window.anims.frenkel = requestAnimationFrame(animate);
+                }
+                animate();
+            }
+
+            function initWannier() {
+                const canvas = document.getElementById('wannierCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                let time = 0;
+
+                const rows = 7, cols = 7;
+
+                function resize() {
+                    width = canvas.width = canvas.parentElement.clientWidth;
+                    height = canvas.height = canvas.parentElement.clientHeight;
+                }
+                window.addEventListener('resize', resize);
+                resize();
+
+                function animate() {
+                    ctx.clearRect(0, 0, width, height);
+
+                    const spacing = width / (cols + 1);
+                    const startX = spacing;
+                    const startY = height / 2 - ((rows - 1) * spacing) / 2;
+
+                    // Draw Lattice
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            const x = startX + c * spacing;
+                            const y = startY + r * spacing;
+
+                            ctx.beginPath();
+                            ctx.arc(x, y, 6, 0, Math.PI * 2);
+                            ctx.fillStyle = PALETTE.lattice;
+                            ctx.fill();
+                        }
+                    }
+
+                    // Exciton Center (Snapped to lattice point [3,3])
+                    // Matched to the same grid logic as Frenkel
+                    const centerCol = 3;
+                    const centerRow = 3;
+                    const cx = startX + centerCol * spacing;
+                    const cy = startY + centerRow * spacing;
+
+                    // Hole
+                    ctx.beginPath(); ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+                    ctx.fillStyle = PALETTE.ion;
+                    ctx.shadowBlur = 15; ctx.shadowColor = PALETTE.ion;
+                    ctx.fill(); ctx.shadowBlur = 0;
+
+                    // Electron (Large Orbit)
+                    const radius = 100;
+                    const ex = cx + Math.cos(time * 0.05) * radius;
+                    const ey = cy + Math.sin(time * 0.05) * radius;
+
+                    // Electron Wavefunction Cloud
+                    const grad = ctx.createRadialGradient(cx, cy, 20, cx, cy, radius + 20);
+                    grad.addColorStop(0, "rgba(77, 77, 255, 0.0)");
+                    grad.addColorStop(0.8, "rgba(77, 77, 255, 0.15)");
+                    grad.addColorStop(1, "rgba(77, 77, 255, 0)");
+                    ctx.beginPath(); ctx.arc(cx, cy, radius + 20, 0, Math.PI * 2);
+                    ctx.fillStyle = grad; ctx.fill();
+
+                    // Electron Particle
+                    ctx.beginPath(); ctx.arc(ex, ey, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = PALETTE.electron; ctx.fill();
+
+                    // Field lines (faint)
+                    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey);
+                    ctx.strokeStyle = "rgba(77, 77, 255, 0.2)"; ctx.lineWidth = 1; ctx.stroke();
+
+                    time++;
+                    window.anims.wannier = requestAnimationFrame(animate);
+                }
+                animate();
+            }
+
+            initFrenkel();
+            initWannier();
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
 
             /* -----------------------------------------
@@ -3548,6 +4408,32 @@
             });
 
             /* -----------------------------------------
+            SHIFT + CLICK → NAVIGATE TO DETAIL SLIDE
+            ----------------------------------------- */
+
+            document.querySelectorAll(".plot-box").forEach(box => {
+                box.addEventListener("click", e => {
+
+                    // Only intercept Shift+Click
+                    if (!e.shiftKey) return;
+
+                    // Stop zoom, modals, everything else
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const targetId = box.dataset.targetSlide;
+                    if (!targetId) return;
+
+                    // Remember where we came from
+                    lastOverviewSlide = currentSlide;
+
+                    // Navigate
+                    goToSlideById(targetId);
+
+                }, true); // 👈 capture phase is CRUCIAL
+            });
+
+            /* -----------------------------------------
             3. Image zoom modal (GLOBAL, layout-agnostic)
             ----------------------------------------- */
             const modal = document.getElementById("mediaZoomModal");
@@ -3575,44 +4461,52 @@
                 if (!img) return;
                 if (img.closest(".no-zoom")) return;
 
+                /* ================================
+                SHIFT + CLICK → NAVIGATE
+                ================================ */
+                if (e.shiftKey) {
+                    const navBox = img.closest("[data-target-slide]");
+                    if (!navBox) return;
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    lastOverviewSlide = currentSlide;
+                    goToSlideById(navBox.dataset.targetSlide);
+                    return; // 🔑 do NOT open zoom
+                }
+
+                /* ================================
+                NORMAL CLICK → IMAGE ZOOM
+                ================================ */
                 e.stopPropagation();
 
                 modalImg.src = img.src;
                 modalImg.style.display = "block";
                 modalVideo.style.display = "none";
 
-                // Check which mode the image is using
                 const isMode1 = img.classList.contains("img-dark-mode1");
                 const isMode2 = img.classList.contains("img-dark-mode2");
 
                 if (isMode1 || isMode2) {
+                    let defaults = isMode1
+                        ? { hue: "180deg", sat: "6", bright: "0.7", con: "1.6" }
+                        : { hue: "180deg", sat: "1.5", bright: "1.0", con: "1.1" };
 
-                    let defaults;
-
-                    if (isMode1) {
-                        // PRESET 1: "Blue Fix" (High Saturation, Darker)
-                        defaults = { hue: "180deg", sat: "6", bright: "0.7", con: "1.6" };
-                    } else {
-                        // PRESET 2: "Standard" (Softer, Normal Brightness)
-                        defaults = { hue: "180deg", sat: "1.5", bright: "1.0", con: "1.1" };
-                    }
-
-                    // Apply overrides if data attributes exist, otherwise use selected defaults
                     const hue = img.dataset.hue || defaults.hue;
                     const sat = img.dataset.sat || defaults.sat;
                     const bright = img.dataset.bright || defaults.bright;
                     const con = img.dataset.con || defaults.con;
 
-                    // Apply filter
-                    modalImg.style.filter = `invert(0.88) hue-rotate(${hue}) saturate(${sat}) brightness(${bright}) contrast(${con})`;
-
+                    modalImg.style.filter =
+                        `invert(0.88) hue-rotate(${hue}) saturate(${sat}) brightness(${bright}) contrast(${con})`;
                 } else {
-                    // Normal Image
                     modalImg.style.filter = "none";
                 }
 
                 modal.style.display = "flex";
             });
+
 
             /* ----------------------------
             VIDEO ZOOM (Dual Presets)
@@ -3777,11 +4671,16 @@
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                // runs ONCE after resize ends
-                if(currentSlide === 1) initMbDftAnim();
-                if(currentSlide === 2) initGreensAnim();
-                if(currentSlide === 3) resizeExcitation();
-            }, 200);
+            // Get the ID of the slide we just switched to
+            const activeSlideId = slides[currentSlide].id;
+
+            // Trigger animations based on ID
+            if (activeSlideId === 'slide-DFT-intro1') initMbDftAnim();
+            if (activeSlideId === 'slide-GW-green')   initGreensAnim();
+            if (activeSlideId === 'slide-excitons-type') init_excitons();
+
+            if (currentSlide === 3) resizeExcitation();
+        }, 200);
         });
 
         window.addEventListener('load', () => { updateProgress(); });
