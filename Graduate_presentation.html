@@ -1519,10 +1519,7 @@
                         $$ \left\{ -\frac{\hbar^2\nabla^2}{2m} + v_{H}[n] + v_{ext} + v_{XC}[n]\right\}\phi_i(\textbf{r}\sigma) = \epsilon_i\phi_i(\textbf{r}\sigma)$$
                         </div></li>
                         <li>Remueve las interacciones explícitas (<strong style="color: var(--highlight2-color)">partículas independientes</strong>).</li>
-                        <li data-popup="Utilizamos PBE_SOL: John P. Perdew, Adrienn Ruzsinszky, Gábor I. Csonka, Oleg A. Vydrov, Gustavo E.
-Scuseria, Lucian A. Constantin, Xiaolan Zhou, and Kieron Burke. Restoring the
-density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett., 100:
-136406, Apr 2008. "><strong style="color: var(--highlight2-color)">Debe aproximarse</strong> \(v_{XC}\).</li>
+                        <li data-popup="Utilizamos PBE_SOL: John P. Perdew, Adrienn Ruzsinszky, Gábor I. Csonka, Oleg A. Vydrov, Gustavo E. Scuseria, Lucian A. Constantin, Xiaolan Zhou, and Kieron Burke. Restoring the density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett., 100: 136406, Apr 2008. "><strong style="color: var(--highlight2-color)">Debe aproximarse</strong> \(v_{XC}\).</li>
                     </ul>
                 </div>
 
@@ -2208,6 +2205,13 @@ density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett.
         <div class="slide-content">
             <h2>Espectros Ópticos: ZnO - excitones</h2>
 
+                <div class="plot-grid-custom5"style="height: 70px; width: 100%;">
+                    <div></div>
+                    <h3>O</h3>
+                    <h3></h3>
+                    <h3>Zn</h3>
+                    <div></div>
+                </div>
                 <div class="plot-grid-custom2">
                     <div class="subfigure-row">
                         <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
@@ -2216,13 +2220,13 @@ density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett.
                     </div>
                     <div class="subfigure-row">
                         <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
-                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000002_iso.png" alt="exciton_ZnO_1_wf">
-                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_2.mp4.mov" type="video/mov" >
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000003_iso.png" alt="exciton_ZnO_1_wf">
+                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_3.mp4.mov" type="video/mov" >
                     </div>
                     <div class="subfigure-row">
                         <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
-                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000003_iso.png" alt="exciton_ZnO_1_wf">
-                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_3.mp4.mov" type="video/mov" >
+                        <img src="ZnO/EXCITONS/optical/excitonWavefunction-000002-000002_iso.png" alt="exciton_ZnO_1_wf">
+                        <video autoplay muted loop playsinline src="ZnO/EXCITONS/optical/optical_2.mp4.mov" type="video/mov" >
                     </div>
                     <div class="subfigure-row">
                         <img src="ZnO/EXCITONS/optical/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_ZnO_1_bands" class="img-dark-mode1">
@@ -2510,7 +2514,7 @@ density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett.
     <!-- SLIDE 19 7/12: XANES Plots (Im) MgO Mg-L23 -->
     <div class="slide" id="slide-XANES-Im-MgO-Mg_L23" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>XANES: MgO - Borde \(L_23\) del Mg</h2>
+            <h2>XANES: MgO - Borde \(L_{23}\) del Mg</h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom2">
@@ -4721,9 +4725,7 @@ density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett.
         /* -----------------------------------------
         LIST ITEM POPUPS (Materials + Conclusions)
         ----------------------------------------- */
-        document.querySelectorAll(
-        '.material-block li, .conclusion-block li, #slide-DFT-intro2 li'
-        ).forEach(li => {
+        document.querySelectorAll('.material-block li, .conclusion-block li, #slide-DFT-intro2 li').forEach(li => {
 
             li.addEventListener('mouseenter', () => {
 
@@ -4769,7 +4771,6 @@ density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett.
                 }
             });
         });
-
 
         /* --- 4. EXCITATION ANIMATION (Slide ?? - Parabolic) --- */
         const exCanvas = document.getElementById('excitationCanvas');
@@ -4866,95 +4867,95 @@ density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett.
             exCtx.beginPath(); exCtx.moveTo(ex, ey); exCtx.lineTo(hx, hy); exCtx.stroke(); exCtx.setLineDash([]);
         }
 
-let boundStartTime = 0;
-let waitStartTime = 0;
-let boundDuration = 0;
-let waitDuration = 0;
+        let boundStartTime = 0;
+        let waitStartTime = 0;
+        let boundDuration = 0;
+        let waitDuration = 0;
 
-function animateExcitation() {
-    exCtx.clearRect(0, 0, width, height); 
-    drawParabolicBands();
+        function animateExcitation() {
+            exCtx.clearRect(0, 0, width, height);
+            drawParabolicBands();
 
-    const targetY = bands.cbBottom; 
-    const startY = bands.vbTop;
+            const targetY = bands.cbBottom;
+            const startY = bands.vbTop;
 
-    if (phase === 'incoming') {
-        // Electron at VB top, photon moving in
-        drawElectron(electronX, startY);
-        photonX += 6;
-        drawPhoton(photonX, startY);
+            if (phase === 'incoming') {
+                // Electron at VB top, photon moving in
+                drawElectron(electronX, startY);
+                photonX += 6;
+                drawPhoton(photonX, startY);
 
-        if (photonX >= electronX) phase = 'transition';
-    }
-    else if (phase === 'transition') {
-        // Electron moves up, hole moves down (contraposition)
-        const speed = (electronY - targetY) * 0.08;
-        electronY -= Math.max(speed, 1.0);
-        drawElectron(electronX, electronY);
-        drawHole(electronX, startY);
+                if (photonX >= electronX) phase = 'transition';
+            }
+            else if (phase === 'transition') {
+                // Electron moves up, hole moves down (contraposition)
+                const speed = (electronY - targetY) * 0.08;
+                electronY -= Math.max(speed, 1.0);
+                drawElectron(electronX, electronY);
+                drawHole(electronX, startY);
 
-        if (electronY <= targetY) {
-            electronY = targetY;
-            phase = 'bound';
-            boundStartTime = exTime;
-            boundDuration = 2*60 + Math.random()*2*60; // 2-4 sec assuming 60fps
+                if (electronY <= targetY) {
+                    electronY = targetY;
+                    phase = 'bound';
+                    boundStartTime = exTime;
+                    boundDuration = 2*60 + Math.random()*2*60; // 2-4 sec assuming 60fps
+                }
+            }
+            else if (phase === 'bound') {
+                // Exciton oscillation
+                drawElectron(electronX, targetY + Math.sin(exTime*0.05)*3);
+                drawHole(electronX, startY - Math.sin(exTime*0.05)*3);
+                drawExcitonEllipse(electronX, targetY, electronX, startY);
+
+                exCtx.fillStyle = PALETTE.text;
+                exCtx.font = 'bold 30px Urbanist';
+                exCtx.textAlign = 'center'; exCtx.fillText("Excitón", bands.centerX + 120, height/2 );
+                exCtx.textAlign = 'left';
+
+                if (exTime - boundStartTime >= boundDuration) {
+                    phase = 'de-excitation';
+                }
+            }
+            else if (phase === 'de-excitation') {
+                // Reverse motion: electron down, hole up
+                const speed = (startY - electronY) * 0.08;
+                electronY += Math.max(speed, 1.0);
+                drawHole(electronX, startY);
+                drawElectron(electronX, electronY);
+
+                if (electronY >= startY) {
+                    electronY = startY;
+                    phase = 'outgoing';
+                    photonX = electronX + 80; // Start outgoing photon
+                }
+            }
+            else if (phase === 'outgoing') {
+                // Outgoing photon moves to right
+                drawHole(electronX, startY);
+                drawElectron(electronX, startY);
+                photonX += 6;
+                drawPhoton(photonX, startY);
+
+                if (photonX > width + 50) { // when photon leaves canvas
+                    phase = 'wait';
+                    waitStartTime = exTime;
+                    waitDuration = 2*60 + Math.random()*2*60; // 2-4 sec
+                }
+            }
+            else if (phase === 'wait') {
+                drawHole(electronX, startY);
+                drawElectron(electronX, startY);
+                if (exTime - waitStartTime >= waitDuration) {
+                    // Reset for next loop
+                    phase = 'incoming';
+                    photonX = -100;
+                    electronY = startY;
+                }
+            }
+
+            exTime++;
+            anims.excitation = requestAnimationFrame(animateExcitation);
         }
-    }
-    else if (phase === 'bound') {
-        // Exciton oscillation
-        drawElectron(electronX, targetY + Math.sin(exTime*0.05)*3);
-        drawHole(electronX, startY - Math.sin(exTime*0.05)*3);
-        drawExcitonEllipse(electronX, targetY, electronX, startY);
-
-        exCtx.fillStyle = PALETTE.text;
-        exCtx.font = 'bold 30px Urbanist';
-        exCtx.textAlign = 'center'; exCtx.fillText("Excitón", bands.centerX + 120, height/2 );
-        exCtx.textAlign = 'left';
-
-        if (exTime - boundStartTime >= boundDuration) {
-            phase = 'de-excitation';
-        }
-    }
-    else if (phase === 'de-excitation') {
-        // Reverse motion: electron down, hole up
-        const speed = (startY - electronY) * 0.08;
-        electronY += Math.max(speed, 1.0);
-        drawHole(electronX, startY);
-        drawElectron(electronX, electronY);
-
-        if (electronY >= startY) {
-            electronY = startY;
-            phase = 'outgoing';
-            photonX = electronX + 80; // Start outgoing photon
-        }
-    }
-    else if (phase === 'outgoing') {
-        // Outgoing photon moves to right
-        drawHole(electronX, startY);
-        drawElectron(electronX, startY);
-        photonX += 6;
-        drawPhoton(photonX, startY);
-
-        if (photonX > width + 50) { // when photon leaves canvas
-            phase = 'wait';
-            waitStartTime = exTime;
-            waitDuration = 2*60 + Math.random()*2*60; // 2-4 sec
-        }
-    }
-    else if (phase === 'wait') {
-        drawHole(electronX, startY);
-        drawElectron(electronX, startY);
-        if (exTime - waitStartTime >= waitDuration) {
-            // Reset for next loop
-            phase = 'incoming';
-            photonX = -100;
-            electronY = startY;
-        }
-    }
-
-    exTime++;
-    anims.excitation = requestAnimationFrame(animateExcitation);
-}
 
 
         function resetAnim() {
