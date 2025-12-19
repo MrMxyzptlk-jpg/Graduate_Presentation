@@ -772,12 +772,29 @@
         }
 
         /* Overlay PLOTS*/
-        .overlay-plot-container {
-            position: relative;
-            width: 520px;      /* match your plot size */
-            height: auto;
-            margin: 0 auto;
-        }
+/* Zoomable overlay container */
+.overlay-plot-container {
+    position: relative;
+    width: 520px;
+    aspect-ratio: 1 / 1;   /* keeps proportions stable */
+    margin: 0 auto;
+
+    overflow: hidden;     /* 🔑 prevents spill over slide */
+    cursor: zoom-in;
+
+    transition: transform 0.25s ease;
+    transform-origin: center center;
+}
+
+/* Zoomed state */
+.overlay-plot-container.zoomed {
+    transform: scale(2.5);   /* adjust zoom factor here */
+    cursor: zoom-out;
+    background: var(--bg-color);
+    border-color: var(--border-color);
+    z-index: 50;
+}
+
 
         .plot {
             width: 100%;
@@ -803,6 +820,16 @@
         .overlay.active {
             opacity: 1.0; /* key for comparison */
         }
+
+.overlay-plot-container img.plot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
 
         /* Buttons container */
         .overlay-controls {
@@ -5325,39 +5352,60 @@
 
             /* VIDEO OVERLAY */
              const overlay = document.getElementById("video-overlay");
-    const video   = document.getElementById("overlay-video");
+        const video   = document.getElementById("overlay-video");
 
-    document.querySelectorAll(".video-play-btn").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.stopPropagation();
+        document.querySelectorAll(".video-play-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
 
-            const src = btn.dataset.videoSrc;
-            video.src = src;
-            video.currentTime = 0;
-            video.play();
+                const src = btn.dataset.videoSrc;
+                video.src = src;
+                video.currentTime = 0;
+                video.play();
 
-            overlay.classList.remove("hidden");
+                overlay.classList.remove("hidden");
+            });
         });
+
+        /* Close when clicking outside video */
+        overlay.addEventListener("click", () => {
+            closeVideo();
+        });
+
+        /* Prevent click inside video from closing */
+        video.addEventListener("click", e => e.stopPropagation());
+
+        /* Close on ESC */
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeVideo();
+        });
+
+        function closeVideo() {
+            video.pause();
+            video.src = "";
+            overlay.classList.add("hidden");
+        }
+
+(function enableClickZoom() {
+
+    document.addEventListener("click", e => {
+
+        const container = e.target.closest(".overlay-plot-container");
+
+        // Clicked on a plot → toggle zoom
+        if (container) {
+            container.classList.toggle("zoomed");
+            e.stopPropagation();
+            return;
+        }
+
+        // Clicked anywhere else → unzoom all
+        document
+            .querySelectorAll(".overlay-plot-container.zoomed")
+            .forEach(c => c.classList.remove("zoomed"));
     });
 
-    /* Close when clicking outside video */
-    overlay.addEventListener("click", () => {
-        closeVideo();
-    });
-
-    /* Prevent click inside video from closing */
-    video.addEventListener("click", e => e.stopPropagation());
-
-    /* Close on ESC */
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeVideo();
-    });
-
-    function closeVideo() {
-        video.pause();
-        video.src = "";
-        overlay.classList.add("hidden");
-    }
+})();
 
         });
 
@@ -5428,8 +5476,6 @@
             // 🔑 Update mode for CSS styling
             slide.dataset.mode = mode;
         }
-
-
 
     </script>
 
