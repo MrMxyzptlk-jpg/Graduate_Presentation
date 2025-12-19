@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" defer ></script>
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
     <script src="presentation_data.js" ></script>
 
     <style>
@@ -199,32 +199,32 @@
             gap: 0rem;
         }
 
-.row-with-captions1 {
-    display: grid;
-    grid-template-columns: 90px 1fr; /* 🔑 fixed caption, flexible image */
-    align-items: center;
-    column-gap: 8px;
-    height: 120px;                   /* matches image height */
-}
+        .row-with-captions1 {
+            display: grid;
+            grid-template-columns: 90px 1fr; /* 🔑 fixed caption, flexible image */
+            align-items: center;
+            column-gap: 8px;
+            height: 120px;                   /* matches image height */
+        }
 
-.row-with-captions1 img {
-    height: 120px;
-    width: 100%;
-    display: block;
-    object-fit: contain;
-    background-color: var(--bg2-color);
-    border: 2px solid var(--border-color);
-}
+        .row-with-captions1 img {
+            height: 120px;
+            width: 100%;
+            display: block;
+            object-fit: contain;
+            background-color: var(--bg2-color);
+            border: 2px solid var(--border-color);
+        }
 
-.material-title {
-    margin: 0;
-    width: 110px;
-    text-align: left;
-    white-space: nowrap;
-    font-size: 1.7rem;
-    padding-right: 14px;   /* 🔑 THIS fixes _{23} overlap */
-    color: var(--highlight2-color);
-}
+        .material-title {
+            margin: 0;
+            width: 110px;
+            text-align: left;
+            white-space: nowrap;
+            font-size: 1.7rem;
+            padding-right: 14px;   /* 🔑 THIS fixes _{23} overlap */
+            color: var(--highlight2-color);
+        }
 
         .caption {
             margin-right: 0.2rem;  /* tiny breathing room */
@@ -1037,7 +1037,6 @@
                     <div id="plot-group-1" class="plot-hidden" style="position: relative;">
                         <div class="plot-label">Incidencia</div>
                         <div id="plot-1" style="width: 300px; height: 220px;"></div>
-
                         <script>
                         fetch("incident.dat")
                         .then(r => r.text())
@@ -1148,7 +1147,6 @@
                             Plotly.newPlot("plot-1", traces, layout, config);
                         });
                         </script>
-
                     </div>
                     <i id="arrow-1" class="fa-solid fa-arrow-right plot-hidden" style="font-size: 2rem; color: var(--arrow-color);"></i>
                     <div id="plot-group-2" class="plot-hidden" style="position: relative;">
@@ -1429,7 +1427,6 @@
             <div class="two-column">
                 <div>
                     <ul>
-                        <li><strong style="color: var(--highlight2-color)">Reformula el problema</strong> de muchos cuerpos en términos de la densidad electrónica ρ(r).</li>
                         <li><strong style="color: var(--highlight2-color)">Reduce el número de variables</strong> necesarias.</li>
                         <li>Resolución mediante la <strong style="color: var(--highlight2-color)">minimización de la funcional energía.</strong></li>
                     </ul>
@@ -1453,12 +1450,12 @@
             <div class="two-column">
                 <div>
                     <ul>
-                        <li><strong style="color: var(--highlight2-color)">Las ecuaciones de Kohn-Sham</strong> mapean el problema a un sistema efectivo de partículas <strong style="color: var(--highlight2-color)">independientes</strong>.
+                        <li><strong style="color: var(--highlight2-color)">Las ecuaciones de Kohn-Sham</strong>.
                         <div class="math-block">
                         $$ \left\{ -\frac{\hbar^2\nabla^2}{2m} + v_{H}[n] + v_{ext} + v_{XC}[n]\right\}\phi_i(\textbf{r}\sigma) = \epsilon_i\phi_i(\textbf{r}\sigma)$$
                         </div></li>
-                        <li><strong style="color: var(--highlight2-color)">Remueve </strong> las interacciones explícitas.</li>
-                        <li><strong style="color: var(--highlight2-color)">Debe aproximarse</strong> el potencial de correlación intercambio \(v_{xc}\).</li>
+                        <li>Remueve las interacciones explícitas (<strong style="color: var(--highlight2-color)"> partículas independientes</strong>).</li>
+                        <li><strong style="color: var(--highlight2-color)">Debe aproximarse</strong> \(v_{XC}\).</li>
                     </ul>
                 </div>
 
@@ -1510,9 +1507,6 @@
                         <li>No describe correctamente <strong style="color: var(--highlight2-color)">estados excitados</strong>.</li>
                     </ul>
 
-                    <p style="margin-top:1rem; opacity:0.85;">
-                        Esta limitación motiva el uso de <strong style="color: var(--highlight1-color)">GW</strong> para cuasipartículas y <strong style="color: var(--highlight1-color)">BSE</strong> para excitaciones ópticas.
-                    </p>
                 </div>
 
                 <!-- BAND GAP UNDERESTIMATION IMAGE -->
@@ -1531,31 +1525,27 @@
             <h2>Aprox. GW: Idea Función de Green G</h2>
 
             <div class="two-column">
-                <p>Se introduce la <strong style="color: var(--highlight2-color)">función de Green (G)</strong> para describir la propagación de un electrón o hueco.</p>
-
-                <div class="two-column">
-                   <!-- ELECTRON PROPAGATION -->
-                    <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
-                        <h3 style="color: var(--highlight2-color); text-align:center;">Propagación de Electrón (G<sup>&gt;</sup>)</h3>
-                        <div class="media-container">
-                            <div class="anim-wrapper" >
-                                <canvas id="greenElectronCanvas"></canvas>
-                            </div>
+                <!-- ELECTRON PROPAGATION -->
+                <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
+                    <h3 style="color: var(--highlight2-color); text-align:center;">Propagación de Electrón (G<sup>&gt;</sup>)</h3>
+                    <div class="media-container">
+                        <div class="anim-wrapper" >
+                            <canvas id="greenElectronCanvas"></canvas>
                         </div>
                     </div>
+                </div>
 
-                    <!-- HOLE PROPAGATION -->
-                    <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
-                        <h3 style="color: var(--highlight2-color); text-align:center;">Propagación de Hueco (G<sup>&lt;</sup>)</h3>
-                        <div class="media-container">
-                            <div class="anim-wrapper">
-                                <canvas id="greenHoleCanvas"></canvas>
-                            </div>
+                <!-- HOLE PROPAGATION -->
+                <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
+                    <h3 style="color: var(--highlight2-color); text-align:center;">Propagación de Hueco (G<sup>&lt;</sup>)</h3>
+                    <div class="media-container">
+                        <div class="anim-wrapper">
+                            <canvas id="greenHoleCanvas"></canvas>
                         </div>
                     </div>
-
                 </div>
             </div>
+
             <div class="slide-footer"><span></span><span>7 / 24</span></div>
         </div>
     </div>
@@ -1565,16 +1555,6 @@
         <div class="slide-content">
             <h2>Aprox. GW: interacción Coulomb apantallada W</h2>
 
-            <div class="two-column">
-                <div>
-                    <ul>
-                        <li>Se introduce una <strong style="color: var(--highlight2-color)">apantallamiento (W)</strong> por la <strong style="color: var(--highlight2-color)">polarización del medio (\(\Pi\))</strong>.</li>
-                        <li>La partícula real se describe como una <strong style="color: var(--highlight1-color)">cuasipartícula</strong>:
-                        <strong style="color: var(--highlight2-color)">electrón/hueco</strong> + <strong style="color: var(--highlight2-color)">respuesta del medio</strong>.</li>
-                    </ul>
-
-                </div>
-
                 <!-- INTERACTIVE SCREENING DEMO -->
                 <div style="text-align: center; display: flex; flex-direction: column; height: auto;">
                     <h3 style="color: var(--accent-purple); text-align:center;">Extra electrón (repulsión)</h3>
@@ -1583,7 +1563,7 @@
                         <canvas id="screenElectronCanvas"></canvas>
                     </div>
                 </div>
-            </div>
+            <p style="text-align: center;"><strong style="color: var(--highlight1-color)">Cuasipartícula</strong>: <strong style="color: var(--highlight2-color)">electrón/hueco</strong> + <strong style="color: var(--highlight2-color)">respuesta del medio</strong>.</p>
             <div class="slide-footer"><span></span><span>8 / 24</span></div>
         </div>
     </div>
@@ -1597,7 +1577,7 @@
                 <div>
                     <p><strong>Pros:</strong></p>
                     <ul>
-                        <li>GW surge como la <strong style="color: var(--highlight2-color)">aproximación más baja</strong> de las ecuaciones de Hedin.</li>
+                        <li>Es la <strong style="color: var(--highlight2-color)">aproximación de menor órden</strong> de las ecuaciones de Hedin.</li>
                         <li>Se corrigen las energías con la <strong style="color: var(--highlight2-color)">autoenergía Σ</strong>.
                         <div class="math-block">
                         $$
@@ -1605,7 +1585,7 @@
                         \right]
                         $$
                         </div></li>
-                        <li><strong style="color: var(--highlight2-color)">Corrige el gap electrónico</strong> por interacciones de muchos cuerpos.</li>
+                        <li><strong style="color: var(--highlight2-color)">Corrige el gap electrónico</strong>.</li>
                     </ul>
 
                 </div>
@@ -1628,15 +1608,10 @@
             <div>
                 <p><strong>Contras:</strong></p>
                 <ul>
-                    <li>Los espectros calculados corresponden a <strong style="color: var(--highlight2-color)">cuasipartículas independientes</strong>.</li>
-                    <li><strong style="color: var(--highlight2-color)">No describe excitaciones neutras</strong> (no hay electrón-hueco ligado).</li>
-                    <li>El cálculo <strong style="color: var(--highlight2-color)">single-shot</strong> depende del punto de partida del estado fundamental.</li>
+                    <li>Cuasipartículas <strong style="color: var(--highlight2-color)">independientes</strong>.</li>
+                    <li>Excitaciones <strong style="color: var(--highlight2-color)">cargadas</strong>.</li>
+                    <li>El cálculo <strong style="color: var(--highlight2-color)">single-shot</strong> (\(G_0W_0\)).</li>
                 </ul>
-
-                <p style="margin-top:1rem; opacity:0.85;">
-                    Para describir <strong style="color: var(--highlight1-color)">excitones</strong> y absorción óptica es necesario resolver la
-                    <strong style="color: var(--highlight1-color)">ecuación de Bethe-Salpeter (BSE)</strong>.
-                </p>
             </div>
 
             <div class="slide-footer"><span></span><span>10 / 24</span></div>
@@ -1649,7 +1624,8 @@
             <h2>BSE: La Ecuación de <span class="highlight">Bethe-Salpeter</span></h2>
             <div class="two-column" style="grid-template-columns: 40% 60%;">
                 <div>
-                    <p>Para describir excitaciones neutras, debemos tratar el electrón y el hueco como un par acoplado. Se resuelve un sistema efectivo con:</p>
+                    <p>Excitaciones neutras: <strong style="color: var(--highlight2-color)">par electrón-hueco acoplado</strong>.</p>
+                    <p>Sistema efectivo con:</p>
 
                     <ul>
                         <li>\(H^{\mathrm{diag}}\) - partículas independientes.</li>
@@ -2378,7 +2354,7 @@
     <!-- SLIDE 19 4/12: XANES Plots (Im) MgO -->
     <div class="slide" id="slide-XANES-Im-MgO" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>Espectros XANES: MgO</h2>
+            <h2>Espectros XANES: MgO </h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom3">
@@ -2395,7 +2371,7 @@
     <!-- SLIDE 19 5/12: XANES Plots (Im) MgO Mg-K -->
     <div class="slide" id="slide-XANES-Im-MgO-Mg_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>Espectros XANES: MgO</h2>
+            <h2>XANES: MgO - Borde \(K\) del Mg</h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom2">
@@ -2420,7 +2396,7 @@
     <!-- SLIDE 19 6/12: XANES Plots (Im) MgO O-K -->
     <div class="slide" id="slide-XANES-Im-MgO-O_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>Espectros XANES: MgO</h2>
+            <h2>XANES: MgO - Borde \(K\) del O</h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom2">
@@ -2450,7 +2426,7 @@
     <!-- SLIDE 19 7/12: XANES Plots (Im) MgO Mg-L23 -->
     <div class="slide" id="slide-XANES-Im-MgO-Mg_L23" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>Espectros XANES: MgO</h2>
+            <h2>XANES: MgO - Borde \(L_23\) del Mg</h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom2">
@@ -2485,7 +2461,7 @@
     <!-- SLIDE 19 8/12: XANES Plots (Im) CaO -->
     <div class="slide" id="slide-XANES-Im-CaO" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>Espectros XANES: CaO</h2>
+            <h2>XANES: CaO</h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom3">
@@ -2502,7 +2478,7 @@
     <!-- SLIDE 19 9/12: XANES Plots (Im) CaO Ca-K-->
     <div class="slide" id="slide-XANES-Im-CaO-Ca_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>Espectros XANES: CaO</h2>
+            <h2>XANES: CaO - Borde \(K\) del Ca</h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom2">
@@ -2537,7 +2513,7 @@
     <!-- SLIDE 19 10/12: XANES Plots (Im) CaO O-K -->
     <div class="slide" id="slide-XANES-Im-CaO-O_K" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>Espectros XANES: CaO</h2>
+            <h2>XANES: CaO - Borde \(K\) del O</h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom2">
@@ -2567,7 +2543,7 @@
     <!-- SLIDE 19 11/12: XANES Plots (Im) ZnO -->
     <div class="slide" id="slide-XANES-Im-ZnO" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>Espectros XANES: ZnO</h2>
+            <h2>XANES: ZnO/<h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom3">
@@ -4103,7 +4079,7 @@
             const electrons = [];
             const mouse = { x: -1000, y: -1000 };
             const rows = 5;
-            const cols = 15;
+            const cols = 32;
             const spacing = 40;
 
             // Init Grid
@@ -4221,7 +4197,8 @@
                 xlabel = "",
                 ylabel = "",
                 title = "",
-                showTicks = false
+                showTicks = false,
+                showLegend = true
             } = options;
 
             // --- CHANGE 1: Remove Promise.all/fetch and map directly ---
@@ -4408,7 +4385,7 @@
                     orientation: "v"
                 },
 
-                showlegend: true,
+                showlegend: showLegend,
 
                 shapes,
 
@@ -4423,23 +4400,23 @@
 
         window.plotSpecs = {
                 // Title example
-                "incident": {
+                "plot-incident": {
                     curves: [
                         { data: incident,    mode: "line",    name: "Exp.",       color: PALETTE.curve1 }
                     ],
-                    settings: { title: "", xlim: [0,1], ylim: [0, 1], xlabel: "Energía", ylabel: "Intensidad", showTicks: false }
+                    settings: { title: "", xlim: [0,1], ylim: [0, 1], xlabel: "Energía", ylabel: "Intensidad", showTicks: false, showLegend: false }
                 },
-                "transmited": {
+                "plot-transmited": {
                     curves: [
                         { data: transmited,    mode: "line",    name: "Exp.",       color: PALETTE.curve1 }
                     ],
-                    settings: { title: "", xlim: [0,1], ylim: [0, 1], xlabel: "Energía", ylabel: "Intensidad", showTicks: false }
+                    settings: { title: "", xlim: [0,1], ylim: [0, 1], xlabel: "Energía", ylabel: "Intensidad", showTicks: false, showLegend: false }
                 },
-                "absorbed": {
+                "plot-absorbed": {
                     curves: [
                         { data: absorbed,    mode: "line",    name: "Exp.",       color: PALETTE.curve1 }
                     ],
-                    settings: { title: "", xlim: [0,1], ylim: [0, 1], xlabel: "Energía", ylabel: "Intensidad", showTicks: false }
+                    settings: { title: "", xlim: [0,1], ylim: [0, 1], xlabel: "Energía", ylabel: "Intensidad", showTicks: false, showLegend: false }
                 },
 
                 // Optical Im
@@ -5215,7 +5192,10 @@
 
                 LiF_ZnO_epsInf: "F. Bernardini and V. Fiorentini.  Electronic dielectric constants of insulatorsby the polarization method. Phys. Rev. B, 1386795 (1998).",
                 dielectric_constants: "W. Martienssen and H. Warlimont, Springer Handbook of Condensed Matter and Materials Data, Vol. 1 (2005).",
-                CaO_epsInf: "J.L. Jacobson and E.R. Nixon. Infrared dielectric response and lattice vibrations of calcium and strontium oxides. Journal of Physics and Chemistry of Solids 29, 967 (1968)."
+                CaO_epsInf: "J.L. Jacobson and E.R. Nixon. Infrared dielectric response and lattice vibrations of calcium and strontium oxides. Journal of Physics and Chemistry of Solids 29, 967 (1968).",
+                LiF_exciton: "F. Bechstedt, Many-Body Approach to Electronic Excitations, Vol. 181 (2015).",
+                CaO_exciton: "Y. Kaneko and T. Koda, Journal of Crystal Growth 86, 72 (1988)",
+                ZnO_exciton: " J. F. Muth, R. M. Kolbas, A. K. Sharma, S. Oktyabrsky, and J. Narayan, Journal of Applied Physics 85, 7884 (1999)"
 
             };
 
