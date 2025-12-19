@@ -1518,7 +1518,7 @@
                         <div class="math-block">
                         $$ \left\{ -\frac{\hbar^2\nabla^2}{2m} + v_{H}[n] + v_{ext} + v_{XC}[n]\right\}\phi_i(\textbf{r}\sigma) = \epsilon_i\phi_i(\textbf{r}\sigma)$$
                         </div></li>
-                        <li>Remueve las interacciones explícitas (<strong style="color: var(--highlight2-color)"> partículas independientes</strong>).</li>
+                        <li>Remueve las interacciones explícitas (<strong style="color: var(--highlight2-color)">partículas independientes</strong>).</li>
                         <li data-popup="Utilizamos PBE_SOL: John P. Perdew, Adrienn Ruzsinszky, Gábor I. Csonka, Oleg A. Vydrov, Gustavo E.
 Scuseria, Lucian A. Constantin, Xiaolan Zhou, and Kieron Burke. Restoring the
 density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett., 100:
@@ -4834,62 +4834,128 @@ density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett.
         }
 
         function drawExcitonEllipse(ex, ey, hx, hy) {
-    const cx = (ex + hx) / 2;
-    const cy = (ey + hy) / 2;
+            const cx = (ex + hx) / 2;
+            const cy = (ey + hy) / 2;
 
-    const dx = ex - hx;
-    const dy = ey - hy;
-    const distance = Math.hypot(dx, dy);
+            const dx = ex - hx;
+            const dy = ey - hy;
+            const distance = Math.hypot(dx, dy);
 
-    const angle = Math.atan2(dy, dx);
+            const angle = Math.atan2(dy, dx);
 
-    // Semi-axes (tune these visually)
-    const a = distance * 0.9;   // major axis
-    const b = distance * 0.45;  // minor axis
+            // Semi-axes (tune these visually)
+            const a = distance * 0.9;   // major axis
+            const b = distance * 0.45;  // minor axis
 
-    exCtx.save();
-    exCtx.translate(cx, cy);
-    exCtx.rotate(angle);
+            exCtx.save();
+            exCtx.translate(cx, cy);
+            exCtx.rotate(angle);
 
-    exCtx.setLineDash([5, 5]); exCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-    exCtx.lineWidth = 2;
+            exCtx.setLineDash([5, 5]); exCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            exCtx.lineWidth = 2;
 
-    exCtx.beginPath();
-    exCtx.ellipse(0, 0, a, b, 0, 0, Math.PI * 2);
-    exCtx.stroke();
+            exCtx.beginPath();
+            exCtx.ellipse(0, 0, a, b, 0, 0, Math.PI * 2);
+            exCtx.stroke();
 
-    exCtx.restore();
-}
-
+            exCtx.restore();
+        }
 
         function drawInteraction(ex, ey, hx, hy) {
             exCtx.setLineDash([5, 5]); exCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
             exCtx.beginPath(); exCtx.moveTo(ex, ey); exCtx.lineTo(hx, hy); exCtx.stroke(); exCtx.setLineDash([]);
         }
 
-        function animateExcitation() {
-            exCtx.clearRect(0, 0, width, height); drawParabolicBands();
+let boundStartTime = 0;
+let waitStartTime = 0;
+let boundDuration = 0;
+let waitDuration = 0;
 
-            // Positions
-            const targetY = bands.cbBottom + 0; // Slightly above bottom for visual
-            const startY = bands.vbTop - 0;     // Slightly below top
+function animateExcitation() {
+    exCtx.clearRect(0, 0, width, height); 
+    drawParabolicBands();
 
-            if (phase === 'incoming') {
-                drawElectron(electronX, startY); photonX += 6; drawPhoton(photonX, startY);
-                if (photonX >= electronX) phase = 'transition';
-            } else if (phase === 'transition') {
-                drawHole(electronX, startY); const speed = (electronY - targetY) * 0.08;
-                electronY -= Math.max(speed, 1.0); drawElectron(electronX, electronY);
-                if (electronY <= targetY) { electronY = targetY; phase = 'bound'; }
-            } else if (phase === 'bound') {
-                drawHole(electronX, startY); drawElectron(electronX, targetY + Math.sin(exTime*0.05)*3);
-                drawExcitonEllipse(electronX, targetY, electronX, startY);
-                exCtx.fillStyle = PALETTE.text; exCtx.font = 'bold 20px Urbanist'; exCtx.textAlign = 'center';
-                exCtx.fillText("Excitón", bands.centerX + 100, height/2 ); exCtx.textAlign = 'left';
-            }
-            exTime++;
-            anims.excitation = requestAnimationFrame(animateExcitation);
+    const targetY = bands.cbBottom; 
+    const startY = bands.vbTop;
+
+    if (phase === 'incoming') {
+        // Electron at VB top, photon moving in
+        drawElectron(electronX, startY);
+        photonX += 6;
+        drawPhoton(photonX, startY);
+
+        if (photonX >= electronX) phase = 'transition';
+    }
+    else if (phase === 'transition') {
+        // Electron moves up, hole moves down (contraposition)
+        const speed = (electronY - targetY) * 0.08;
+        electronY -= Math.max(speed, 1.0);
+        drawElectron(electronX, electronY);
+        drawHole(electronX, startY);
+
+        if (electronY <= targetY) {
+            electronY = targetY;
+            phase = 'bound';
+            boundStartTime = exTime;
+            boundDuration = 2*60 + Math.random()*2*60; // 2-4 sec assuming 60fps
         }
+    }
+    else if (phase === 'bound') {
+        // Exciton oscillation
+        drawElectron(electronX, targetY + Math.sin(exTime*0.05)*3);
+        drawHole(electronX, startY - Math.sin(exTime*0.05)*3);
+        drawExcitonEllipse(electronX, targetY, electronX, startY);
+
+        exCtx.fillStyle = PALETTE.text;
+        exCtx.font = 'bold 30px Urbanist';
+        exCtx.textAlign = 'center'; exCtx.fillText("Excitón", bands.centerX + 120, height/2 );
+        exCtx.textAlign = 'left';
+
+        if (exTime - boundStartTime >= boundDuration) {
+            phase = 'de-excitation';
+        }
+    }
+    else if (phase === 'de-excitation') {
+        // Reverse motion: electron down, hole up
+        const speed = (startY - electronY) * 0.08;
+        electronY += Math.max(speed, 1.0);
+        drawHole(electronX, startY);
+        drawElectron(electronX, electronY);
+
+        if (electronY >= startY) {
+            electronY = startY;
+            phase = 'outgoing';
+            photonX = electronX + 80; // Start outgoing photon
+        }
+    }
+    else if (phase === 'outgoing') {
+        // Outgoing photon moves to right
+        drawHole(electronX, startY);
+        drawElectron(electronX, startY);
+        photonX += 6;
+        drawPhoton(photonX, startY);
+
+        if (photonX > width + 50) { // when photon leaves canvas
+            phase = 'wait';
+            waitStartTime = exTime;
+            waitDuration = 2*60 + Math.random()*2*60; // 2-4 sec
+        }
+    }
+    else if (phase === 'wait') {
+        drawHole(electronX, startY);
+        drawElectron(electronX, startY);
+        if (exTime - waitStartTime >= waitDuration) {
+            // Reset for next loop
+            phase = 'incoming';
+            photonX = -100;
+            electronY = startY;
+        }
+    }
+
+    exTime++;
+    anims.excitation = requestAnimationFrame(animateExcitation);
+}
+
 
         function resetAnim() {
             if(anims.excitation) cancelAnimationFrame(anims.excitation);
@@ -5469,26 +5535,26 @@ density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett.
             overlay.classList.add("hidden");
         }
 
-(function enableClickZoom() {
+        (function enableClickZoom() {
 
-    document.addEventListener("click", e => {
+            document.addEventListener("click", e => {
 
-        const container = e.target.closest(".overlay-plot-container");
+                const container = e.target.closest(".overlay-plot-container");
 
-        // Clicked on a plot → toggle zoom
-        if (container) {
-            container.classList.toggle("zoomed");
-            e.stopPropagation();
-            return;
-        }
+                // Clicked on a plot → toggle zoom
+                if (container) {
+                    container.classList.toggle("zoomed");
+                    e.stopPropagation();
+                    return;
+                }
 
-        // Clicked anywhere else → unzoom all
-        document
-            .querySelectorAll(".overlay-plot-container.zoomed")
-            .forEach(c => c.classList.remove("zoomed"));
-    });
+                // Clicked anywhere else → unzoom all
+                document
+                    .querySelectorAll(".overlay-plot-container.zoomed")
+                    .forEach(c => c.classList.remove("zoomed"));
+            });
 
-})();
+        })();
 
         });
 
