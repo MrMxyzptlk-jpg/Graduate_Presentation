@@ -141,6 +141,16 @@
             padding: 4px;
         }
 
+        .plot-grid-custom5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 18px;
+
+            width: fit-content;    /* shrink to content width */
+            margin: 0 auto;        /* center the grid horizontally */
+            justify-content: center;
+        }
+
         /* Helper to span 2 rows */
         .span-row-2 {
             grid-row: span 2;
@@ -360,6 +370,32 @@
             font-size: 1.1rem;
             margin-top: 10px;
             opacity: 0.85;
+        }
+
+        .subfigure-row-bands {
+            display: flex;
+            align-items: flex-start;   /* 🔑 vertical alignment */
+            gap: 12px;
+        }
+        .subfigure-row-bands img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+            display: block;
+
+            border-radius: 0 !important;
+            border: none !important;
+            padding: 0 !important;
+            background: none !important;
+        }
+
+        .subfigure-row-bands h3 {
+            margin: 0;                 /* 🔑 THIS is crucial */
+            padding-right: 8px;
+            line-height: 1;
+            align-self: flex-start;    /* Ensure top alignment */
+            width: 40px;
+            text-align: right;
         }
 
         /* CANVAS */
@@ -715,8 +751,9 @@
             color: #fff;
             padding: 0.5rem 0.8rem;
             border-radius: 5px;
+            border-color:  1px solid var(--border-color);
             font-size: 1.7rem;
-            max-width: 300px;
+            max-width: 500px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.5);
             z-index: 1000;
             pointer-events: none;
@@ -772,28 +809,28 @@
         }
 
         /* Overlay PLOTS*/
-/* Zoomable overlay container */
-.overlay-plot-container {
-    position: relative;
-    width: 520px;
-    aspect-ratio: 1 / 1;   /* keeps proportions stable */
-    margin: 0 auto;
+        /* Zoomable overlay container */
+        .overlay-plot-container {
+            position: relative;
+            width: 520px;
+            aspect-ratio: 1 / 1;   /* keeps proportions stable */
+            margin: 0 auto;
 
-    overflow: hidden;     /* 🔑 prevents spill over slide */
-    cursor: zoom-in;
+            overflow: hidden;     /* 🔑 prevents spill over slide */
+            cursor: zoom-in;
 
-    transition: transform 0.25s ease;
-    transform-origin: center center;
-}
+            transition: transform 0.25s ease;
+            transform-origin: center center;
+        }
 
-/* Zoomed state */
-.overlay-plot-container.zoomed {
-    transform: scale(2.5);   /* adjust zoom factor here */
-    cursor: zoom-out;
-    background: var(--bg-color);
-    border-color: var(--border-color);
-    z-index: 50;
-}
+        /* Zoomed state */
+        .overlay-plot-container.zoomed {
+            transform: scale(2.5);   /* adjust zoom factor here */
+            cursor: zoom-out;
+            background: var(--bg-color);
+            border-color: var(--border-color);
+            z-index: 50;
+        }
 
 
         .plot {
@@ -821,14 +858,14 @@
             opacity: 1.0; /* key for comparison */
         }
 
-.overlay-plot-container img.plot {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    pointer-events: none;
-}
+        .overlay-plot-container img.plot {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
 
 
         /* Buttons container */
@@ -1482,7 +1519,10 @@
                         $$ \left\{ -\frac{\hbar^2\nabla^2}{2m} + v_{H}[n] + v_{ext} + v_{XC}[n]\right\}\phi_i(\textbf{r}\sigma) = \epsilon_i\phi_i(\textbf{r}\sigma)$$
                         </div></li>
                         <li>Remueve las interacciones explícitas (<strong style="color: var(--highlight2-color)"> partículas independientes</strong>).</li>
-                        <li><strong style="color: var(--highlight2-color)">Debe aproximarse</strong> \(v_{XC}\).</li>
+                        <li data-popup="Utilizamos PBE_SOL: John P. Perdew, Adrienn Ruzsinszky, Gábor I. Csonka, Oleg A. Vydrov, Gustavo E.
+Scuseria, Lucian A. Constantin, Xiaolan Zhou, and Kieron Burke. Restoring the
+density-gradient expansion for exchange in solids and surfaces. Phys. Rev. Lett., 100:
+136406, Apr 2008. "><strong style="color: var(--highlight2-color)">Debe aproximarse</strong> \(v_{XC}\).</li>
                     </ul>
                 </div>
 
@@ -1852,14 +1892,21 @@
         <div class="slide-content">
             <h2>Estructura Electrónica: Bandas y DOS - LiF</h2>
 
-                <div class="subfigure-row"style="height: 250px;">
+                <div class="plot-grid-custom5"style="height: 70px; width: 100%;">
+                    <div></div>
+                    <h2>\(s\)</h2>
+                    <h2>\(p\)</h2>
+                    <h2>\(d\)</h2>
+                    <div></div>
+                </div>
+                <div class="subfigure-row-bands"style="height: 250px;">
                     <h3>Li    </h3>
                     <img src="LiF/PROJECTED/bands_Li_s_dark.png" alt="bands_Li_s_dark" style="height: 100%;">
                     <img src="LiF/PROJECTED/bands_Li_p_dark.png" alt="bands_Li_p_dark" style="height: 100%;">
                     <img src="LiF/PROJECTED/bands_Li_d_dark.png" alt="bands_Li_d_dark" style="height: 100%;">
                     <img src="LiF/PROJECTED/LiF_Li-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
                 </div>
-                <div class="subfigure-row" style="height: 250px;">
+                <div class="subfigure-row-bands" style="height: 250px;">
                     <h3>F     </h3>
                     <img src="LiF/PROJECTED/bands_F_s_dark.png" alt="bands_F_s_dark" style="height: 100%;">
                     <img src="LiF/PROJECTED/bands_F_p_dark.png" alt="bands_F_p_dark" style="height: 100%;">
@@ -1876,14 +1923,21 @@
         <div class="slide-content">
             <h2>Estructura Electrónica: Bandas y DOS - MgO</h2>
 
-                <div class="subfigure-row" style="height: 250px;">
+                <div class="plot-grid-custom5"style="height: 70px; width: 100%;">
+                    <div></div>
+                    <h2>\(s\)</h2>
+                    <h2>\(p\)</h2>
+                    <h2>\(d\)</h2>
+                    <div></div>
+                </div>
+                <div class="subfigure-row-bands" style="height: 250px;">
                     <h3>Mg    </h3>
                     <img src="MgO/PROJECTED/bands_Mg_s_dark.png" alt="bands_Mg_s_dark" style="height: 100%;">
                     <img src="MgO/PROJECTED/bands_Mg_p_dark.png" alt="bands_Mg_p_dark" style="height: 100%;">
                     <img src="MgO/PROJECTED/bands_Mg_d_dark.png" alt="bands_Mg_d_dark" style="height: 100%;">
                     <img src="MgO/PROJECTED/MgO_Mg-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
                 </div>
-                <div class="subfigure-row" style="height: 250px;">
+                <div class="subfigure-row-bands" style="height: 250px;">
                     <h3>O     </h3>
                     <img src="MgO/PROJECTED/bands_O_s_dark.png" alt="bands_O_s_dark" style="height: 100%;">
                     <img src="MgO/PROJECTED/bands_O_p_dark.png" alt="bands_O_p_dark" style="height: 100%;">
@@ -1900,14 +1954,21 @@
         <div class="slide-content">
             <h2>Estructura Electrónica: Bandas y DOS - CaO</h2>
 
-                <div class="subfigure-row" style="height: 250px;">
+                <div class="plot-grid-custom5"style="height: 70px; width: 100%;">
+                    <div></div>
+                    <h2>\(s\)</h2>
+                    <h2>\(p\)</h2>
+                    <h2>\(d\)</h2>
+                    <div></div>
+                </div>
+                <div class="subfigure-row-bands" style="height: 250px;">
                     <h3>Ca    </h3>
                     <img src="CaO/PROJECTED/bands_Ca_s_dark.png" alt="bands_Ca_s_dark" style="height: 100%;">
                     <img src="CaO/PROJECTED/bands_Ca_p_dark.png" alt="bands_Ca_p_dark" style="height: 100%;">
                     <img src="CaO/PROJECTED/bands_Ca_d_dark.png" alt="bands_Ca_d_dark" style="height: 100%;">
                     <img src="CaO/PROJECTED/CaO_Ca-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
                 </div>
-                <div class="subfigure-row" style="height: 250px;">
+                <div class="subfigure-row-bands" style="height: 250px;">
                     <h3>O     </h3>
                     <img src="CaO/PROJECTED/bands_O_s_dark.png" alt="bands_O_s_dark" style="height: 100%;">
                     <img src="CaO/PROJECTED/bands_O_p_dark.png" alt="bands_O_p_dark" style="height: 100%;">
@@ -1924,14 +1985,21 @@
         <div class="slide-content">
             <h2>Estructura Electrónica: Bandas y DOS - ZnO</h2>
 
-                <div class="subfigure-row" style="height: 250px;">
+                <div class="plot-grid-custom5"style="height: 70px; width: 100%;">
+                    <div></div>
+                    <h2>\(s\)</h2>
+                    <h2>\(p\)</h2>
+                    <h2>\(d\)</h2>
+                    <div></div>
+                </div>
+                <div class="subfigure-row-bands" style="height: 250px;">
                     <h3>Zn    </h3>
                     <img src="ZnO/PROJECTED/bands_Zn_s_dark.png" alt="bands_Zn_s_dark" style="height: 100%;">
                     <img src="ZnO/PROJECTED/bands_Zn_p_dark.png" alt="bands_Zn_p_dark" style="height: 100%;">
                     <img src="ZnO/PROJECTED/bands_Zn_d_dark.png" alt="bands_Zn_d_dark" style="height: 100%;">
                     <img src="ZnO/PROJECTED/ZnO_Zn-PDOS_dark.png" alt="PDOS_dark" style="height: 100%;">
                 </div>
-                <div class="subfigure-row" style="height: 250px;">
+                <div class="subfigure-row-bands" style="height: 250px;">
                     <h3>O     </h3>
                     <img src="ZnO/PROJECTED/bands_O_s_dark.png" alt="bands_O_s_dark" style="height: 100%;">
                     <img src="ZnO/PROJECTED/bands_O_p_dark.png" alt="bands_O_p_dark" style="height: 100%;">
@@ -2328,19 +2396,16 @@
             <div class="plot-grid-custom2" style="border-radius: 0;">
                 <div id="plot-XANES_LiF_Li_K_detail" data-plot-key="plot-XANES_LiF_Li_K" class="plot-box" style="height: 275px;"></div>
                 <div class="subfigure-row">
-                    <img src="LiF/EXCITONS/Li-K/excitonWavefunction-000002-iso.png" alt="exciton_Li_1_bands" class="img-dark-mode1">
                     <img src="LiF/EXCITONS/Li-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_Li_1_wf" class="img-dark-mode1">
-                    <video autoplay muted loop playsinline src="" type="video/mov" >
+                    <img src="LiF/EXCITONS/Li-K/excitonWavefunction-000002-iso.png" alt="exciton_Li_1_bands" class="img-dark-mode1">
                 </div>
                 <div class="subfigure-row">
-                    <img src="LiF/EXCITONS/Li-K/excitonWavefunction-000003-iso.png" alt="exciton_Li_2_bands" class="img-dark-mode1">
                     <img src="LiF/EXCITONS/Li-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000003.OUT.png" alt="exciton_Li_2_wf" class="img-dark-mode1">
-                    <video autoplay muted loop playsinline src="" type="video/mov" >
+                    <img src="LiF/EXCITONS/Li-K/excitonWavefunction-000003-iso.png" alt="exciton_Li_2_bands" class="img-dark-mode1">
                 </div>
                 <div class="subfigure-row">
-                    <img src="LiF/EXCITONS/Li-K/excitonWavefunction-000004-iso.png" alt="exciton_Li_3_bands" class="img-dark-mode1">
                     <img src="LiF/EXCITONS/Li-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000004.OUT.png" alt="exciton_Li_3_wf" class="img-dark-mode1">
-                    <video autoplay muted loop playsinline src="" type="video/mov" >
+                    <img src="LiF/EXCITONS/Li-K/excitonWavefunction-000004-iso.png" alt="exciton_Li_3_bands" class="img-dark-mode1">
                 </div>
             </div>
 
@@ -2357,19 +2422,16 @@
                 <div class="plot-grid-custom2">
                     <div id="plot-XANES_LiF_F_K_detail" data-plot-key="plot-XANES_LiF_F_K" class="plot-box" style="height: 275px;"></div>
                     <div class="subfigure-row">
-                        <img src="LiF/EXCITONS/F-K/excitonWavefunction-000004-iso.png" alt="exciton_F_1_bands" class="img-dark-mode1">
                         <img src="LiF/EXCITONS/F-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000004.OUT.png" alt="exciton_F_1_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="LiF/EXCITONS/F-K/excitonWavefunction-000004-iso.png" alt="exciton_F_1_bands" class="img-dark-mode1">
                     </div>
                     <div class="subfigure-row">
-                        <img src="LiF/EXCITONS/F-K/excitonWavefunction-000007-iso.png" alt="exciton_F_2_bands" class="img-dark-mode1">
                         <img src="LiF/EXCITONS/F-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000007.OUT.png" alt="exciton_F_2_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="LiF/EXCITONS/F-K/excitonWavefunction-000007-iso.png" alt="exciton_F_2_bands" class="img-dark-mode1">
                     </div>
                     <div class="subfigure-row">
-                        <img src="LiF/EXCITONS/F-K/excitonWavefunction-000008-iso.png" alt="exciton_F_3_bands" class="img-dark-mode1">
                         <img src="LiF/EXCITONS/F-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000008.OUT.png" alt="exciton_F_3_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="LiF/EXCITONS/F-K/excitonWavefunction-000008-iso.png" alt="exciton_F_3_bands" class="img-dark-mode1">
                     </div>
                 </div>
             </div>
@@ -2404,14 +2466,12 @@
                 <div class="plot-grid-custom2">
                     <div id="plot-XANES_MgO_Mg_K_detail" data-plot-key="plot-XANES_MgO_Mg_K" class="plot-box" style="height: 275px;"></div>
                     <div class="subfigure-row">
-                        <img src="MgO/EXCITONS/Mg-K/excitonWavefunction-000008-iso.png" alt="exciton_Mg_K_1_bands" class="img-dark-mode1">
                         <img src="MgO/EXCITONS/Mg-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000008.OUT.png" alt="exciton_Mg_K_1_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="MgO/EXCITONS/Mg-K/excitonWavefunction-000008-iso.png" alt="exciton_Mg_K_1_bands" class="img-dark-mode1">
                     </div>
                     <div class="subfigure-row">
-                        <img src="MgO/EXCITONS/Mg-K/excitonWavefunction-000028-iso.png" alt="exciton_Mg_K_1_bands" class="img-dark-mode1">
                         <img src="MgO/EXCITONS/Mg-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000028.OUT.png" alt="exciton_Mg_K_2_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="MgO/EXCITONS/Mg-K/excitonWavefunction-000028-iso.png" alt="exciton_Mg_K_2_bands" class="img-dark-mode1">
                     </div>
                 </div>
             </div>
@@ -2429,19 +2489,16 @@
                 <div class="plot-grid-custom2">
                     <div id="plot-XANES_MgO_O_K_detail" data-plot-key="plot-XANES_MgO_O_K" class="plot-box" style="height: 275px;"></div>
                     <div class="subfigure-row">
-                        <img src="MgO/EXCITONS/O-K/excitonWavefunction-000010-iso.png" alt="exciton_O_K_1_bands" class="img-dark-mode1">
                         <img src="MgO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000010.OUT.png" alt="exciton_O_K_1_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="MgO/EXCITONS/O-K/excitonWavefunction-000010-iso.png" alt="exciton_O_K_1_bands" class="img-dark-mode1">
                     </div>
                     <div class="subfigure-row">
-                        <img src="MgO/EXCITONS/O-K/excitonWavefunction-000044-iso.png" alt="exciton_O_K_2_bands" class="img-dark-mode1">
                         <img src="MgO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000044.OUT.png" alt="exciton_O_K_2_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="MgO/EXCITONS/O-K/excitonWavefunction-000044-iso.png" alt="exciton_O_K_2_bands" class="img-dark-mode1">
                     </div>
                     <div class="subfigure-row">
-                        <img src="MgO/EXCITONS/O-K/excitonWavefunction-000218-iso.png" alt="exciton_O_K_3_bands" class="img-dark-mode1">
                         <img src="MgO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000218.OUT.png" alt="exciton_O_K_3_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="MgO/EXCITONS/O-K/excitonWavefunction-000218-iso.png" alt="exciton_O_K_3_bands" class="img-dark-mode1">
                     </div>
                 </div>
             </div>
@@ -2459,25 +2516,21 @@
                 <div class="plot-grid-custom2">
                     <div id="plot-XANES_MgO_Mg_L23_detail" data-plot-key="plot-XANES_MgO_Mg_L23" class="plot-box" style="height: 275px;"></div>
                     <div class="subfigure-row">
-                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000001-000001_iso.png" alt="exciton_Mg_L23_1_bands" class="img-dark-mode1">
                         <img src="MgO/EXCITONS/Mg-L23/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000001.OUT.png" alt="exciton_Mg_L23_1_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000001-000001_iso.png" alt="exciton_Mg_L23_1_bands" class="img-dark-mode1">
                     </div>
                     <div class="subfigure-row">
-                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000001-000004_iso.png" alt="exciton_Mg_L23_2_bands" class="img-dark-mode1">
                         <img src="MgO/EXCITONS/Mg-L23/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000004.OUT.png" alt="exciton_Mg_L23_2_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000004-000001_iso.png" alt="exciton_Mg_L23_2_bands" class="img-dark-mode1">
                     </div>
-                    <div class="subfigure-row">
-                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000001-000046_iso.png" alt="exciton_Mg_L23_3_bands" class="img-dark-mode1">
+                    <!--<div class="subfigure-row">
                         <img src="MgO/EXCITONS/Mg-L23/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000046.OUT.png" alt="exciton_Mg_L23_3_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000046-000001_iso.png" alt="exciton_Mg_L23_3_bands" class="img-dark-mode1">
                     </div>
                     <div class="subfigure-row">
-                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000001-000186_iso.png" alt="exciton_Mg_L23_4_bands" class="img-dark-mode1">
                         <img src="MgO/EXCITONS/Mg-L23/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000186.OUT.png" alt="exciton_Mg_L23_4_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
-                    </div>
+                        <img src="MgO/EXCITONS/Mg-L23/excitonWavefunction-000186-000001_iso.png" alt="exciton_Mg_L23_4_bands" class="img-dark-mode1">
+                    </div>-->
                 </div>
             </div>
 
@@ -2509,26 +2562,24 @@
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom2">
-                    <div id="plot-XANES_CaO_Ca_L23_detail" data-plot-key="plot-XANES_CaO_Ca_L23" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_CaO_Ca_K_detail" data-plot-key="plot-XANES_CaO_Ca_K" class="plot-box" style="height: 275px;"></div>
                     <div class="subfigure-row">
-                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-000212-iso.png" alt="exciton_Ca_K_1_bands" class="img-dark-mode1">
                         <img src="CaO/EXCITONS/Ca-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000212.OUT.png" alt="exciton_Ca_K_1_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-000212-iso.png" alt="exciton_Ca_K_1_bands" class="img-dark-mode1">
                     </div>
+                </div>
+                <div class="plot-grid-custom3">
                     <div class="subfigure-row">
-                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-001542-iso.png" alt="exciton_Ca_K_2_bands" class="img-dark-mode1">
                         <img src="CaO/EXCITONS/Ca-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA001542.OUT.png" alt="exciton_Ca_K_2_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-001542-iso.png" alt="exciton_Ca_K_2_bands" class="img-dark-mode1">
                     </div>
                     <div class="subfigure-row">
-                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-001884-full.png" alt="exciton_Ca_K_3_bands" class="img-dark-mode1">
                         <img src="CaO/EXCITONS/Ca-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA001884.OUT.png" alt="exciton_Ca_K_3_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-001884-iso.png" alt="exciton_Ca_K_3_bands" class="img-dark-mode1">
                     </div>
                     <div class="subfigure-row">
-                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-002198-iso.png" alt="exciton_Ca_K_4_bands" class="img-dark-mode1">
                         <img src="CaO/EXCITONS/Ca-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA002198.OUT.png" alt="exciton_Ca_K_4_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="CaO/EXCITONS/Ca-K/excitonWavefunction-002198-iso.png" alt="exciton_Ca_K_4_bands" class="img-dark-mode1">
                     </div>
                 </div>
             </div>
@@ -2546,19 +2597,16 @@
                 <div class="plot-grid-custom2">
                     <div id="plot-XANES_CaO_O_K_detail" data-plot-key="plot-XANES_CaO_O_K" class="plot-box" style="height: 275px;"></div>
                     <div class="subfigure-row">
-                        <img src="CaO/EXCITONS/O-K/excitonWavefunction-000024-iso.png" alt="exciton_O_K_1_bands" class="img-dark-mode1">
                         <img src="CaO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000024.OUT.png" alt="exciton_O_K_1_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="CaO/EXCITONS/O-K/excitonWavefunction-000024-iso.png" alt="exciton_O_K_1_bands" class="img-dark-mode1">
                     </div>
                     <div class="subfigure-row">
-                        <img src="CaO/EXCITONS/O-K/excitonWavefunction-000078-iso.png" alt="exciton_O_K_2_bands" class="img-dark-mode1">
                         <img src="CaO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000078.OUT.png" alt="exciton_O_K_2_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="CaO/EXCITONS/O-K/excitonWavefunction-000078-iso.png" alt="exciton_O_K_2_bands" class="img-dark-mode1">
                     </div>
                     <div class="subfigure-row">
-                        <img src="CaO/EXCITONS/O-K/excitonWavefunction-000214-iso.png" alt="exciton_O_K_3_bands" class="img-dark-mode1">
                         <img src="CaO/EXCITONS/O-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000214.OUT.png" alt="exciton_O_K_3_wf" class="img-dark-mode1">
-                        <video autoplay muted loop playsinline src="" type="video/mov" >
+                        <img src="CaO/EXCITONS/O-K/excitonWavefunction-000214-iso.png" alt="exciton_O_K_3_bands" class="img-dark-mode1">
                     </div>
                 </div>
             </div>
@@ -2570,16 +2618,16 @@
     <!-- SLIDE 19 11/12: XANES Plots (Im) ZnO -->
     <div class="slide" id="slide-XANES-Im-ZnO" data-show-back="true" data-back-target="slide-XANES" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>XANES: ZnO/<h2>
+            <h2>XANES: ZnO<h2>
 
             <div style="width: 95%; height: 70%; margin: 0 auto;">
                 <div class="plot-grid-custom3">
-                    <div id="plot-XANES_ZnO_O_K_ord" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-XANES_ZnO_Zn_L23_ord" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-XANES_ZnO_Zn_K_ord" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-XANES_ZnO_O_K_extr" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-XANES_ZnO_Zn_L23_extr" class="plot-box" style="height: 275px;"></div>
-                    <div id="plot-XANES_ZnO_Zn_K_extr" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_ZnO_O_K_ord" data-plot-key="plot-XANES_ZnO_O_K_ord" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_ZnO_Zn_L23_ord" data-plot-key="plot-XANES_ZnO_Zn_L23_ord" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_ZnO_Zn_K_ord" data-plot-key="plot-XANES_ZnO_Zn_K_ord" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_ZnO_O_K_extr" data-plot-key="plot-XANES_ZnO_O_K_extr" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_ZnO_Zn_L23_extr" data-plot-key="plot-XANES_ZnO_Zn_L23_extr" class="plot-box" style="height: 275px;"></div>
+                    <div id="plot-XANES_ZnO_Zn_K_extr" data-plot-key="plot-XANES_ZnO_Zn_K_extr" class="plot-box" style="height: 275px;"></div>
                 </div>
             </div>
 
@@ -2808,8 +2856,8 @@
                         <li data-popup="Las estructuras optimizadas con DFT/PBEsol reproducen los parámetros experimentales con desviaciones típicamente menores al 1%.">
                             Parámetros de red en excelente acuerdo experimental
                         </li>
-                        <li data-popup="Las correcciones G₀W₀ abren el gap electrónico respecto al nivel Kohn-Sham, actuando principalmente como un corrimiento rígido de las bandas de conducción.">
-                            G₀W₀ mejora sustancialmente la descripción del gap
+                        <li data-popup="Las correcciones \(G_0W_0\) abren el gap electrónico respecto al nivel Kohn-Sham, actuando principalmente como un corrimiento rígido de las bandas de conducción.">
+                            \(G_0W_0\) mejora sustancialmente la descripción del gap
                         </li>
                     </ul>
                 </div>
@@ -2819,7 +2867,7 @@
                     <h3>Óptica</h3>
                     <ul>
                         <li data-popup="La inclusión explícita de la interacción electrón-hueco mediante la ecuación de Bethe-Salpeter es esencial para reproducir la forma espectral y el umbral óptico.">
-                            Excelente reproducción de la forma espectral
+                            Excelente reproducción de la forma espectral y \(\varepsilon_\infty\)
                         </li>
                         <li data-popup="Las energías de ligadura excitónica resultan sistemáticamente mayores que las experimentales, sugiriendo limitaciones en la descripción del apantallamiento.">
                             Ligera sobrestimación de la ligadura excitónica
@@ -2831,11 +2879,8 @@
                 <div class="conclusion-block appear-step">
                     <h3>XANES</h3>
                     <ul>
-                        <li data-popup="La BSE describe con gran precisión el umbral de absorción y los picos excitónicos de core en aislantes y semiconductores.">
-                            Umbral y picos excitónicos bien reproducidos
-                        </li>
-                        <li data-popup="Persisten discrepancias de intensidad relativa en materiales con fuerte carácter d, como CaO y ZnO.">
-                            Limitaciones en sistemas con estados d dominantes
+                        <li data-popup="La BSE describe con gran precisión el borde de absorción y los picos excitónicos de core en aislantes y semiconductores.">
+                            Borde y picos excitónicos bien reproducidos
                         </li>
                     </ul>
                 </div>
@@ -4676,37 +4721,45 @@
         /* -----------------------------------------
         LIST ITEM POPUPS (Materials + Conclusions)
         ----------------------------------------- */
+        document.querySelectorAll(
+        '.material-block li, .conclusion-block li, #slide-DFT-intro2 li'
+        ).forEach(li => {
 
-        document.querySelectorAll('.material-block li, .conclusion-block li').forEach(li => {
             li.addEventListener('mouseenter', () => {
 
-                // Only show popup if parent block is visible
+                // Accept either:
+                // 1) active material/conclusion block
+                // 2) active slide-DFT-intro2
                 const block = li.closest('.material-block, .conclusion-block');
-                if (!block || !block.classList.contains('active')) return;
+                const slide = li.closest('#slide-DFT-intro2');
 
-                const content = li.getAttribute('data-popup');
-                if (!content) return;
+                if (
+                    (block && block.classList.contains('active')) ||
+                    (slide && slide.classList.contains('active'))
+                ) {
+                    const content = li.getAttribute('data-popup');
+                    if (!content) return;
 
-                const popupDiv = document.createElement('div');
-                popupDiv.className = 'material-popup';
-                popupDiv.textContent = content;
-                document.body.appendChild(popupDiv);
+                    const popupDiv = document.createElement('div');
+                    popupDiv.className = 'material-popup';
+                    popupDiv.textContent = content;
+                    document.body.appendChild(popupDiv);
 
-                const rect = li.getBoundingClientRect();
+                    const rect = li.getBoundingClientRect();
 
-                let left = rect.right + 10 + window.scrollX;
-                let top  = rect.top + window.scrollY + rect.height / 2;
+                    let left = rect.right + 10 + window.scrollX;
+                    let top  = rect.top + window.scrollY + rect.height / 2;
 
-                // Prevent overflow → move left if needed
-                if (left + popupDiv.offsetWidth > window.innerWidth) {
-                    left = rect.left - popupDiv.offsetWidth - 10 + window.scrollX;
+                    if (left + popupDiv.offsetWidth > window.innerWidth) {
+                        left = rect.left - popupDiv.offsetWidth - 10 + window.scrollX;
+                    }
+
+                    popupDiv.style.left = left + 'px';
+                    popupDiv.style.top  = (top - popupDiv.offsetHeight / 2) + 'px';
+
+                    popupDiv.classList.add('show');
+                    li._popupDiv = popupDiv;
                 }
-
-                popupDiv.style.left = left + 'px';
-                popupDiv.style.top  = (top - popupDiv.offsetHeight / 2) + 'px';
-
-                popupDiv.classList.add('show');
-                li._popupDiv = popupDiv;
             });
 
             li.addEventListener('mouseleave', () => {
@@ -4716,6 +4769,7 @@
                 }
             });
         });
+
 
         /* --- 4. EXCITATION ANIMATION (Slide ?? - Parabolic) --- */
         const exCanvas = document.getElementById('excitationCanvas');
@@ -4779,6 +4833,35 @@
             //exCtx.beginPath(); exCtx.moveTo(x-4, y); exCtx.lineTo(x+4, y); exCtx.moveTo(x, y-4); exCtx.lineTo(x, y+4); exCtx.stroke();
         }
 
+        function drawExcitonEllipse(ex, ey, hx, hy) {
+    const cx = (ex + hx) / 2;
+    const cy = (ey + hy) / 2;
+
+    const dx = ex - hx;
+    const dy = ey - hy;
+    const distance = Math.hypot(dx, dy);
+
+    const angle = Math.atan2(dy, dx);
+
+    // Semi-axes (tune these visually)
+    const a = distance * 0.9;   // major axis
+    const b = distance * 0.45;  // minor axis
+
+    exCtx.save();
+    exCtx.translate(cx, cy);
+    exCtx.rotate(angle);
+
+    exCtx.setLineDash([5, 5]); exCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+    exCtx.lineWidth = 2;
+
+    exCtx.beginPath();
+    exCtx.ellipse(0, 0, a, b, 0, 0, Math.PI * 2);
+    exCtx.stroke();
+
+    exCtx.restore();
+}
+
+
         function drawInteraction(ex, ey, hx, hy) {
             exCtx.setLineDash([5, 5]); exCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
             exCtx.beginPath(); exCtx.moveTo(ex, ey); exCtx.lineTo(hx, hy); exCtx.stroke(); exCtx.setLineDash([]);
@@ -4800,7 +4883,7 @@
                 if (electronY <= targetY) { electronY = targetY; phase = 'bound'; }
             } else if (phase === 'bound') {
                 drawHole(electronX, startY); drawElectron(electronX, targetY + Math.sin(exTime*0.05)*3);
-                drawInteraction(electronX, targetY, electronX, startY);
+                drawExcitonEllipse(electronX, targetY, electronX, startY);
                 exCtx.fillStyle = PALETTE.text; exCtx.font = 'bold 20px Urbanist'; exCtx.textAlign = 'center';
                 exCtx.fillText("Excitón", bands.centerX + 100, height/2 ); exCtx.textAlign = 'left';
             }
