@@ -1720,17 +1720,17 @@
                     <div class="caption caption-left" style="color:var(--highlight2-color);font-size: 1.9rem; text-align: right;">LiF</div>
                     <ul>
                         <li data-popup="Gracias a su amplio rango de transparencia, se usa en sistemas láser excimer y óptica ultravioleta.">Óptica UV y sistemas láser excimer</li>
-                        <li data-popup="Material resistente a radiación y con alto contenido de Li, ideal para detectores de neutrones y dosímetros.">Detección de neutrones y dosimetría radiológica</li>
-                        <li data-popup="Cristales LiF:Mg,Ti se usan ampliamente para dosimetría termoluminiscente en radiología y física de radiación.">Monitoreo de radiación con cristales termoluminiscentes</li>
+                        <li data-popup="Material resistente a radiación y con alto contenido de Li, ideal para detectores de neutrones y dosímetros.">Detección de neutrones</li>
+                        <li data-popup="Cristales LiF:Mg,Ti se usan ampliamente para dosimetría termoluminiscente en radiología y física de radiación.">Dosimetría (ej. LiF:Mg,Ti)</li>
                     </ul>
                 </div>
 
                 <div id="mat-MgO" class="material-block">
                     <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem; text-align: left;">MgO</div>
                     <ul>
-                        <li data-popup="Amplio uso como material refractario y alta resistencia térmica en aceros y hornos.">Material refractario y resistencia térmica</li>
-                        <li data-popup="Soporte de catalizadores y aditivos, mejora la actividad y la resistencia al envenenamiento por coque.">Soporte de catalizadores y aditivos</li>
-                        <li data-popup="Adsorbente ambiental, substrato para heteroestructuras epitaxiales y nanomateriales.">Adsorbente ambiental y substrato en heteroestructuras</li>
+                        <li data-popup="Amplio uso como material refractario y alta resistencia térmica en aceros y hornos.">Material refractario</li>
+                        <li data-popup="Mejora la actividad y la resistencia al envenenamiento por coque.">Soporte de catalizadores y aditivos</li>
+                        <li>Adsorbente ambiental</li>
                     </ul>
                 </div>
 
@@ -1747,9 +1747,9 @@
                 <div id="mat-ZnO" class="material-block">
                     <div class="caption caption-right" style="color:var(--highlight2-color);font-size: 1.9rem;">ZnO</div>
                     <ul>
-                        <li>Dispositivos optoelectrónicos y conductores transparentes</li>
+                        <li>Optoelectrónica</li>
                         <li>LEDs UV, diodos y láseres</li>
-                        <li>Aplicaciones biomédicas</li>
+                        <li>Biomedicina</li>
                     </ul>
                 </div>
 
@@ -2226,7 +2226,7 @@
     <!-- SLIDE 19: XANES Plots (Im) -->
     <div class="slide" id="slide-XANES"  data-show-back="true" data-back-target="slide-optical-Re"data-show-skip="true" data-skip-target="slide-defects-structure">
         <div class="slide-content">
-            <h2>XANES: Espectros </h2>
+            <h2>XANES: Espectros de absorción de rayos-X cerca del borde</h2>
 
             <div style="height: 100%; margin: 0 auto;">
                 <div class="plot-grid-custom4">
@@ -2323,7 +2323,7 @@
             <h2>XANES: LiF - Borde K del Li</h2>
 
             <div class="plot-grid-custom2" style="border-radius: 0;">
-                <div id="plot-XANES_LiF_Li_K" data-plot-key="plot-XANES_LiF_Li_K" class="plot-box" style="height: 275px;"></div>
+                <div id="plot-XANES_LiF_Li_K_detail" data-plot-key="plot-XANES_LiF_Li_K" class="plot-box" style="height: 275px;"></div>
                 <div class="subfigure-row">
                     <img src="LiF/EXCITONS/Li-K/excitonWavefunction-000002-iso.png" alt="exciton_Li_1_bands" class="img-dark-mode1">
                     <img src="LiF/EXCITONS/Li-K/KPATH_BSE-singlet-TDA-BAR_SCR-full_QMT001_LAMBDA000002.OUT.png" alt="exciton_Li_1_wf" class="img-dark-mode1">
@@ -2882,7 +2882,7 @@
                     <p>FaMAF - Universidad Nacional de Córdoba</p>
                     <p>CCAD  - Centro de Cómputo de Alto Desempeño </p>
 
-                    <h3>Otras ayudas</h3>
+                    <h3>Otras colaboraciones</h3>
                     <p>Claudia Draxl y companía</p>
                     <p>Horacio Pastawski</p>
 
@@ -2920,7 +2920,7 @@
                 <div class="credit-lane" id="ref-lane-2"></div>
             </div>
 
-            <div class="slide-footer"><span></span><span>23 / 24</span></div>
+            <div class="slide-footer"><span></span><span>24 / 24</span></div>
 
         </div>
     </div>
@@ -3002,27 +3002,6 @@
         const slides = document.querySelectorAll('.slide');
         const progressBar = document.getElementById('progressBar');
 
-        // Animation frames trackers
-        const anims = {
-            expSetup: null,
-            mbDft: null,
-            KS: null,
-            excitation: null,
-            screenE: null,
-            greenE: null,
-            exciton: null
-        };
-
-        const animState = {
-            expSetup: null,
-            mbDft: null,
-            KS: null,
-            excitation: null,
-            screenE: null,
-            greenE: null,
-            exciton: null
-        };
-
         function showSlide(index) {
             if (index < 0) index = 0;
             if (index >= slides.length) index = slides.length - 1;
@@ -3054,6 +3033,8 @@
             else if (slides[index].id === 'slide-GW-green') initGreensAnim();
             else if (slides[index].id === 'slide-GW-intro') initScreeningBox('screenElectronCanvas', 'electron');
             else if (slides[index].id === 'slide-excitons-type') init_excitons();
+
+
         }
 
         /* --- ROBUST STATE MACHINE --- */
@@ -3151,10 +3132,10 @@
             });
         }
 
-        let materialsStep = 0;       // 0 = nothing shown
+        let materialsStep = -1;       // 0 = nothing shown
         const maxMaterialsStep = 4; // LiF..ZnO
 
-        let conclusionsStep = 0;    // 0 = nothing shown
+        let conclusionsStep = -1;    // 0 = nothing shown
         const maxConclusionsStep = 4; // 4 blocks → 0..3
 
         function nextSlide() {
@@ -3187,26 +3168,25 @@
             /* ---------------------------------
             MATERIALS SLIDE
             --------------------------------- */
-            if (currentSlideId === 'slide-materials') {
-                if (materialsStep < maxMaterialsStep) {
-                    updateMaterialsStepInSlide(materialsStep);
-                    materialsStep++;
-                    return;
-                }
-                materialsStep = 0; // reset when leaving
-            }
+if (currentSlideId === 'slide-materials') {
+    if (materialsStep < maxMaterialsStep - 1) {
+        materialsStep++;
+        updateMaterialsStepInSlide(materialsStep);
+        return;
+    }
+}
 
             /* ---------------------------------
             CONCLUSIONS SLIDE
             --------------------------------- */
-            if (currentSlideId === 'slide-conclusions') {
-                if (conclusionsStep < maxConclusionsStep) {
-                    updateConclusionsStep(conclusionsStep);
-                    conclusionsStep++;
-                    return;
-                }
-                conclusionsStep = 0; // reset when leaving
-            }
+if (currentSlideId === 'slide-conclusions') {
+    if (conclusionsStep < maxConclusionsStep - 1) {
+        conclusionsStep++;
+        updateConclusionsStep(conclusionsStep);
+        return;
+    }
+}
+
 
             /* ---------------------------------
             DEFAULT: NEXT SLIDE
@@ -3245,21 +3225,22 @@
                 }
             }
 
-            /* ---------------------------------
-            CONCLUSIONS SLIDE (BACKWARD STEPS)
-            --------------------------------- */
-            if (currentSlideId === 'slide-conclusions') {
-                if (conclusionsStep > 0) {
-                    conclusionsStep--;
-                    updateConclusionsStep(conclusionsStep - 1);
-                    return;
-                }
-            }
+/* ---------------------------------
+CONCLUSIONS SLIDE (BACKWARD STEPS)
+--------------------------------- */
+if (currentSlideId === 'slide-conclusions') {
+    if (conclusionsStep > 0) {
+        conclusionsStep--;
+        updateConclusionsStep(conclusionsStep);
+        return;
+    } else if (conclusionsStep === 0) {
+        conclusionsStep = -1;
+        updateConclusionsStep(-1);
+        return;
+    }
+}
 
-            /* ---------------------------------
-            DEFAULT: PREVIOUS SLIDE
-            --------------------------------- */
-            showSlide(currentSlide - 1);
+
             /* ---------------------------------
             SLIDE 1 (BACKWARD STEPS)
             --------------------------------- */
@@ -3274,6 +3255,10 @@
                     return;
                 }
             }
+            /* ---------------------------------
+            DEFAULT: PREVIOUS SLIDE
+            --------------------------------- */
+            showSlide(currentSlide - 1);
 
         }
 
@@ -3322,6 +3307,27 @@
             const index = [...slides].findIndex(s => s.id === id);
             if (index !== -1) showSlide(index);
         }
+
+        // Animation frames trackers
+        const anims = {
+            expSetup: null,
+            mbDft: null,
+            KS: null,
+            excitation: null,
+            screenE: null,
+            greenE: null,
+            exciton: null
+        };
+
+        const animState = {
+            expSetup: null,
+            mbDft: null,
+            KS: null,
+            excitation: null,
+            screenE: null,
+            greenE: null,
+            exciton: null
+        };
 
         /* --- NEW: EXPERIMENTAL SETUP ANIMATION (Slide 1) --- */
         function initExpSetupAnim() {
@@ -5261,7 +5267,7 @@
                 let y1 = 0;
                 let y2 = lane1.offsetHeight;
 
-                const speed = 0.5; // px per frame (tune this)
+                const speed = 1; // px per frame (tune this)
 
                 function animate() {
 
