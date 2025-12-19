@@ -3033,6 +3033,10 @@
             else if (slides[index].id === 'slide-GW-green') initGreensAnim();
             else if (slides[index].id === 'slide-GW-intro') initScreeningBox('screenElectronCanvas', 'electron');
             else if (slides[index].id === 'slide-excitons-type') init_excitons();
+            if (slides[index].id === 'slide-conclusions') {
+                conclusionsStep = -1;
+                updateConclusionsStep(-1);
+            }
 
 
         }
@@ -3168,24 +3172,24 @@
             /* ---------------------------------
             MATERIALS SLIDE
             --------------------------------- */
-if (currentSlideId === 'slide-materials') {
-    if (materialsStep < maxMaterialsStep - 1) {
-        materialsStep++;
-        updateMaterialsStepInSlide(materialsStep);
-        return;
-    }
-}
+            if (currentSlideId === 'slide-materials') {
+                if (materialsStep < maxMaterialsStep - 1) {
+                    materialsStep++;
+                    updateMaterialsStepInSlide(materialsStep);
+                    return;
+                }
+            }
 
             /* ---------------------------------
             CONCLUSIONS SLIDE
             --------------------------------- */
-if (currentSlideId === 'slide-conclusions') {
-    if (conclusionsStep < maxConclusionsStep - 1) {
-        conclusionsStep++;
-        updateConclusionsStep(conclusionsStep);
-        return;
-    }
-}
+            if (currentSlideId === 'slide-conclusions') {
+                if (conclusionsStep < maxConclusionsStep - 1) {
+                    conclusionsStep++;
+                    updateConclusionsStep(conclusionsStep);
+                    return;
+                }
+            }
 
 
             /* ---------------------------------
@@ -3214,31 +3218,31 @@ if (currentSlideId === 'slide-conclusions') {
             MATERIALS SLIDE (BACKWARD STEPS)
             --------------------------------- */
             if (currentSlideId === 'slide-materials') {
-                if (materialsStep > 1) {
-                    materialsStep--;
-                    updateMaterialsStepInSlide(materialsStep - 1);
-                    return;
-                } else if (materialsStep === 1) {
+                if (materialsStep > -1) {
+                materialsStep--;
+                updateMaterialsStepInSlide(materialsStep);
+                return;
+            } else if (materialsStep === 1) {
                     materialsStep = 0;
                     updateMaterialsStepInSlide(-1);
                     return;
                 }
             }
 
-/* ---------------------------------
-CONCLUSIONS SLIDE (BACKWARD STEPS)
---------------------------------- */
-if (currentSlideId === 'slide-conclusions') {
-    if (conclusionsStep > 0) {
-        conclusionsStep--;
-        updateConclusionsStep(conclusionsStep);
-        return;
-    } else if (conclusionsStep === 0) {
-        conclusionsStep = -1;
-        updateConclusionsStep(-1);
-        return;
-    }
-}
+            /* ---------------------------------
+            CONCLUSIONS SLIDE (BACKWARD STEPS)
+            --------------------------------- */
+            if (currentSlideId === 'slide-conclusions') {
+                if (conclusionsStep > 0) {
+                    conclusionsStep--;
+                    updateConclusionsStep(conclusionsStep);
+                    return;
+                } else if (conclusionsStep === 0) {
+                    conclusionsStep = -1;
+                    updateConclusionsStep(-1);
+                    return;
+                }
+            }
 
 
             /* ---------------------------------
@@ -4418,6 +4422,26 @@ if (currentSlideId === 'slide-conclusions') {
         }
 
         window.plotSpecs = {
+                // Title example
+                "incident": {
+                    curves: [
+                        { data: incident,    mode: "line",    name: "Exp.",       color: PALETTE.curve1 }
+                    ],
+                    settings: { title: "", xlim: [0,1], ylim: [0, 1], xlabel: "Energía", ylabel: "Intensidad", showTicks: false }
+                },
+                "transmited": {
+                    curves: [
+                        { data: transmited,    mode: "line",    name: "Exp.",       color: PALETTE.curve1 }
+                    ],
+                    settings: { title: "", xlim: [0,1], ylim: [0, 1], xlabel: "Energía", ylabel: "Intensidad", showTicks: false }
+                },
+                "absorbed": {
+                    curves: [
+                        { data: absorbed,    mode: "line",    name: "Exp.",       color: PALETTE.curve1 }
+                    ],
+                    settings: { title: "", xlim: [0,1], ylim: [0, 1], xlabel: "Energía", ylabel: "Intensidad", showTicks: false }
+                },
+
                 // Optical Im
                 "plot-optical_LiF": {
                     curves: [
